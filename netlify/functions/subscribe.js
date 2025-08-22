@@ -1,4 +1,8 @@
 // netlify/functions/subscribe.js
+import 'dotenv/config';
+import fetch from 'node-fetch';
+
+
 export async function handler(event) {
 	if (event.httpMethod === "OPTIONS") {
 	  return {

@@ -1,12 +1,16 @@
 // netlify/functions/on-new-property.js
 // Webhook target: receives new/updated property items
+import 'dotenv/config';
+import fetch from 'node-fetch';
+
+
 export async function handler(event) {
 	const API_KEY = process.env.WEBFLOW_API_KEY;
 	const PROPERTIES_COLLECTION_ID = process.env.WEBFLOW_PROPERTIES_COLLECTION_ID;
 	const SUBS_COLLECTION_ID = process.env.WEBFLOW_SUBSCRIBERS_COLLECTION_ID;
   
 	const RESEND_API_KEY = process.env.RESEND_API_KEY;
-	const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@yourdomain.com";
+	const FROM_EMAIL = process.env.FROM_EMAIL || "no-reply@vf-immobilien.at";
   
 	if (!API_KEY || !PROPERTIES_COLLECTION_ID || !SUBS_COLLECTION_ID || !RESEND_API_KEY) {
 	  return { statusCode: 500, body: JSON.stringify({ error: "Missing env vars" }) };

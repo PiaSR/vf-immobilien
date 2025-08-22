@@ -1,7 +1,15 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[dev]
+  port = 9999
+  functions = "netlify/functions"
+  publish = "."
+
 [functions]
   node_bundler = "esbuild"
 
-# Add broad CORS headers to functions (we also set them in responses)
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
