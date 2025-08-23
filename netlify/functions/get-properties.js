@@ -1,9 +1,8 @@
-
 // netlify/functions/get-properties.js
 import 'dotenv/config';
 import fetch from 'node-fetch';
 
-export const handler = async (event, context) => {
+export const handler = async () => {
   try {
     console.log('--- Environment Variables ---');
     console.log('WEBFLOW_API_KEY:', process.env.WEBFLOW_API_KEY);
@@ -18,81 +17,69 @@ export const handler = async (event, context) => {
     if (!API_KEY || !SITE_ID || !COLLECTION_ID) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Missing WEBFLOW_API_KEY, WEBFLOW_SITE_ID, or WEBFLOW_PROPERTIES_COLLECTION_ID' }),
+        body: JSON.stringify({
+          error:
+            'Missing WEBFLOW_API_KEY, WEBFLOW_SITE_ID, or WEBFLOW_PROPERTIES_COLLECTION_ID',
+        }),
       };
     }
 
-    
-    async function fetchSiteInfo() {
-      const res = await fetch(`https://api.webflow.com/v2/sites/${SITE_ID}`, {
+    // ✅ 1. Fetch site info
+    const siteRes = await fetch(
+      `https://api.webflow.com/v2/sites/${SITE_ID}`,
+      {
         headers: {
           Authorization: `Bearer ${API_KEY}`,
-          'accept-version': 'v2',
+          'Content-Type': 'application/json',
         },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
       }
+    );
 
-      const data = await res.json();
-      console.log('Site Info:', JSON.stringify(data, null, 2));
-
-      if (data.sites && data.sites.length > 0) {
-        return data.sites[0];
-      } else {
-        console.log('No site information returned.');
-        return {};
-      }
+    if (!siteRes.ok) {
+      throw new Error(
+        `Webflow API error [Site Info]: ${siteRes.status} ${siteRes.statusText}`
+      );
     }
+    const siteInfo = await siteRes.json();
+    console.log('Site Info:', siteInfo);
 
-    async function fetchCollections(siteInfo) {
-      if (!siteInfo) {
-        console.log('No site information available.');
-        return [];
-      }
-
-      const res = await fetch(`https://api.webflow.com/v2/sites/${siteInfo.id}/collections`, {
+    // ✅ 2. Fetch collections
+    const collectionsRes = await fetch(
+      `https://api.webflow.com/v2/collections`,
+      {
         headers: {
           Authorization: `Bearer ${API_KEY}`,
-          'accept-version': 'v2',
+          'Content-Type': 'application/json',
         },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
       }
+    );
 
-      const data = await res.json();
-      console.log('Collections:', JSON.stringify(data, null, 2));
-      return data.collections;
+    if (!collectionsRes.ok) {
+      throw new Error(
+        `Webflow API error [Collections]: ${collectionsRes.status} ${collectionsRes.statusText}`
+      );
     }
+    const collections = await collectionsRes.json();
+    console.log('Collections:', collections);
 
-    async function fetchCollectionItems(siteInfo, collectionId) {
-      if (!siteInfo) {
-        console.log('No site information available.');
-        return [];
-      }
-
-      const res = await fetch(`https://api.webflow.com/v2/sites/${siteInfo.id}/collections/${collectionId}/items?limit=100`, {
+    // ✅ 3. Fetch items from the properties collection
+    const itemsRes = await fetch(
+      `https://api.webflow.com/v2/collections/${COLLECTION_ID}/items?limit=100`,
+      {
         headers: {
           Authorization: `Bearer ${API_KEY}`,
-          'accept-version': 'v2',
+          'Content-Type': 'application/json',
         },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
       }
+    );
 
-      const data = await res.json();
-      console.log('Collection Items:', JSON.stringify(data, null, 2));
-      return data.items;
+    if (!itemsRes.ok) {
+      throw new Error(
+        `Webflow API error [Items]: ${itemsRes.status} ${itemsRes.statusText}`
+      );
     }
-
-    const siteInfo = await fetchSiteInfo();
-    const collections = await fetchCollections(siteInfo);
-    const collectionItems = await fetchCollectionItems(siteInfo, COLLECTION_ID);
+    const itemsData = await itemsRes.json();
+    console.log('Collection Items:', itemsData.items);
 
     return {
       statusCode: 200,
@@ -103,12 +90,11 @@ export const handler = async (event, context) => {
       body: JSON.stringify({
         siteInfo,
         collections,
-        collectionItems,
+        collectionItems: itemsData.items,
       }),
     };
   } catch (err) {
     console.error('Error in main function:', err);
-    console.error('Error stack trace:', err.stack);
     return {
       statusCode: 500,
       headers: {
@@ -118,4 +104,4 @@ export const handler = async (event, context) => {
       body: JSON.stringify({ error: err.message }),
     };
   }
-}
+};
