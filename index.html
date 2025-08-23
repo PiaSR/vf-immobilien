@@ -16,14 +16,22 @@
           throw new Error(`Server error: ${res.status}`);
         }
         const data = await res.json();
-
+    
+        console.log('API Response:', JSON.stringify(data, null, 2));
+    
         const container = document.getElementById('properties');
         container.innerHTML = '';
-        data.items.forEach(item => {
-          const div = document.createElement('div');
-          div.innerHTML = `<h3>${item.name}</h3><p>${item.description || ''}</p>`;
-          container.appendChild(div);
-        });
+    
+        if (Array.isArray(data.collectionItems)) {
+          data.collectionItems.forEach(item => {
+            const div = document.createElement('div');
+            div.innerHTML = `<h3>${item.name}</h3><p>${item.description || ''}</p>`;
+            container.appendChild(div);
+          });
+        } else {
+          console.warn('No items found in the response');
+          container.innerHTML = '<p>No properties available.</p>';
+        }
       } catch (err) {
         console.error(err);
         document.getElementById('properties').innerHTML = `
@@ -32,8 +40,8 @@
         `;
       }
     }
-
+    
     fetchProperties();
-  </script>
+    </script>
 </body>
 </html>

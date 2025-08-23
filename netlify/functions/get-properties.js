@@ -1,5 +1,4 @@
 
-
 // netlify/functions/get-properties.js
 import 'dotenv/config';
 import fetch from 'node-fetch';
@@ -8,79 +7,92 @@ export const handler = async (event, context) => {
   try {
     console.log('--- Environment Variables ---');
     console.log('WEBFLOW_API_KEY:', process.env.WEBFLOW_API_KEY);
+    console.log('SITE_ID:', process.env.WEBFLOW_SITE_ID);
     console.log('COLLECTION_ID:', process.env.WEBFLOW_PROPERTIES_COLLECTION_ID);
     console.log('----------------------------');
 
     const API_KEY = process.env.WEBFLOW_API_KEY;
+    const SITE_ID = process.env.WEBFLOW_SITE_ID;
     const COLLECTION_ID = process.env.WEBFLOW_PROPERTIES_COLLECTION_ID;
 
-    if (!API_KEY || !COLLECTION_ID) {
+    if (!API_KEY || !SITE_ID || !COLLECTION_ID) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Missing WEBFLOW_API_KEY or COLLECTION_ID' }),
+        body: JSON.stringify({ error: 'Missing WEBFLOW_API_KEY, WEBFLOW_SITE_ID, or WEBFLOW_PROPERTIES_COLLECTION_ID' }),
       };
     }
 
-    async function fetchPage(offset = 0) {
-      try {
-        const url = `https://api.webflow.com/collections/${COLLECTION_ID}/items?limit=100&offset=${offset}`;
-        console.log(`Fetching offset ${offset} → URL: ${url}`);
+    
+    async function fetchSiteInfo() {
+      const res = await fetch(`https://api.webflow.com/v2/sites/${SITE_ID}`, {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          'accept-version': 'v2',
+        },
+      });
 
-        const res = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            'accept-version': '1.0.0',
-          },
-        });
+      if (!res.ok) {
+        throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
+      }
 
-        console.log(`Fetching offset ${offset} → status ${res.status}`);
+      const data = await res.json();
+      console.log('Site Info:', JSON.stringify(data, null, 2));
 
-        if (!res.ok) {
-          const text = await res.text();
-          console.error('Webflow API response:', text);
-          throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
-        }
-
-        const data = await res.json();
-        console.log('API Response:', data);
-
-        return data;
-      } catch (err) {
-        console.error('Fetch error:', err);
-        throw err;
+      if (data.sites && data.sites.length > 0) {
+        return data.sites[0];
+      } else {
+        console.log('No site information returned.');
+        return {};
       }
     }
 
-    let items = [];
-    let offset = 0;
-
-    while (true) {
-      try {
-        const data = await fetchPage(offset);
-        items = items.concat(data.items || []);
-        if (!data.items || data.items.length < 100) break;
-        offset += 100;
-      } catch (err) {
-        console.error('Pagination error:', err);
-        break;
+    async function fetchCollections(siteInfo) {
+      if (!siteInfo) {
+        console.log('No site information available.');
+        return [];
       }
+
+      const res = await fetch(`https://api.webflow.com/v2/sites/${siteInfo.id}/collections`, {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          'accept-version': 'v2',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      console.log('Collections:', JSON.stringify(data, null, 2));
+      return data.collections;
     }
 
-    // Normalize fields for frontend
-    const normalized = items.map((i) => ({
-      id: i._id,
-      name: i.name,
-      slug: i.slug,
-      lage: (i.lage || '').trim(),
-      vermarktungsart: (i.vermarktungsart || '').trim(),
-      objektart: (i.objektart || '').trim(),
-      ausstattung: typeof i.ausstattung === 'string'
-        ? i.ausstattung.split(',').map((a) => a.trim())
-        : Array.isArray(i.ausstattung) ? i.ausstattung : [],
-      zimmer: i.zimmer ? parseInt(i.zimmer, 10) : null,
-      wohnflaeche: i.wohnflaeche ? parseInt(i.wohnflaeche, 10) : null,
-      preis: i.preis ? parseInt(i.preis, 10) : null,
-    }));
+    async function fetchCollectionItems(siteInfo, collectionId) {
+      if (!siteInfo) {
+        console.log('No site information available.');
+        return [];
+      }
+
+      const res = await fetch(`https://api.webflow.com/v2/sites/${siteInfo.id}/collections/${collectionId}/items?limit=100`, {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          'accept-version': 'v2',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      console.log('Collection Items:', JSON.stringify(data, null, 2));
+      return data.items;
+    }
+
+    const siteInfo = await fetchSiteInfo();
+    const collections = await fetchCollections(siteInfo);
+    const collectionItems = await fetchCollectionItems(siteInfo, COLLECTION_ID);
 
     return {
       statusCode: 200,
@@ -88,10 +100,15 @@ export const handler = async (event, context) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(normalized),
+      body: JSON.stringify({
+        siteInfo,
+        collections,
+        collectionItems,
+      }),
     };
   } catch (err) {
     console.error('Error in main function:', err);
+    console.error('Error stack trace:', err.stack);
     return {
       statusCode: 500,
       headers: {
@@ -101,4 +118,4 @@ export const handler = async (event, context) => {
       body: JSON.stringify({ error: err.message }),
     };
   }
-};
+}
