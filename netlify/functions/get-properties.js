@@ -1,12 +1,13 @@
+
 // netlify/functions/get-properties.js
 import 'dotenv/config';
-import fetch from 'node-fetch';
+import fetch from 'node-fetch'
 
 export const handler = async (event) => {
   try {
-    const { WEBFLOW_API_KEY, WEBFLOW_PROPERTIES_COLLECTION_ID } = process.env;
+    const { WEBFLOW_API_KEY, WEBFLOW_PROPERTIES_COLLECTION_ID, AUSSTATTUNG_COLLECTION_ID } = process.env;
 
-    if (!WEBFLOW_API_KEY || !WEBFLOW_PROPERTIES_COLLECTION_ID) {
+    if (!WEBFLOW_API_KEY || !WEBFLOW_PROPERTIES_COLLECTION_ID || !AUSSTATTUNG_COLLECTION_ID) {
       return {
         statusCode: 500,
         body: JSON.stringify({ error: 'Missing environment variables' }),
@@ -15,26 +16,34 @@ export const handler = async (event) => {
 
     const { queryStringParameters } = event;
 
-    const API_URL = `https://api.webflow.com/v2/collections/${WEBFLOW_PROPERTIES_COLLECTION_ID}/items?limit=100`;
-
-    const res = await fetch(API_URL, {
-      headers: {
-        Authorization: `Bearer ${WEBFLOW_API_KEY}`,
-        'accept-version': 'v2',
-      },
+    // 1. Fetch the Ausstattung collection to create a lookup map
+    const ausstattungRes = await fetch(`https://api.webflow.com/v2/collections/${AUSSTATTUNG_COLLECTION_ID}/items`, {
+      headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
     });
 
-    if (!res.ok) {
-      return {
-        statusCode: res.status,
-        body: JSON.stringify({ error: `Webflow API error: ${res.statusText}` }),
-      };
+    if (!ausstattungRes.ok) {
+        throw new Error(`Failed to fetch Ausstattung: ${ausstattungRes.statusText}`);
     }
 
-    const data = await res.json();
-    let items = data.items;
+    const ausstattungData = await ausstattungRes.json();
+    const ausstattungMap = ausstattungData.items.reduce((map, item) => {
+        map[item.id] = item.fieldData.name;
+        return map;
+    }, {});
 
-    // Server-side filtering logic based on query parameters
+    // 2. Fetch all properties
+    const propertiesRes = await fetch(`https://api.webflow.com/v2/collections/${WEBFLOW_PROPERTIES_COLLECTION_ID}/items?limit=100`, {
+      headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
+    });
+
+    if (!propertiesRes.ok) {
+      return { statusCode: propertiesRes.status, body: JSON.stringify({ error: `Webflow API error: ${propertiesRes.statusText}` }) };
+    }
+
+    const propertiesData = await propertiesRes.json();
+    let items = propertiesData.items;
+
+    // 3. Server-side filtering logic
     const filteredItems = items.filter(item => {
       const { fieldData } = item;
       const { 
@@ -48,48 +57,49 @@ export const handler = async (event) => {
       } = fieldData;
 
       // Filter by 'vermarktungsart'
-      if (queryStringParameters['vermarktungsart'] && vermarktungsart !== queryStringParameters['vermarktungsart']) {
-        return false;
-      }
+      if (queryStringParameters['vermarktungsart'] && vermarktungsart !== queryStringParameters['vermarktung']) return false;
 
-      // Filter by 'objektart' (assumes it's a multi-select field, adjust if needed)
-      if (queryStringParameters['objektart'] && !queryStringParameters['objektart'].split(',').includes(objektart)) {
-        return false;
-      }
+      // Filter by 'objektart'
+      if (queryStringParameters['objektart'] && !queryStringParameters['objektart'].split(',').includes(objektart)) return false;
 
       // Filter by 'lage'
-      if (queryStringParameters['lage'] && !queryStringParameters['lage'].split(',').includes(lage)) {
-        return false;
-      }
+      if (queryStringParameters['lage'] && !queryStringParameters['lage'].split(',').includes(lage)) return false;
 
-      // Filter by 'ausstattung' (assumes it's a multi-reference, needs complex matching)
-      // This is a placeholder and will need refinement based on your exact field type
-      if (queryStringParameters['ausstattung'] && !ausstattung?.some(a => queryStringParameters['ausstattung'].split(',').includes(a._id))) {
-         return false;
+      // Filter by 'ausstattung' - Now filters by the ID
+      if (queryStringParameters['ausstattung']) {
+        const selectedAusstattungIds = queryStringParameters['ausstattung'].split(',');
+        const propertyAusstattungIds = ausstattung ? ausstattung.map(a => a.id) : [];
+        const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
+        if (!matches) return false;
       }
-
-      // Filter by 'zimmer' range
+      
+      // Filter by numeric fields
       if (queryStringParameters['zimmer-min'] && zimmer < parseInt(queryStringParameters['zimmer-min'])) return false;
       if (queryStringParameters['zimmer-max'] && zimmer > parseInt(queryStringParameters['zimmer-max'])) return false;
-
-      // Filter by 'wohnflaeche' range
       if (queryStringParameters['wohnflaeche-min'] && wohnflaeche < parseInt(queryStringParameters['wohnflaeche-min'])) return false;
       if (queryStringParameters['wohnflaeche-max'] && wohnflaeche > parseInt(queryStringParameters['wohnflaeche-max'])) return false;
-
-      // Filter by 'preis' range
       if (queryStringParameters['preis-min'] && preis < parseInt(queryStringParameters['preis-min'])) return false;
       if (queryStringParameters['preis-max'] && preis > parseInt(queryStringParameters['preis-max'])) return false;
-
+      
       return true;
+    });
+
+    // 4. Map the filtered items to include the full Ausstattung names
+    const finalItems = filteredItems.map(item => {
+        const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungMap[a.id]);
+        return {
+            ...item,
+            fieldData: {
+                ...item.fieldData,
+                ausstattungNames: ausstattungNames.filter(Boolean) // Filter out any null/undefined entries
+            }
+        };
     });
 
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ items: filteredItems }),
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: finalItems }),
     };
   } catch (err) {
     console.error('Error in main function:', err);
