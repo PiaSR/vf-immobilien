@@ -1,7 +1,5 @@
-
-// netlify/functions/get-properties.js
 import 'dotenv/config';
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 
 export const handler = async (event) => {
   try {
@@ -22,13 +20,13 @@ export const handler = async (event) => {
     });
 
     if (!ausstattungRes.ok) {
-        throw new Error(`Failed to fetch Ausstattung: ${ausstattungRes.statusText}`);
+      throw new Error(`Failed to fetch Ausstattung: ${ausstattungRes.statusText}`);
     }
 
     const ausstattungData = await ausstattungRes.json();
     const ausstattungMap = ausstattungData.items.reduce((map, item) => {
-        map[item.id] = item.fieldData.name;
-        return map;
+      map[item.id] = item.fieldData.name;
+      return map;
     }, {});
 
     // 2. Fetch all properties
@@ -46,24 +44,31 @@ export const handler = async (event) => {
     // 3. Server-side filtering logic
     const filteredItems = items.filter(item => {
       const { fieldData } = item;
-      const { 
-        vermarktungsart, 
-        objektart, 
-        lage, 
-        ausstattung, 
-        zimmer, 
-        wohnflaeche, 
-        preis 
+      const {
+        vermarktungsart,
+        objektart,
+        'lage-wien-2': lageWien, // Destructure with a new variable name for clarity
+        'lage-umgebung': lageUmgebung, // Destructure with a new variable name for clarity
+        ausstattung,
+        zimmer,
+        wohnflaeche,
+        preis
       } = fieldData;
 
+      // Combine both location fields into a single variable for filtering
+    const propertyLage = lageWien || lageUmgebung;
+
       // Filter by 'vermarktungsart'
-      if (queryStringParameters['vermarktungsart'] && vermarktungsart !== queryStringParameters['vermarktung']) return false;
+      if (queryStringParameters['vermarktungsart'] && vermarktungsart !== queryStringParameters['vermarktungsart']) return false;
 
       // Filter by 'objektart'
       if (queryStringParameters['objektart'] && !queryStringParameters['objektart'].split(',').includes(objektart)) return false;
 
       // Filter by 'lage'
-      if (queryStringParameters['lage'] && !queryStringParameters['lage'].split(',').includes(lage)) return false;
+      if (queryStringParameters['lage']) {
+        const selectedLage = queryStringParameters['lage'].split(',');
+        if (!selectedLage.includes(propertyLage)) return false;
+    }
 
       // Filter by 'ausstattung' - Now filters by the ID
       if (queryStringParameters['ausstattung']) {
@@ -72,7 +77,7 @@ export const handler = async (event) => {
         const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
         if (!matches) return false;
       }
-      
+
       // Filter by numeric fields
       if (queryStringParameters['zimmer-min'] && zimmer < parseInt(queryStringParameters['zimmer-min'])) return false;
       if (queryStringParameters['zimmer-max'] && zimmer > parseInt(queryStringParameters['zimmer-max'])) return false;
@@ -80,20 +85,20 @@ export const handler = async (event) => {
       if (queryStringParameters['wohnflaeche-max'] && wohnflaeche > parseInt(queryStringParameters['wohnflaeche-max'])) return false;
       if (queryStringParameters['preis-min'] && preis < parseInt(queryStringParameters['preis-min'])) return false;
       if (queryStringParameters['preis-max'] && preis > parseInt(queryStringParameters['preis-max'])) return false;
-      
+
       return true;
     });
 
     // 4. Map the filtered items to include the full Ausstattung names
     const finalItems = filteredItems.map(item => {
-        const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungMap[a.id]);
-        return {
-            ...item,
-            fieldData: {
-                ...item.fieldData,
-                ausstattungNames: ausstattungNames.filter(Boolean) // Filter out any null/undefined entries
-            }
-        };
+      const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungMap[a.id]);
+      return {
+        ...item,
+        fieldData: {
+          ...item.fieldData,
+          ausstattungNames: ausstattungNames.filter(Boolean) // Filter out any null/undefined entries
+        }
+      };
     });
 
     return {
