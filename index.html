@@ -30,7 +30,7 @@
         if (Array.isArray(data.collectionItems)) {
           data.collectionItems.forEach(item => {
             const div = document.createElement('div');
-            div.innerHTML = `<h3>${item.name}</h3><p>${item.description || ''}</p>`;
+            div.innerHTML = `<h3>${item.titel-von-inserat}</h3><p>${item.adresse || ''}</p>`;
             container.appendChild(div);
           });
         } else {
