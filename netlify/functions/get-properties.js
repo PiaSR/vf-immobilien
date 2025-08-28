@@ -1,3 +1,5 @@
+// netlify/functions/get-properties.js
+
 import 'dotenv/config';
 import fetch from 'node-fetch';
 
@@ -20,13 +22,13 @@ export const handler = async (event) => {
     });
 
     if (!ausstattungRes.ok) {
-      throw new Error(`Failed to fetch Ausstattung: ${ausstattungRes.statusText}`);
+        throw new Error(`Failed to fetch Ausstattung: ${ausstattungRes.statusText}`);
     }
 
     const ausstattungData = await ausstattungRes.json();
     const ausstattungMap = ausstattungData.items.reduce((map, item) => {
-      map[item.id] = item.fieldData.name;
-      return map;
+        map[item.id] = item.fieldData.name;
+        return map;
     }, {});
 
     // 2. Fetch all properties
@@ -45,18 +47,21 @@ export const handler = async (event) => {
     const filteredItems = items.filter(item => {
       const { fieldData } = item;
       const {
-        vermarktungsart,
-        objektart,
-        'lage-wien-2': lageWien, // Destructure with a new variable name for clarity
-        'lage-umgebung': lageUmgebung, // Destructure with a new variable name for clarity
+        'kategorie': vermarktungsart,
+        'immobilientyp': objektart,
+        'lage-wien-2': lageWien,
+        'lage-umgebung': lageUmgebung,
         ausstattung,
-        zimmer,
-        wohnflaeche,
-        preis
+        'anzahl-von-zimmern': zimmer,
+        'quadratmeter': wohnflaeche,
+        'preis': kaufpreis,
+        'mietpreis': mietpreis
       } = fieldData;
 
-      // Combine both location fields into a single variable for filtering
-    const propertyLage = lageWien || lageUmgebung;
+      // Determine the correct price based on vermarktungsart
+      const propertyPrice = vermarktungsart === 'Miete' ? mietpreis : kaufpreis;
+      
+      const propertyLage = lageWien || lageUmgebung;
 
       // Filter by 'vermarktungsart'
       if (queryStringParameters['vermarktungsart'] && vermarktungsart !== queryStringParameters['vermarktungsart']) return false;
@@ -66,11 +71,9 @@ export const handler = async (event) => {
 
       // Filter by 'lage'
       if (queryStringParameters['lage']) {
-        const selectedLage = queryStringParameters['lage'].split(',');
-        if (!selectedLage.includes(propertyLage)) return false;
-        console.log('selectedLage:', selectedLage)
-    }
-   
+          const selectedLage = queryStringParameters['lage'].split(',');
+          if (!selectedLage.includes(propertyLage)) return false;
+      }
 
       // Filter by 'ausstattung' - Now filters by the ID
       if (queryStringParameters['ausstattung']) {
@@ -85,8 +88,8 @@ export const handler = async (event) => {
       if (queryStringParameters['zimmer-max'] && zimmer > parseInt(queryStringParameters['zimmer-max'])) return false;
       if (queryStringParameters['wohnflaeche-min'] && wohnflaeche < parseInt(queryStringParameters['wohnflaeche-min'])) return false;
       if (queryStringParameters['wohnflaeche-max'] && wohnflaeche > parseInt(queryStringParameters['wohnflaeche-max'])) return false;
-      if (queryStringParameters['preis-min'] && preis < parseInt(queryStringParameters['preis-min'])) return false;
-      if (queryStringParameters['preis-max'] && preis > parseInt(queryStringParameters['preis-max'])) return false;
+      if (queryStringParameters['preis-min'] && propertyPrice < parseInt(queryStringParameters['preis-min'])) return false;
+      if (queryStringParameters['preis-max'] && propertyPrice > parseInt(queryStringParameters['preis-max'])) return false;
 
       return true;
     });
