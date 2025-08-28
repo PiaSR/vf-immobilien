@@ -68,8 +68,9 @@ export const handler = async (event) => {
       if (queryStringParameters['lage']) {
         const selectedLage = queryStringParameters['lage'].split(',');
         if (!selectedLage.includes(propertyLage)) return false;
+        console.log('selectedLage:', selectedLage)
     }
-    console.log('selectedLage:', selectedLage)
+   
 
       // Filter by 'ausstattung' - Now filters by the ID
       if (queryStringParameters['ausstattung']) {
