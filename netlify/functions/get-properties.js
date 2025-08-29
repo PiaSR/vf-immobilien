@@ -14,7 +14,9 @@ export const handler = async (event) => {
       };
     }
 
-    const { queryStringParameters } = event;
+
+
+  const { queryStringParameters } = event;
 // 1. Fetch the Ausstattung collection and create two maps: id to name and name to id.
 const ausstattungRes = await fetch(`https://api.webflow.com/v2/collections/${AUSSTATTUNG_COLLECTION_ID}/items`, {
   headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
@@ -81,16 +83,18 @@ const filteredItems = items.filter(item => {
 
   // Filter by 'lage' (Option and PlainText fields)
   if (queryStringParameters['lage']) {
-      const selectedLage = queryStringParameters['lage'].split(',');
-      const propertyLage = lageWien || lageUmgebung; // Combines the two location fields
-      if (!propertyLage || !selectedLage.includes(propertyLage)) {
-          return false;
-      }
-  }
+    const selectedLage = queryStringParameters['lage'].split(',');
+    const propertyLage = fieldData['lage-wien-2'] || fieldData['lage-umgebung'];
+
+    // This is the key change: Check if the property's location exists in the list of selected locations.
+    if (!propertyLage || !selectedLage.includes(propertyLage)) {
+        return false;
+    }
+}
 
   // Filter by 'ausstattung' (MultiReference field)
   if (queryStringParameters['ausstattung']) {
-      // This is the most complex one. Your previous solution of mapping names to IDs is best.
+      
       // Assuming you have the ausstattungNameToIdMap setup:
       const selectedAusstattungNames = queryStringParameters['ausstattung'].split(',');
       const selectedAusstattungIds = selectedAusstattungNames.map(name => ausstattungNameToIdMap[name]);
