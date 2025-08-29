@@ -47,32 +47,34 @@ export const handler = async (event) => {
     const filteredItems = items.filter(item => {
       const { fieldData } = item;
       const {
-        'kategorie': vermarktungsart,
-        'immobilientyp': objektart,
+        'kategorie': kategorie,
+        'immobilientyp': immobilientyp,
         'lage-wien-2': lageWien,
         'lage-umgebung': lageUmgebung,
         ausstattung,
         'anzahl-von-zimmern': zimmer,
         'quadratmeter': wohnflaeche,
         'preis': kaufpreis,
-        'mietpreis': mietpreis
+        'mietpreis': mietpreis,
       } = fieldData;
 
-      // Determine the correct price based on vermarktungsart
-      const propertyPrice = vermarktungsart === 'Miete' ? mietpreis : kaufpreis;
-      
       const propertyLage = lageWien || lageUmgebung;
+      const propertyVermarktung = kategorie?.name || kategorie; // Correctly handle reference field
+      const propertyObjektart = immobilientyp; // Option field returns a string
 
       // Filter by 'vermarktungsart'
-      if (queryStringParameters['vermarktungsart'] && vermarktungsart !== queryStringParameters['vermarktungsart']) return false;
+      if (queryStringParameters['vermarktungsart'] && propertyVermarktung !== queryStringParameters['vermarktungsart']) return false;
 
       // Filter by 'objektart'
-      if (queryStringParameters['objektart'] && !queryStringParameters['objektart'].split(',').includes(objektart)) return false;
+      if (queryStringParameters['objektart']) {
+          const selectedObjektart = queryStringParameters['objektart'].split(',');
+          if (!selectedObjektart.includes(propertyObjektart)) return false;
+      }
 
       // Filter by 'lage'
       if (queryStringParameters['lage']) {
-          const selectedLage = queryStringParameters['lage'].split(',');
-          if (!selectedLage.includes(propertyLage)) return false;
+        const selectedLage = queryStringParameters['lage'].split(',');
+        if (!selectedLage.includes(propertyLage)) return false;
       }
 
       // Filter by 'ausstattung' - Now filters by the ID
@@ -82,6 +84,9 @@ export const handler = async (event) => {
         const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
         if (!matches) return false;
       }
+
+      // Determine the correct price based on vermarktungsart
+      const propertyPrice = propertyVermarktung === 'Miete' ? mietpreis : kaufpreis;
 
       // Filter by numeric fields
       if (queryStringParameters['zimmer-min'] && zimmer < parseInt(queryStringParameters['zimmer-min'])) return false;
@@ -101,7 +106,7 @@ export const handler = async (event) => {
         ...item,
         fieldData: {
           ...item.fieldData,
-          ausstattungNames: ausstattungNames.filter(Boolean) // Filter out any null/undefined entries
+          ausstattungNames: ausstattungNames.filter(Boolean)
         }
       };
     });
