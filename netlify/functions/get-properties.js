@@ -87,8 +87,8 @@ export const handler = async (event) => {
 
       // Filter by 'vermarktungsart' (Reference field)
       if (queryStringParameters['vermarktungsart']) {
-        const propertyKategorieName = kategorie?.name?.toLowerCase();
-        const filterValue = queryStringParameters['vermarktungsart'].toLowerCase();
+        const propertyKategorieName = kategorie?.name?.toLowerCase().trim();;
+        const filterValue = queryStringParameters['vermarktungsart'].toLowerCase().trim();
         if (!propertyKategorieName || propertyKategorieName !== filterValue) {
             return false;
         }
@@ -103,13 +103,21 @@ export const handler = async (event) => {
       }
 
       // Filter by 'lage' (Option and PlainText fields)
-      if (queryStringParameters['lage']) {
-        const selectedLage = queryStringParameters['lage'].split(',');
-        const propertyLage = lageWien || lageUmgebung;
-        if (!propertyLage || !selectedLage.includes(propertyLage)) {
-          return false;
-        }
-      }
+      // Corrected filtering logic for 'lage'
+if (queryStringParameters['lage']) {
+  const selectedLage = queryStringParameters['lage'].split(',');
+  
+  // Check if the property has a lageWien and it is included in the filter array
+  const hasMatchingWienLage = lageWien && selectedLage.includes(lageWien);
+
+  // Check if the property has a lageUmgebung and it is included in the filter array
+  const hasMatchingUmgebungLage = lageUmgebung && selectedLage.includes(lageUmgebung);
+  
+  // If neither field matches the selected locations, return false
+  if (!hasMatchingWienLage && !hasMatchingUmgebungLage) {
+      return false;
+  }
+}
 
       // Filter by 'ausstattung' (MultiReference field)
       if (queryStringParameters['ausstattung']) {
