@@ -46,63 +46,71 @@ const ausstattungIdToNameMap = ausstattungData.items.reduce((map, item) => {
     let items = propertiesData.items;
 
     // 3. Server-side filtering logic
-    const filteredItems = items.filter(item => {
-      const { fieldData } = item;
-      const {
-        'kategorie': kategorie,
-        'immobilientyp': immobilientyp,
-        'lage-wien-2': lageWien,
-        'lage-umgebung': lageUmgebung,
-        ausstattung,
-        'anzahl-von-zimmern': zimmer,
-        'quadratmeter': wohnflaeche,
-        'preis': kaufpreis,
-        'mietpreis': mietpreis,
-      } = fieldData;
+    // Corrected filtering logic for your Netlify function
 
-      const propertyLage = lageWien || lageUmgebung;
-      const propertyVermarktung = kategorie?.name || kategorie; // Correctly handle reference field
-      const propertyObjektart = immobilientyp; // Option field returns a string
+const filteredItems = items.filter(item => {
+  const { fieldData } = item;
+  const {
+      'kategorie': kategorie,
+      'immobilientyp': immobilientyp,
+      'lage-wien-2': lageWien,
+      'lage-umgebung': lageUmgebung,
+      ausstattung,
+      'anzahl-von-zimmern': zimmer,
+      'quadratmeter': wohnflaeche,
+      'preis': kaufpreis,
+      'mietpreis': mietpreis,
+  } = fieldData;
 
-      // Filter by 'vermarktungsart'
-      if (queryStringParameters['vermarktungsart'] && propertyVermarktung !== queryStringParameters['vermarktungsart']) return false;
-
-      // Filter by 'objektart'
-      if (queryStringParameters['objektart']) {
-          const selectedObjektart = queryStringParameters['objektart'].split(',');
-          if (!selectedObjektart.includes(propertyObjektart)) return false;
+  // Filter by 'vermarktungsart' (Reference field)
+  if (queryStringParameters['vermarktungsart']) {
+      // Check if the property has a 'kategorie' and if its name matches the filter.
+      // If 'kategorie' is null/undefined, it won't pass this check.
+      if (!kategorie || kategorie.name !== queryStringParameters['vermarktungsart']) {
+          return false;
       }
+  }
 
-      // Filter by 'lage'
-      if (queryStringParameters['lage']) {
-        const selectedLage = queryStringParameters['lage'].split(',');
-        if (!selectedLage.includes(propertyLage)) return false;
+  // Filter by 'objektart' (Option field)
+  if (queryStringParameters['objektart']) {
+      const selectedObjektart = queryStringParameters['objektart'].split(',');
+      if (!immobilientyp || !selectedObjektart.includes(immobilientyp)) {
+          return false;
       }
-// Filter by 'ausstattung' using the name-to-ID map
-if (queryStringParameters['ausstattung']) {
-  // Convert the incoming names to their corresponding IDs
-  const selectedAusstattungNames = queryStringParameters['ausstattung'].split(',');
-  const selectedAusstattungIds = selectedAusstattungNames.map(name => ausstattungNameToIdMap[name]);
+  }
 
-  const propertyAusstattungIds = item.fieldData.ausstattung ? item.fieldData.ausstattung.map(a => a.id) : [];
-  const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
-  if (!matches) return false;
-}
+  // Filter by 'lage' (Option and PlainText fields)
+  if (queryStringParameters['lage']) {
+      const selectedLage = queryStringParameters['lage'].split(',');
+      const propertyLage = lageWien || lageUmgebung; // Combines the two location fields
+      if (!propertyLage || !selectedLage.includes(propertyLage)) {
+          return false;
+      }
+  }
 
-      // Determine the correct price based on vermarktungsart
-      const propertyPrice = propertyVermarktung === 'Miete' ? mietpreis : kaufpreis;
+  // Filter by 'ausstattung' (MultiReference field)
+  if (queryStringParameters['ausstattung']) {
+      // This is the most complex one. Your previous solution of mapping names to IDs is best.
+      // Assuming you have the ausstattungNameToIdMap setup:
+      const selectedAusstattungNames = queryStringParameters['ausstattung'].split(',');
+      const selectedAusstattungIds = selectedAusstattungNames.map(name => ausstattungNameToIdMap[name]);
+      const propertyAusstattungIds = ausstattung ? ausstattung.map(a => a.id) : [];
+      const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
+      if (!matches) return false;
+  }
 
-      // Filter by numeric fields
-      if (queryStringParameters['zimmer-min'] && zimmer < parseInt(queryStringParameters['zimmer-min'])) return false;
-      if (queryStringParameters['zimmer-max'] && zimmer > parseInt(queryStringParameters['zimmer-max'])) return false;
-      if (queryStringParameters['wohnflaeche-min'] && wohnflaeche < parseInt(queryStringParameters['wohnflaeche-min'])) return false;
-      if (queryStringParameters['wohnflaeche-max'] && wohnflaeche > parseInt(queryStringParameters['wohnflaeche-max'])) return false;
-      if (queryStringParameters['preis-min'] && propertyPrice < parseInt(queryStringParameters['preis-min'])) return false;
-      if (queryStringParameters['preis-max'] && propertyPrice > parseInt(queryStringParameters['preis-max'])) return false;
+  // Filter by numeric fields (Numbers)
+  const propertyPrice = (kategorie && kategorie.name === 'Miete') ? mietpreis : kaufpreis;
 
-      return true;
-    });
-    
+  if (queryStringParameters['zimmer-min'] && zimmer < parseInt(queryStringParameters['zimmer-min'])) return false;
+  if (queryStringParameters['zimmer-max'] && zimmer > parseInt(queryStringParameters['zimmer-max'])) return false;
+  if (queryStringParameters['wohnflaeche-min'] && wohnflaeche < parseInt(queryStringParameters['wohnflaeche-min'])) return false;
+  if (queryStringParameters['wohnflaeche-max'] && wohnflaeche > parseInt(queryStringParameters['wohnflaeche-max'])) return false;
+  if (queryStringParameters['preis-min'] && propertyPrice < parseInt(queryStringParameters['preis-min'])) return false;
+  if (queryStringParameters['preis-max'] && propertyPrice > parseInt(queryStringParameters['preis-max'])) return false;
+
+  return true;
+});
 // 4. Map the final items to include the full Ausstattung names (using the ID-to-name map)
 const finalItems = filteredItems.map(item => {
   const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungIdToNameMap[a.id]);
