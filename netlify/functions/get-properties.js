@@ -97,18 +97,18 @@ export const handler = async (event) => {
       // Filter by 'objektart' (Option field)
       if (queryStringParameters['objektart']) {
         const selectedObjektart = queryStringParameters['objektart'].split(',');
-        if (!immobilientyp || !selectedObjektart.includes(immobilientyp)) {
+        if (!immobilientyp?.name || !selectedObjektart.includes(immobilientyp.name)) {
           return false;
         }
       }
 
       // Filter by 'lage' (Option and PlainText fields)
-      // Corrected filtering logic for 'lage'
+      // Corrected filtering logic for 'lage'.
 if (queryStringParameters['lage']) {
   const selectedLage = queryStringParameters['lage'].split(',');
   
   // Check if the property has a lageWien and it is included in the filter array
-  const hasMatchingWienLage = lageWien && selectedLage.includes(lageWien);
+  const hasMatchingWienLage = lageWien?.name && selectedLage.includes(lageWien.name);
 
   // Check if the property has a lageUmgebung and it is included in the filter array
   const hasMatchingUmgebungLage = lageUmgebung && selectedLage.includes(lageUmgebung);
