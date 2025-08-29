@@ -90,6 +90,9 @@ export const handler = async (event) => {
         const propertyKategorieName = kategorie?.name?.toLowerCase().trim();;
         const filterValue = queryStringParameters['vermarktungsart'].toLowerCase().trim();
         if (!propertyKategorieName || propertyKategorieName !== filterValue) {
+
+          console.log(`Filtering 'vermarktungsart': Property=${propertyKategorieName}, Filter=${filterValue}, Match=${propertyKategorieName === filterValue}`);
+
             return false;
         }
       }
@@ -106,6 +109,9 @@ export const handler = async (event) => {
       // Corrected filtering logic for 'lage'.
 if (queryStringParameters['lage']) {
   const selectedLage = queryStringParameters['lage'].split(',');
+
+  console.log(`Filtering 'lage': PropertyLageWien=${lageWien?.name}, SelectedLage=${selectedLage}, Match=${selectedLage.includes(lageWien?.name)}`);
+
   
   // Check if the property has a lageWien and it is included in the filter array
   const hasMatchingWienLage = lageWien?.name && selectedLage.includes(lageWien.name);
