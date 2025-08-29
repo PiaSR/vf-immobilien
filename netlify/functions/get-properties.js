@@ -65,13 +65,17 @@ const filteredItems = items.filter(item => {
   } = fieldData;
 
   // Filter by 'vermarktungsart' (Reference field)
-  if (queryStringParameters['vermarktungsart']) {
-      // Check if the property has a 'kategorie' and if its name matches the filter.
-      // If 'kategorie' is null/undefined, it won't pass this check.
-      if (!kategorie || kategorie.name.toLowerCase() !== queryStringParameters['vermarktungsart'].toLowerCase()) {
+  
+   if (queryStringParameters['vermarktungsart']) {
+    // Check if the property has a 'kategorie' and if its name matches the filter.
+    // Use optional chaining to safely access 'name' and perform the comparison
+    const propertyKategorieName = kategorie?.name?.toLowerCase();
+    const filterValue = queryStringParameters['vermarktungsart'].toLowerCase();
+    
+    if (!propertyKategorieName || propertyKategorieName !== filterValue) {
         return false;
-      }
-  }
+    }
+}
 
   // Filter by 'objektart' (Option field)
   if (queryStringParameters['objektart']) {
