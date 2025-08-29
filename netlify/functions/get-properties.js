@@ -5,78 +5,84 @@ import fetch from 'node-fetch';
 
 export const handler = async (event) => {
   try {
-    const { WEBFLOW_API_KEY, WEBFLOW_PROPERTIES_COLLECTION_ID, AUSSTATTUNG_COLLECTION_ID } = process.env;
+    const { 
+      WEBFLOW_API_KEY, 
+      WEBFLOW_PROPERTIES_COLLECTION_ID, 
+      KATEGORIE_COLLECTION_ID,
+      AUSSTATTUNG_COLLECTION_ID,
+      IMMOBILIENTYP_COLLECTION_ID, // ADD THIS ID TO YOUR .env FILE
+      LAGE_WIEN_COLLECTION_ID // ADD THIS ID TO YOUR .env FILE
+    } = process.env;
 
-    if (!WEBFLOW_API_KEY || !WEBFLOW_PROPERTIES_COLLECTION_ID || !AUSSTATTUNG_COLLECTION_ID) {
+    if (!WEBFLOW_API_KEY || !WEBFLOW_PROPERTIES_COLLECTION_ID || !KATEGORIE_COLLECTION_ID || !AUSSTATTUNG_COLLECTION_ID || !IMMOBILIENTYP_COLLECTION_ID || !LAGE_WIEN_COLLECTION_ID) {
       return {
         statusCode: 500,
         body: JSON.stringify({ error: 'Missing environment variables' }),
       };
     }
+    
+    // Create maps for IDs to names
+    let kategorieIdToNameMap = {};
+    let ausstattungIdToNameMap = {};
+    let immobilientypIdToNameMap = {};
+    let lageWienIdToNameMap = {};
+    
+    // Fetch and map the Kategorie collection
+    try {
+      const res = await fetch(`https://api.webflow.com/v2/collections/${KATEGORIE_COLLECTION_ID}/items`, {
+          headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
+      });
+      const data = await res.json();
+      kategorieIdToNameMap = data.items.reduce((map, item) => { map[item.id] = item.fieldData.name; return map; }, {});
+    } catch (err) { console.error('Failed to fetch Kategorie collection:', err); }
 
+    // Fetch and map the Ausstattung collection
+    try {
+      const res = await fetch(`https://api.webflow.com/v2/collections/${AUSSTATTUNG_COLLECTION_ID}/items`, {
+          headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
+      });
+      const data = await res.json();
+      ausstattungIdToNameMap = data.items.reduce((map, item) => { map[item.id] = item.fieldData.name; return map; }, {});
+    } catch (err) { console.error('Failed to fetch Ausstattung collection:', err); }
+
+    // Fetch and map the Immobilientyp collection
+    try {
+      const res = await fetch(`https://api.webflow.com/v2/collections/${IMMOBILIENTYP_COLLECTION_ID}/items`, {
+          headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
+      });
+      const data = await res.json();
+      immobilientypIdToNameMap = data.items.reduce((map, item) => { map[item.id] = item.fieldData.name; return map; }, {});
+    } catch (err) { console.error('Failed to fetch Immobilientyp collection:', err); }
+
+    // Fetch and map the Lage (Wien) collection
+    try {
+      const res = await fetch(`https://api.webflow.com/v2/collections/${LAGE_WIEN_COLLECTION_ID}/items`, {
+          headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
+      });
+      const data = await res.json();
+      lageWienIdToNameMap = data.items.reduce((map, item) => { map[item.id] = item.fieldData.name; return map; }, {});
+    } catch (err) { console.error('Failed to fetch Lage (Wien) collection:', err); }
+    
     const { queryStringParameters } = event;
 
-    // 1. Fetch the Ausstattung collection and create maps.
-    // Use try/catch for this critical fetch
-    let ausstattungNameToIdMap = {};
-    let ausstattungIdToNameMap = {};
-    try {
-      const ausstattungRes = await fetch(`https://api.webflow.com/v2/collections/${AUSSTATTUNG_COLLECTION_ID}/items`, {
-        headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
-      });
-
-      if (!ausstattungRes.ok) {
-        throw new Error(`Webflow API error for Ausstattung: ${ausstattungRes.statusText}`);
-      }
-
-      const ausstattungData = await ausstattungRes.json();
-
-      // Validate that items array exists and is an array
-      if (Array.isArray(ausstattungData.items)) {
-        ausstattungNameToIdMap = ausstattungData.items.reduce((map, item) => {
-          map[item.fieldData.name] = item.id;
-          return map;
-        }, {});
-        ausstattungIdToNameMap = ausstattungData.items.reduce((map, item) => {
-          map[item.id] = item.fieldData.name;
-          return map;
-        }, {});
-      }
-    } catch (err) {
-      console.error('Failed to fetch Ausstattung collection:', err);
-      // It's safe to continue, just won't be able to filter by this field
-    }
-
-    // 2. Fetch all properties
+    // Fetch all properties
     const propertiesRes = await fetch(`https://api.webflow.com/v2/collections/${WEBFLOW_PROPERTIES_COLLECTION_ID}/items?limit=100`, {
       headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
     });
-
     if (!propertiesRes.ok) {
       console.error('Failed to fetch properties:', await propertiesRes.text());
       return { statusCode: propertiesRes.status, body: JSON.stringify({ error: `Webflow API error: ${propertiesRes.statusText}` }) };
     }
-
     const propertiesData = await propertiesRes.json();
+    let items = propertiesData.items || [];
     
-    // Check if the items property exists and is an array
-    if (!Array.isArray(propertiesData.items)) {
-      console.error('Webflow API response did not contain an "items" array.');
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: 'Invalid Webflow API response format.' }),
-      };
-    }
-
-    let items = propertiesData.items;
-    
-    // 3. Server-side filtering logic
+    // Server-side filtering logic
     const filteredItems = items.filter(item => {
       const { fieldData } = item;
       const {
-          'kategorie': kategorie,
-          'immobilientyp': immobilientyp,
-          'lage-wien-2': lageWien,
+          'kategorie': kategorieId, 
+          'immobilientyp': immobilientypId,
+          'lage-wien-2': lageWienId,
           'lage-umgebung': lageUmgebung,
           ausstattung,
           'anzahl-von-zimmern': zimmer,
@@ -85,60 +91,42 @@ export const handler = async (event) => {
           'mietpreis': mietpreis,
       } = fieldData;
 
-      // Filter by 'vermarktungsart' (Reference field)
+      // Filter by 'vermarktungsart'
       if (queryStringParameters['vermarktungsart']) {
-        const propertyKategorieName = kategorie?.name?.toLowerCase().trim();;
-        const filterValue = queryStringParameters['vermarktungsart'].toLowerCase().trim();
-        if (!propertyKategorieName || propertyKategorieName !== filterValue) {
-
-          console.log(`Filtering 'vermarktungsart': Property=${propertyKategorieName}, Filter=${filterValue}, Match=${propertyKategorieName === filterValue}`);
-
-            return false;
-        }
+          const propertyKategorieName = kategorieIdToNameMap[kategorieId]?.toLowerCase().trim();
+          const filterValue = queryStringParameters['vermarktungsart'].toLowerCase().trim();
+          if (!propertyKategorieName || propertyKategorieName !== filterValue) return false;
       }
 
-      // Filter by 'objektart' (Option field)
+      // Filter by 'objektart'
       if (queryStringParameters['objektart']) {
         const selectedObjektart = queryStringParameters['objektart'].split(',');
-        if (!immobilientyp?.name || !selectedObjektart.includes(immobilientyp.name)) {
-          return false;
-        }
+        const propertyImmobilientypName = immobilientypIdToNameMap[immobilientypId];
+        if (!propertyImmobilientypName || !selectedObjektart.includes(propertyImmobilientypName)) return false;
       }
 
-      // Filter by 'lage' (Option and PlainText fields)
-      // Corrected filtering logic for 'lage'.
-if (queryStringParameters['lage']) {
-  const selectedLage = queryStringParameters['lage'].split(',');
+      // Filter by 'lage'
+      if (queryStringParameters['lage']) {
+        const selectedLage = queryStringParameters['lage'].split(',');
+        const propertyLageWienName = lageWienIdToNameMap[lageWienId];
+        const hasMatchingWienLage = propertyLageWienName && selectedLage.includes(propertyLageWienName);
+        const hasMatchingUmgebungLage = lageUmgebung && selectedLage.includes(lageUmgebung);
+        if (!hasMatchingWienLage && !hasMatchingUmgebungLage) return false;
+      }
 
-  console.log(`Filtering 'lage': PropertyLageWien=${lageWien?.name}, SelectedLage=${selectedLage}, Match=${selectedLage.includes(lageWien?.name)}`);
-
-  
-  // Check if the property has a lageWien and it is included in the filter array
-  const hasMatchingWienLage = lageWien?.name && selectedLage.includes(lageWien.name);
-
-  // Check if the property has a lageUmgebung and it is included in the filter array
-  const hasMatchingUmgebungLage = lageUmgebung && selectedLage.includes(lageUmgebung);
-  
-  // If neither field matches the selected locations, return false
-  if (!hasMatchingWienLage && !hasMatchingUmgebungLage) {
-      return false;
-  }
-}
-
-      // Filter by 'ausstattung' (MultiReference field)
+      // Filter by 'ausstattung'
       if (queryStringParameters['ausstattung']) {
         const selectedAusstattungNames = queryStringParameters['ausstattung'].split(',');
         const selectedAusstattungIds = selectedAusstattungNames
-          .map(name => ausstattungNameToIdMap[name])
-          .filter(Boolean); // Filter out any undefined IDs
-          
-        const propertyAusstattungIds = ausstattung ? ausstattung.map(a => a.id) : [];
+          .map(name => Object.keys(ausstattungIdToNameMap).find(key => ausstattungIdToNameMap[key] === name))
+          .filter(Boolean);
+        const propertyAusstattungIds = ausstattung?.map(a => a.id) || [];
         const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
         if (!matches) return false;
       }
       
       // Filter by numeric fields (Numbers)
-      const propertyPrice = (kategorie && kategorie.name === 'Miete') ? mietpreis : kaufpreis;
+      const propertyPrice = (kategorieIdToNameMap[kategorieId] === 'Miete') ? mietpreis : kaufpreis;
 
       if (queryStringParameters['zimmer-min'] && zimmer < parseInt(queryStringParameters['zimmer-min'])) return false;
       if (queryStringParameters['zimmer-max'] && zimmer > parseInt(queryStringParameters['zimmer-max'])) return false;
@@ -148,18 +136,6 @@ if (queryStringParameters['lage']) {
       if (queryStringParameters['preis-max'] && propertyPrice > parseInt(queryStringParameters['preis-max'])) return false;
 
       return true;
-    });
-
-    // 4. Map the final items to include the full Ausstattung names
-    const finalItems = filteredItems.map(item => {
-      const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungIdToNameMap[a.id]);
-      return {
-        ...item,
-        fieldData: {
-          ...item.fieldData,
-          ausstattungNames: ausstattungNames.filter(Boolean)
-        }
-      };
     });
 
     return {
