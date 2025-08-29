@@ -15,21 +15,23 @@ export const handler = async (event) => {
     }
 
     const { queryStringParameters } = event;
+// 1. Fetch the Ausstattung collection and create two maps: id to name and name to id.
+const ausstattungRes = await fetch(`https://api.webflow.com/v2/collections/${AUSSTATTUNG_COLLECTION_ID}/items`, {
+  headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
+});
+const ausstattungData = await ausstattungRes.json();
 
-    // 1. Fetch the Ausstattung collection to create a lookup map
-    const ausstattungRes = await fetch(`https://api.webflow.com/v2/collections/${AUSSTATTUNG_COLLECTION_ID}/items`, {
-      headers: { Authorization: `Bearer ${WEBFLOW_API_KEY}`, 'accept-version': 'v2' },
-    });
+// Create a name-to-ID map for filtering
+const ausstattungNameToIdMap = ausstattungData.items.reduce((map, item) => {
+    map[item.fieldData.name] = item.id;
+    return map;
+}, {});
 
-    if (!ausstattungRes.ok) {
-        throw new Error(`Failed to fetch Ausstattung: ${ausstattungRes.statusText}`);
-    }
-
-    const ausstattungData = await ausstattungRes.json();
-    const ausstattungMap = ausstattungData.items.reduce((map, item) => {
-        map[item.id] = item.fieldData.name;
-        return map;
-    }, {});
+// Create an ID-to-name map for rendering
+const ausstattungIdToNameMap = ausstattungData.items.reduce((map, item) => {
+    map[item.id] = item.fieldData.name;
+    return map;
+}, {});
 
     // 2. Fetch all properties
     const propertiesRes = await fetch(`https://api.webflow.com/v2/collections/${WEBFLOW_PROPERTIES_COLLECTION_ID}/items?limit=100`, {
@@ -76,14 +78,16 @@ export const handler = async (event) => {
         const selectedLage = queryStringParameters['lage'].split(',');
         if (!selectedLage.includes(propertyLage)) return false;
       }
+// Filter by 'ausstattung' using the name-to-ID map
+if (queryStringParameters['ausstattung']) {
+  // Convert the incoming names to their corresponding IDs
+  const selectedAusstattungNames = queryStringParameters['ausstattung'].split(',');
+  const selectedAusstattungIds = selectedAusstattungNames.map(name => ausstattungNameToIdMap[name]);
 
-      // Filter by 'ausstattung' - Now filters by the ID
-      if (queryStringParameters['ausstattung']) {
-        const selectedAusstattungIds = queryStringParameters['ausstattung'].split(',');
-        const propertyAusstattungIds = ausstattung ? ausstattung.map(a => a.id) : [];
-        const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
-        if (!matches) return false;
-      }
+  const propertyAusstattungIds = item.fieldData.ausstattung ? item.fieldData.ausstattung.map(a => a.id) : [];
+  const matches = selectedAusstattungIds.every(id => propertyAusstattungIds.includes(id));
+  if (!matches) return false;
+}
 
       // Determine the correct price based on vermarktungsart
       const propertyPrice = propertyVermarktung === 'Miete' ? mietpreis : kaufpreis;
@@ -98,18 +102,18 @@ export const handler = async (event) => {
 
       return true;
     });
-
-    // 4. Map the filtered items to include the full Ausstattung names
-    const finalItems = filteredItems.map(item => {
-      const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungMap[a.id]);
-      return {
-        ...item,
-        fieldData: {
-          ...item.fieldData,
-          ausstattungNames: ausstattungNames.filter(Boolean)
-        }
-      };
-    });
+    
+// 4. Map the final items to include the full Ausstattung names (using the ID-to-name map)
+const finalItems = filteredItems.map(item => {
+  const ausstattungNames = (item.fieldData.ausstattung || []).map(a => ausstattungIdToNameMap[a.id]);
+  return {
+    ...item,
+    fieldData: {
+      ...item.fieldData,
+      ausstattungNames: ausstattungNames.filter(Boolean)
+    }
+  };
+});
 
     return {
       statusCode: 200,
