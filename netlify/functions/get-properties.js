@@ -68,8 +68,8 @@ const filteredItems = items.filter(item => {
   if (queryStringParameters['vermarktungsart']) {
       // Check if the property has a 'kategorie' and if its name matches the filter.
       // If 'kategorie' is null/undefined, it won't pass this check.
-      if (!kategorie || kategorie.name !== queryStringParameters['vermarktungsart']) {
-          return false;
+      if (!kategorie || kategorie.name.toLowerCase() !== queryStringParameters['vermarktungsart'].toLowerCase()) {
+        return false;
       }
   }
 
