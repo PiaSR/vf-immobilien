@@ -126,7 +126,7 @@ const finalItems = filteredItems.map(item => {
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: finalItems }),
+      body: JSON.stringify({ items: filteredItems }), 
     };
   } catch (err) {
     console.error('Error in main function:', err);
