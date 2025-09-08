@@ -1,0 +1,570 @@
+---
+import { client } from "../../../sanity/schemaTypes";
+import type { SanityDocument } from "@sanity/client";
+import { reactive } from "astro:reactive";
+
+interface Props {
+  properties?: SanityDocument[];
+}
+
+interface State {
+  activeCategory: string | null;
+  saleType: "rent" | "buy";
+  propertyTypes: Set<PropertyType>;
+  districts: Set<District>;
+  location: string;
+  minRooms: number;
+  maxRooms: number;
+  minSize: number;
+  maxSize: number;
+  minPrice: number;
+  maxPrice: number;
+  ausstattung: Set<Ausstattung>;
+}
+
+interface EventHandlers {
+  onSaleTypeChange: (e: Event) => void;
+  onPropertyTypeChange: (e: Event) => void;
+  onDistrictChange: (e: Event) => void;
+  onLocationChange: (e: Event) => void;
+  onRoomsChange: (e: Event) => void;
+  onSizeChange: (e: Event) => void;
+  onPriceChange: (e: Event) => void;
+  onAusstattungChange: (e: Event) => void;
+  onCategoryClick: (category: string) => void;
+  onSearch: () => Promise<void>;
+}
+
+const { properties } = Astro.props;
+
+// Constants
+type PropertyType = "Wohnung" | "Haus" | "Gewerbeimmobilie";
+type District = (typeof viennaDistricts)[number];
+type Ausstattung =
+  | "Parkettboden"
+  | "Keller"
+  | "Terrasse"
+  | "Garten"
+  | "Parkplatz";
+
+const viennaDistricts = [
+  "Innere Stadt",
+  "Leopoldstadt",
+  "Landstraße",
+  "Wieden",
+  "Margareten",
+  "Mariahilf",
+  "Neubau",
+  "Josefstadt",
+  "Alsergrund",
+  "Favoriten",
+  "Simmering",
+  "Meidling",
+  "Hietzing",
+  "Penzing",
+  "Rudolfsheim-Fünfhaus",
+  "Ottakring",
+  "Hernals",
+  "Währing",
+  "Döbling",
+  "Brigittenau",
+  "Floridsdorf",
+  "Donaustadt",
+  "Liesing",
+] as const;
+
+const propertyTypes: PropertyType[] = ["Wohnung", "Haus", "Gewerbeimmobilie"];
+const districts: readonly District[] = viennaDistricts;
+const ausstattungOptions: readonly Ausstattung[] = [
+  "Parkettboden",
+  "Keller",
+  "Terrasse",
+  "Garten",
+  "Parkplatz",
+];
+
+const roomOptions = Array.from(
+  { length: 10 },
+  (_, i) => i + 1
+) as readonly number[];
+type RoomOption = (typeof roomOptions)[number];
+
+const sizeOptions = Array.from(
+  { length: 10 },
+  (_, i) => (i + 1) * 10
+) as readonly number[];
+type SizeOption = (typeof sizeOptions)[number];
+
+const priceOptions = {
+  rent: Array.from(
+    { length: 10 },
+    (_, i) => (i + 1) * 100
+  ) as readonly number[],
+  buy: Array.from(
+    { length: 10 },
+    (_, i) => (i + 1) * 50000
+  ) as readonly number[],
+} as const;
+
+type PriceOption = (typeof priceOptions)["rent"][number];
+
+// Get all property types from Sanity
+const propertyTypesFromSanity = (await client
+  .fetch(
+    `
+  *[_type == "property"]._unique(propertyType)[]
+`
+  )
+  .then((types) => types.map((type) => type.propertyType))) as string[];
+
+// Get all ausstattung options from Sanity
+const ausstattungOptionsFromSanity = (await client
+  .fetch(
+    `
+  *[_type == "property"]._unique(ausstattung)[]
+`
+  )
+  .then((options) => options.map((option) => option.ausstattung))) as string[];
+
+// Initial state
+const state = reactive<State>({
+  activeCategory: null,
+  saleType: "rent",
+  propertyTypes: new Set(propertyTypes),
+  districts: new Set(districts),
+  location: "",
+  minRooms: 1,
+  maxRooms: 4,
+  minSize: 50,
+  maxSize: 150,
+  minPrice: 0,
+  maxPrice: 2000,
+  ausstattung: new Set(ausstattungOptions),
+});
+
+// Event handlers
+const eventHandlers: EventHandlers = {
+  onSaleTypeChange: (e: Event) => {
+    const target = e.target as unknown as HTMLInputElement;
+    state.saleType = target.value as "rent" | "buy";
+  },
+  onPropertyTypeChange: (e: Event) => {
+    const target = e.target as unknown as HTMLInputElement;
+    const value = target.value as PropertyType;
+    if (target.checked) {
+      state.propertyTypes.add(value);
+    } else {
+      state.propertyTypes.delete(value);
+    }
+  },
+  onDistrictChange: (e: Event) => {
+    const target = e.target as unknown as HTMLInputElement;
+    const value = target.value as District;
+    if (target.checked) {
+      state.districts.add(value);
+    } else {
+      state.districts.delete(value);
+    }
+  },
+  onLocationChange: (e: Event) => {
+    const target = e.target as unknown as HTMLInputElement;
+    state.location = target.value;
+  },
+  onRoomsChange: (e: Event) => {
+    const select = e.target as unknown as HTMLSelectElement;
+    if (select.id === "minRooms") {
+      state.minRooms = parseInt(select.value);
+    } else if (select.id === "maxRooms") {
+      state.maxRooms = parseInt(select.value);
+    }
+  },
+  onSizeChange: (e: Event) => {
+    const select = e.target as unknown as HTMLSelectElement;
+    if (select.id === "minSize") {
+      state.minSize = parseInt(select.value);
+    } else if (select.id === "maxSize") {
+      state.maxSize = parseInt(select.value);
+    }
+  },
+  onPriceChange: (e: Event) => {
+    const select = e.target as unknown as HTMLSelectElement;
+    if (select.id === "minPrice") {
+      state.minPrice = parseInt(select.value);
+    } else if (select.id === "maxPrice") {
+      state.maxPrice = parseInt(select.value);
+    }
+  },
+  onAusstattungChange: (e: Event) => {
+    const target = e.target as unknown as HTMLInputElement;
+    const value = target.value as Ausstattung;
+    if (target.checked) {
+      state.ausstattung.add(value);
+    } else {
+      state.ausstattung.delete(value);
+    }
+  },
+  onCategoryClick: (category: string) => {
+    state.activeCategory = category === state.activeCategory ? null : category;
+  },
+  onSearch: async () => {
+    const query = `*[_type == "property"]{
+      _id,
+      _createdAt,
+      title,
+      slug,
+      mainImage,
+      price,
+      rooms,
+      size,
+      propertyType,
+      district,
+      location,
+      ausstattung[]
+    }
+    | order(_createdAt desc)`;
+
+    const properties = await client.fetch(query, {
+      minPrice: state.saleType === "rent" ? state.minPrice : 0,
+      maxPrice: state.saleType === "rent" ? state.maxPrice : 10000000,
+    });
+
+    // Pass properties to parent component
+    Astro.props.properties = properties;
+  },
+};
+
+async function handleSearch() {
+  const query = `*[_type == "property" &&
+    ${state.saleType === "rent" ? 'type == "Miete"' : 'type == "Kauf"'} &&
+    ${
+      state.propertyTypes.size > 0
+        ? `_some(propertyType, type => ${Array.from(state.propertyTypes)
+            .map((type) => `type == "${type}"`)
+            .join(" || ")})`
+        : "true"
+    } &&
+    ${
+      state.districts.size > 0
+        ? `_some(district, d => ${Array.from(state.districts)
+            .map((d) => `d == "${d}"`)
+            .join(" || ")})`
+        : "true"
+    } &&
+    ${state.location ? `address match "*${state.location}*"` : "true"} &&
+    rooms >= ${state.minRooms} &&
+    rooms <= ${state.maxRooms} &&
+    livingArea >= ${state.minSize} &&
+    livingArea <= ${state.maxSize} &&
+    ${state.saleType === "rent" ? "price >= $minPrice && price <= $maxPrice" : "true"}
+  ]{
+    _id,
+    title,
+    propertyType,
+    type,
+    price,
+    address,
+    rooms,
+    livingArea,
+    ausstattung
+  }`;
+
+  const properties = await client.fetch(query, {
+    minPrice: state.saleType === "rent" ? state.minPrice : 0,
+    maxPrice: state.saleType === "rent" ? state.maxPrice : 10000000,
+  });
+
+  // Pass properties to parent component
+  Astro.props.properties = properties;
+}
+---
+
+<div class="flex flex-wrap gap-4 mb-8">
+  {/* Sale Type Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("sale")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Verkauf/Miete</h3>
+      <span>{state.saleType}</span>
+    </div>
+    {
+      state.activeCategory === "sale" && (
+        <div class="mt-2">
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              name="saleType"
+              value="rent"
+              checked={state.saleType === "rent"}
+              oninput={eventHandlers.onSaleTypeChange}
+              class="w-4 h-4"
+            />
+            <span>Miete</span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              name="saleType"
+              value="buy"
+              checked={state.saleType === "buy"}
+              oninput={eventHandlers.onSaleTypeChange}
+              class="w-4 h-4"
+            />
+            <span>Kauf</span>
+          </label>
+        </div>
+      )
+    }
+  </div>
+
+  {/* Property Type Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("type")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Immobilientyp</h3>
+      <span>{Array.from(state.propertyTypes).join(", ")}</span>
+    </div>
+    {
+      state.activeCategory === "type" && (
+        <div class="mt-2">
+          {propertyTypes.map((type: PropertyType) => (
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value={type}
+                checked={state.propertyTypes.has(type)}
+                oninput={eventHandlers.onPropertyTypeChange}
+                class="w-4 h-4"
+              />
+              <span>{type}</span>
+            </label>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  {/* District Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("district")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Bezirk</h3>
+      <span>{Array.from(state.districts).join(", ")}</span>
+    </div>
+    {
+      state.activeCategory === "district" && (
+        <div class="mt-2">
+          {districts.map((district: District) => (
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value={district}
+                checked={state.districts.has(district)}
+                oninput={eventHandlers.onDistrictChange}
+                class="w-4 h-4"
+              />
+              <span>{district}</span>
+            </label>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  {/* Location Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("location")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Ort</h3>
+      <span>{state.location}</span>
+    </div>
+    {
+      state.activeCategory === "location" && (
+        <div class="mt-2">
+          <input
+            type="text"
+            value={state.location}
+            oninput={eventHandlers.onLocationChange}
+            class="w-full p-2 border rounded"
+          />
+        </div>
+      )
+    }
+  </div>
+
+  {/* Size Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("size")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Größe</h3>
+      <span>
+        {state.minRooms}-{state.maxRooms} Zimm., {state.minSize}-{state.maxSize}
+        m²
+      </span>
+    </div>
+    {
+      state.activeCategory === "size" && (
+        <div class="mt-2">
+          <div class="flex gap-4">
+            <select
+              id="minRooms"
+              value={state.minRooms}
+              oninput={eventHandlers.onRoomsChange}
+              class="w-1/2 p-2 border rounded"
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <select
+              id="maxRooms"
+              value={state.maxRooms}
+              oninput={eventHandlers.onRoomsChange}
+              class="w-1/2 p-2 border rounded"
+            >
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+          </div>
+          <div class="flex gap-4 mt-2">
+            <select
+              id="minSize"
+              value={state.minSize}
+              oninput={eventHandlers.onSizeChange}
+              class="w-1/2 p-2 border rounded"
+            >
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="70">70</option>
+              <option value="90">90</option>
+              <option value="110">110</option>
+            </select>
+            <select
+              id="maxSize"
+              value={state.maxSize}
+              oninput={eventHandlers.onSizeChange}
+              class="w-1/2 p-2 border rounded"
+            >
+              <option value="70">70</option>
+              <option value="90">90</option>
+              <option value="110">110</option>
+              <option value="130">130</option>
+              <option value="150">150</option>
+            </select>
+          </div>
+        </div>
+      )
+    }
+  </div>
+
+  {/* Price Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("price")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Preis</h3>
+      <span>
+        {
+          state.saleType === "rent"
+            ? `${state.minPrice}€-${state.maxPrice}€`
+            : `${state.minPrice}€-${state.maxPrice}€`
+        }
+      </span>
+    </div>
+    {
+      state.activeCategory === "price" && (
+        <div class="mt-2">
+          <div class="flex gap-4">
+            <select
+              id="minPrice"
+              value={state.minPrice}
+              oninput={eventHandlers.onPriceChange}
+              class="w-1/2 p-2 border rounded"
+            >
+              <option value="0">0</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+              <option value="1500">1500</option>
+              <option value="2000">2000</option>
+            </select>
+            <select
+              id="maxPrice"
+              value={state.maxPrice}
+              oninput={eventHandlers.onPriceChange}
+              class="w-1/2 p-2 border rounded"
+            >
+              <option value="1000">1000</option>
+              <option value="1500">1500</option>
+              <option value="2000">2000</option>
+              <option value="2500">2500</option>
+              <option value="3000">3000</option>
+            </select>
+          </div>
+        </div>
+      )
+    }
+  </div>
+
+  {/* Ausstattung Category */}
+  <div
+    class="search-category w-full md:w-1/4"
+    onclick={() => eventHandlers.onCategoryClick("ausstattung")}
+  >
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold">Ausstattung</h3>
+      <span>{Array.from(state.ausstattung).join(", ")}</span>
+    </div>
+    {
+      state.activeCategory === "ausstattung" && (
+        <div class="mt-2">
+          {ausstattungOptions.map((option: Ausstattung) => (
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value={option}
+                checked={state.ausstattung.has(option)}
+                oninput={eventHandlers.onAusstattungChange}
+                class="w-4 h-4"
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<button
+  onclick={eventHandlers.onSearch}
+  class="w-full mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+>
+  Suche starten
+</button>
+
+<style>
+  @media (max-width: 768px) {
+    .search-category {
+      margin-bottom: 1rem;
+    }
+
+    .search-category.active {
+      border-color: #3b82f6;
+    }
+  }
+</style>

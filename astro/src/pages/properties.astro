@@ -1,0 +1,41 @@
+---
+import PropertySearch from '../components/PropertySearch.astro';
+import PropertyCard from '../components/PropertyCard.astro';
+
+interface Props {
+  properties: any[];
+}
+
+const { properties } = Astro.props;
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-3xl font-bold mb-8">Immobilien</h1>
+  
+  <PropertySearch />
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+    {properties.map((property) => (
+      <PropertyCard property={property} />
+    ))}
+  </div>
+</main>
+
+<style>
+  .search-category {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  .search-category.active {
+    border-color: #3b82f6;
+  }
+  
+  @media (max-width: 768px) {
+    .search-category {
+      margin-bottom: 1rem;
+    }
+  }
+</style>

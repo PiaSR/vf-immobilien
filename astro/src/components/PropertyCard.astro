@@ -1,0 +1,52 @@
+<!-- ---
+import { client } from "../lib/sanity";
+import { PropertySchema } from "../lib/schemas/property.ts";
+
+// Fetch properties
+const rawProperties = await client.fetch('*[_type == "property"]');
+
+// Validate it with Zod
+const safe = PropertySchema.array().safeParse(rawProperties);
+
+if (!safe.success) {
+  console.error("Sanity returned bad data:", safe.error);
+  throw new Error("Invalid property data");
+}
+
+const properties = safe.data;
+// Fetch site settings
+const settings = await client.fetch('*[_type == "siteSettings"][0]');
+---
+
+<html lang="de">
+  <head>
+    <title>{settings?.title || "VF Immobilien"}</title>
+  </head>
+  <body>
+    <header>
+      <h1>{settings?.title}</h1>
+      {settings?.logo && <img src={settings.logo.asset.url} alt="Logo" />}
+    </header>
+
+    <main>
+      <h2>Properties List</h2>
+      <div class="properties">
+        {
+          properties.map((property) => (
+            <article>
+              <h3>{property.title}</h3>
+              {property.mainImage && (
+                <img
+                  src={property.mainImage.asset.url}
+                  alt={property.title}
+                  width="400"
+                />
+              )}
+              <p>Preis: &euro;{property.price?.toLocaleString("de-DE")}</p>
+            </article>
+          ))
+        }
+      </div>
+    </main>
+  </body>
+</html> -->

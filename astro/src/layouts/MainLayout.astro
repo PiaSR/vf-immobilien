@@ -1,0 +1,23 @@
+---
+// src/layouts/MainLayout.astro
+import Navbar from "../components/Navbar.astro";
+---
+
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link
+      rel="preload"
+      href="/assets/logos/vf-immobilien-logo.svg"
+      as="image"
+    />
+
+    <title>VF Immobilien</title>
+  </head>
+  <body>
+    <Navbar />
+    <slot />
+  </body>
+</html>

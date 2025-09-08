@@ -1,0 +1,109 @@
+:root {
+  --primary: #4b8e69; /* Brand green */
+  --primaryDark: #35644a; /*dark green */
+  --headerColor: #565d6d; /*dark grey for headers */
+  --bodyTextColor: #171a1f; /* Black-ish for text */
+  --bodyTextColorWhite: #fafbfc;
+  /* 13px - 16px */
+  --topperFontSize: clamp(0.8125rem, 1.6vw, 1rem);
+  /* 31px - 49px */
+  --headerFontSize: clamp(1.9375rem, 3.9vw, 3.0625rem);
+  --bodyFontSize: 1rem;
+
+  /* 60px - 100px top and bottom */
+  --sectionPadding: clamp(3.75rem, 7.82vw, 6.25rem) 1rem;
+  --font-sans: "Archivo", sans-serif;
+}
+
+/* Global resets/base styles */
+body {
+  font-family: var(--font-sans);
+  box-sizing: border-box;
+  font-size: 1.125rem; /*18px*/
+}
+
+body.cs-open {
+  overflow: hidden;
+}
+
+/* ------------------------- HEADERS ---------------------- */
+
+h1 {
+  font-size: 3rem; /*48px*/
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.25rem; /*20px*/
+}
+
+/* ------------------------- BUTTONS ---------------------- */
+button {
+  border: none;
+  border-radius: 26px;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.5;
+  font-size: 1.125rem; /*18px*/
+  padding: 0.75rem 1.25rem;
+}
+
+button:not([class]) {
+  border: solid 1px var(--secondary);
+  background-color: white;
+  color: var(--secondary);
+}
+
+.cta-button-green {
+  color: white;
+  background-color: var(--primary);
+}
+
+.cta-button-white {
+  color: var(--secondary);
+  background-color: white;
+}
+
+.cta-button-outline {
+  color: var(--secondary);
+  background-color: white;
+  border: solid 1px var(--secondary);
+}
+
+/* ------------------------- BUTTONS ---------------------- */
+li {
+  text-decoration: none;
+}
+
+.cs-topper {
+  font-size: var(--topperFontSize);
+  line-height: 1.2em;
+  text-transform: uppercase;
+  text-align: inherit;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.cs-title {
+  font-size: var(--headerFontSize);
+  font-weight: 900;
+  line-height: 1.2em;
+  text-align: inherit;
+  max-width: 43.75rem;
+  margin: 0 0 1rem 0;
+  color: var(--headerColor);
+  position: relative;
+}
+
+.cs-text {
+  font-size: var(--bodyFontSize);
+  line-height: 1.5em;
+  text-align: inherit;
+  width: 100%;
+  max-width: 40.625rem;
+  margin: 0;
+  color: var(--bodyTextColor);
+}
