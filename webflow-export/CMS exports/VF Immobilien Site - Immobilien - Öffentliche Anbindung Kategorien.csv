@@ -1,0 +1,5 @@
+Name,Slug,Collection ID,Locale ID,Item ID,Archived,Draft,Created On,Updated On,Published On
+Park,park,685043610558e5f117bb2c11,683f1c82a545dd24ef46ba4a,6850436bb6274609159e4044,false,true,Mon Jun 16 2025 16:16:43 GMT+0000 (Coordinated Universal Time),Mon Jun 16 2025 16:16:43 GMT+0000 (Coordinated Universal Time),
+Schule,schule,685043610558e5f117bb2c11,683f1c82a545dd24ef46ba4a,68504381e821e1d2c4e3b2f8,false,true,Mon Jun 16 2025 16:17:05 GMT+0000 (Coordinated Universal Time),Mon Jun 16 2025 16:17:05 GMT+0000 (Coordinated Universal Time),
+Supermarkt,supermarkt,685043610558e5f117bb2c11,683f1c82a545dd24ef46ba4a,68504399425f2a03b5e9336d,false,true,Mon Jun 16 2025 16:17:29 GMT+0000 (Coordinated Universal Time),Mon Jun 16 2025 16:17:29 GMT+0000 (Coordinated Universal Time),
+U-Bahn,u-bahn,685043610558e5f117bb2c11,683f1c82a545dd24ef46ba4a,6850438ab5883a35c972f8b7,false,false,Mon Jun 16 2025 16:17:14 GMT+0000 (Coordinated Universal Time),Thu Aug 14 2025 12:49:55 GMT+0000 (Coordinated Universal Time),Thu Aug 14 2025 12:49:55 GMT+0000 (Coordinated Universal Time)
