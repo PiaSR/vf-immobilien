@@ -5,7 +5,7 @@
 ---
 import { Image } from "astro:assets";
 import logo from "/public/logos/logo-green-text.svg"
-import MobileNavToggle from "./MobileNavToggle";
+import MobileNavToggle from "../Utils/MobileNavToggle";
 
 const navItems = [
   { name: "Home", href: "#" },
@@ -41,7 +41,9 @@ const navItems = [
 						</li>
 					  ))}
 					  <li class="cs-li">
-						<button href="properties" class="cta-button-green cs-button-solid cs-nav-button">Immobiliensuche</button>
+						<button 
+                        href="properties" 
+                        class="cta-button-green cs-button-solid cs-nav-button">Immobiliensuche</button>
 					  </li>
                 </ul>
             </div>
@@ -391,3 +393,4 @@ const navItems = [
 }
 </style>                                
 
+../Utils/MobileNavToggle

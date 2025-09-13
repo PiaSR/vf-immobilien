@@ -1,18 +1,52 @@
 :root {
-  --primary: #4b8e69; /* Brand green */
-  --primaryDark: #35644a; /*dark green */
-  --headerColor: #565d6d; /*dark grey for headers */
-  --bodyTextColor: #171a1f; /* Black-ish for text */
-  --bodyTextColorWhite: #fafbfc;
-  /* 13px - 16px */
-  --topperFontSize: clamp(0.8125rem, 1.6vw, 1rem);
-  /* 31px - 49px */
-  --headerFontSize: clamp(1.9375rem, 3.9vw, 3.0625rem);
-  --bodyFontSize: 1rem;
+  /* Brand Colors */
+  --color-brand-green: #4b8e69;
+  --color-brand-medium-green: #35644a;
+  --color-brand-dark-green: #2f3c35;
+  --color-brand-light-green: #96deb6;
 
-  /* 60px - 100px top and bottom */
-  --sectionPadding: clamp(3.75rem, 7.82vw, 6.25rem) 1rem;
-  --font-sans: "Archivo", sans-serif;
+  /* Call-to-Action (CTA) Colors */
+  --color-cta-orange: #d87c5a;
+  --color-cta-orange-light: #ffd3c3;
+
+  /* Neutral Colors */
+  --color-neutral-font-dark: #171a1f;
+  --color-neutral-black: #1c1c1c;
+  --color-neutral-transparent: rgba(255, 255, 255, 0);
+  --color-neutral-white: #fff;
+  --color-neutral-lightest: #fdf9ef; /* Beige */
+  --color-neutral-light-grey: #eae8e4;
+  --color-neutral-medium-grey: #a8a6a1;
+  --color-neutral-dark-grey: #5e5e5e;
+
+  /* System Colors */
+  --color-system-success: #cef5ca;
+
+  /* --- Typography --- */
+
+  /* Font Families */
+  --font-primary: "Exo", sans-serif;
+  --font-secondary: "Helvetica", sans-serif; /* Example */
+
+  /* Font Sizes */
+  --font-size-h1: 3.5rem;
+  --font-size-h2: 2.5rem;
+  --font-size-h3: 2rem;
+  --font-size-h4: 1.5rem;
+  --font-size-h5: 1.25rem;
+  --font-size-h6: 1rem;
+  --font-size-body-large: 1.125rem;
+  --font-size-body-base: 1rem;
+  --font-size-body-small: 0.875rem;
+
+  /* Line Heights */
+  --line-height-heading: 1.2;
+  --line-height-body: 1.6;
+
+  /* Spacing */
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 2rem;
 }
 
 /* Global resets/base styles */
@@ -54,6 +88,10 @@ button:not([class]) {
   color: var(--secondary);
 }
 
+.cta-button-orange {
+  color: white;
+  background-color: var(--primary);
+}
 .cta-button-green {
   color: white;
   background-color: var(--primary);

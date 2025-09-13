@@ -1,0 +1,60 @@
+---
+// Landing page hero
+import Button from "../Base/Button.astro";
+
+const title = "Verwaltung, gebaut auf";
+const subtitle =
+  "Immobilienmanagement &amp; Verwaltung <br>in Wien und Umgebung.";
+const ctaText = "Fragen? Wir haben Antworten";
+---
+
+<section class="hero">
+  <!-- <h1>{title} - <span class="subtitle">{subtitle}</span></h1>
+  <button class="cta-button-green">{ctaText}</button> -->
+
+  <header>
+    <div>
+      <div>
+        <h1>
+          {title}
+          <!-- <span>
+            <span>Vertrauen</span>
+            <span>Kompetenz</span>
+            <span>Transparenz</span>
+            <span>Erreichbarkeit</span>
+            <span>Erfahrung</span>
+            <span>Verlässlichkeit</span>
+            <span>Nachhaltigkeit</span>
+          </span> -->
+        </h1>
+
+        <p>{subtitle}</p>
+
+        <Button text="{text}" />
+      </div>
+    </div>
+    <!-- <img
+        src="images/Hero-Home-image.png"
+        loading="lazy"
+        alt="Image of the corner of a classical Vienna apartment building with a beige facade."
+      />
+      <img
+        src="images/hero-home-image---mobile-no-angles.jpg"
+        loading="lazy"
+        alt="Image of the corner of a classical Vienna apartment building with a beige facade."
+      /> -->
+  </header>
+</section>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 4rem 1rem;
+    background: #000;
+    color: white;
+  }
+  .subtitle {
+    color: #2c3e50;
+    font-weight: 300;
+  }
+</style>

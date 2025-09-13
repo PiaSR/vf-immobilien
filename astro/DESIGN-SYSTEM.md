@@ -17,10 +17,11 @@ button:not([class]) {
 
 ### Variants
 
-| Class                 | Purpose           | Example                        |
-| --------------------- | ----------------- | ------------------------------ |
-| `.cta-button-green`   | Primary actions   | Contact forms, lead generation |
-| `.cta-button-outline` | Secondary actions | Less prominent actions         |
+| Class                 | Purpose                     | Example                        |
+| --------------------- | --------------------------- | ------------------------------ |
+| `.cta-button-orange`  | Primary actions             | Contact forms, lead generation |
+| `.cta-button-green`   | Primary actions alternative | if bg doesn't work with orange |
+| `.cta-button-outline` | Secondary actions           | Less prominent actions         |
 
 ### Usage in Astro
 

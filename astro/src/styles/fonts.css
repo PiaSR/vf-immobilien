@@ -1,0 +1,69 @@
+/* src/styles/fonts.css */
+
+/*---- BITSTREAM IOWAN -----*/
+@font-face {
+  font-family: "Bitstream Iowan";
+  src: url("/fonts/bitstream-iowan-old-style-bt-586c36a8d7712.ttf")
+    format("truetype");
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bitstream Iowan";
+  src: url("/fonts/bitstream-iowan-old-style-bold-bt-586c371d8d669.ttf")
+    format("truetype");
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bitstream Iowan";
+  src: url("/fonts/bitstream-iowan-old-style-black-bt-586c36e930225.ttf")
+    format("truetype");
+  font-weight: 900; /* Black */
+  font-style: normal;
+  font-display: swap; /* Best practice for performance */
+}
+
+/*---- INTER -----*/
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Italic.woff2") format("woff2");
+  font-weight: 400; /* Regular Italic */
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-SemiBold.woff2") format("woff2");
+  font-weight: 600; /* Semi Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Bold.woff2") format("woff2");
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Black.woff2") format("woff2");
+  font-weight: 900; /* Black */
+  font-style: normal;
+  font-display: swap;
+}
