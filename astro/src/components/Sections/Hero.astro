@@ -5,7 +5,6 @@ import Button from "../Base/Button.astro";
 const title = "Verwaltung, gebaut auf";
 const subtitle =
   "Immobilienmanagement &amp; Verwaltung <br>in Wien und Umgebung.";
-const ctaText = "Fragen? Wir haben Antworten";
 ---
 
 <section class="hero">
@@ -30,10 +29,11 @@ const ctaText = "Fragen? Wir haben Antworten";
 
         <p>{subtitle}</p>
 
-        <Button text="{text}" />
+        <Button class="button-orange">Kontaktieren Sie uns</Button>
       </div>
     </div>
-    <!-- <img
+  </header>
+  <!-- <img
         src="images/Hero-Home-image.png"
         loading="lazy"
         alt="Image of the corner of a classical Vienna apartment building with a beige facade."
@@ -43,7 +43,6 @@ const ctaText = "Fragen? Wir haben Antworten";
         loading="lazy"
         alt="Image of the corner of a classical Vienna apartment building with a beige facade."
       /> -->
-  </header>
 </section>
 
 <style>

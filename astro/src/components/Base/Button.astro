@@ -1,5 +1,5 @@
 ---
-const text = "Kontaktieren Sie uns";
+const { ...props } = Astro.props;
 ---
 
-<button class="button"> {text}</button>
+<button {...props}><slot /></button>

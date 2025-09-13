@@ -1,27 +1,34 @@
+---
+import { Image } from "astro:assets";
+import VikiLogo from "../../../public/logos/Viki-new-logo-white-1-with-writing-1.svg";
+import Linkedin from "../astro/public/images/Linkedin-1.svg";
+import Instagram from "../../../public/images/Instagram-1.svg";
+import Facebook from "../../../public/images/Facebook-1.svg";
+import EmailIcon from "../../../public/images/email-icon-1.svg";
+import PhoneIcon from "../../../public/images/phone-icon-1.svg";
+import LocationIcon from "../../../public/images/location-icon-1.svg";
+---
+
 <footer class="main-footer">
-  <div class="footer-logo-container">
+  <div class="footer-logo-section">
+    <Image
+      src={VikiLogo}
+      alt="Viki Frohner Immobilien"
+      class="footer-logo"
+      width="150"
+      height="150"
+    />
+    <div class="footer-divider"></div>
     <div class="footer-tagline">Verwaltung, gebaut auf Vertrauen.</div>
     <div class="footer-socials">
       <a href="#" class="social-link"
-        ><img
-          src="/astro/public/images/Linkedin-1.svg"
-          loading="lazy"
-          alt="Linkedin"
-        /></a
+        ><Image src={Linkedin} loading="lazy" alt="Linkedin" /></a
       >
       <a href="#" class="social-link"
-        ><img
-          src="/astro/public/images/Instagram-1.svg"
-          loading="lazy"
-          alt="Instagram"
-        /></a
+        ><Image src={Instagram} loading="lazy" alt="Instagram" /></a
       >
       <a href="#" class="social-link"
-        ><img
-          src="/astro/public/images/Facebook-1.svg"
-          loading="lazy"
-          alt="Facebook"
-        /></a
+        ><Image src={Facebook} loading="lazy" alt="Facebook" /></a
       >
     </div>
   </div>
