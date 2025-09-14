@@ -1,0 +1,28 @@
+---
+interface Props {
+  color?: string;
+  width?: string;
+  height?: string;
+}
+
+const { color = "currentColor", width = "64", height = "10" } = Astro.props;
+---
+
+<div class="decorative-line-wrapper">
+  <svg
+    width={width}
+    height={height}
+    viewBox={`0 0 ${width} ${height}`}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect x="0" y="4.5" width={width} height="3" rx="0.5" fill={color}></rect>
+  </svg>
+</div>
+
+<style>
+  .decorative-line-wrapper {
+    display: inline-block;
+    vertical-align: middle;
+  }
+</style>

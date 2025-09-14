@@ -1,0 +1,199 @@
+---
+// Landing page hero
+import Button from "../../Base/Button.astro";
+import { Image } from "astro:assets";
+import heroImage from "/Users/piasmith-richling/Code/VF Immobilien/astro/src/assets/images/landing-hero.jpg";
+
+const title = "Verwaltung, gebaut auf";
+const subtitle = "Immobilienmanagement & Verwaltung in Wien und Umgebung.";
+---
+
+<section id="landing-hero" class="hero">
+  <div class="site-container hero-grid-content">
+    <div class="container-align-left">
+      <h1>
+        {title}
+        <span class="animated-word-wrapper">
+          <div class="animated-word-list">
+            <span>Vertrauen</span>
+            <span>Kompetenz</span>
+            <span>Transparenz</span>
+            <span>Erreichbarkeit</span>
+            <span>Erfahrung</span>
+            <span>Verlässlichkeit</span>
+            <span>Nachhaltigkeit</span>
+          </div>
+        </span>
+      </h1>
+
+      <p class="subtitle">{subtitle}</p>
+
+      <Button class="button-orange">Kontaktieren Sie uns</Button>
+    </div>
+    <Image
+      src={heroImage}
+      alt="White building facade"
+      class="angled-image-left"
+    />
+    <Image
+      src={heroImage}
+      alt="White building facade"
+      class="hero-image-mobile"
+    />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--color-neutral-lightest);
+    color: var(--color-brand-dark-green);
+    padding-left: var(--spacing-2xl);
+  }
+  .hero-grid-content {
+    display: grid;
+    grid-template-columns: 1fr 28%;
+    gap: var(--spacing-2xl);
+    height: 100%;
+  }
+  h1 {
+    line-height: var(--line-height-header);
+  }
+  .subtitle {
+    color: #2c3e50;
+    font-weight: 300;
+    font-size: var(--font-size-h5);
+  }
+
+  .angled-image-left {
+    height: 100%;
+    width: 100%;
+    clip-path: polygon(0 0, 100% 100%, 100% 0);
+
+    object-fit: cover;
+  }
+  .hero-image-mobile {
+    display: none;
+  }
+
+  .animated-word-wrapper {
+    display: inline-flex;
+    /* height: var(--line-height-header); */
+    overflow: hidden;
+    /* line-height: var(--line-height-header); */
+    position: relative;
+    box-sizing: content-box;
+    vertical-align: top; /* Changed to top for consistent alignment */
+  }
+  .animated-word-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .animated-word-list span {
+    display: block;
+    height: var(--line-height-header);
+    /* line-height: var(--line-height-header); */
+    white-space: nowrap;
+    color: var(--color-brand-medium-green);
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  @media (max-width: 64rem) {
+    h1 {
+      font-size: var(--font-size-h2);
+    }
+    .animated-word-wrapper {
+      height: var(--line-height-header);
+      line-height: var(--line-height-header);
+    }
+    .animated-word-list span {
+      height: var(--line-height-header);
+      line-height: var(--line-height-header);
+    }
+  }
+
+  /* remove angled image on mobile */
+  @media (max-width: 48rem) {
+    .angled-image-left {
+      display: none;
+    }
+    section {
+      flex-direction: column;
+    }
+    .hero-image-mobile {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 13rem;
+      object-fit: cover;
+    }
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const list = document.querySelector(".animated-word-list");
+    const items = list.querySelectorAll("span");
+    const wrapper = document.querySelector(".animated-word-wrapper");
+
+    let wordHeight, wordCount;
+    let currentIndex = 0;
+
+    // A function to get the current word height and update the wrapper
+    const setWordHeight = () => {
+      // Re-calculate height based on the first item's rendered line-height
+      const computedStyle = window.getComputedStyle(items[0]);
+      wordHeight = parseFloat(computedStyle.lineHeight);
+      wordCount = items.length;
+      wrapper.style.height = `${wordHeight}px`;
+    };
+
+    // Set height on initial load
+    setWordHeight();
+
+    // Listen for resize events to re-calculate height
+    window.addEventListener("resize", setWordHeight);
+
+    // Initial fast spinning animation
+    const spinLoop = gsap.to(list, {
+      y: `-=${wordHeight * wordCount}`,
+      duration: 0.3,
+      repeat: -1,
+      ease: "none",
+    });
+
+    // After 1.5s, stop spinning and start word flipping
+    setTimeout(() => {
+      spinLoop.kill();
+      gsap.set(list, { y: 0 });
+      currentIndex = 0;
+
+      setInterval(() => {
+        currentIndex++;
+        const targetY = -wordHeight * currentIndex;
+
+        if (currentIndex < wordCount) {
+          gsap.to(list, {
+            y: targetY,
+            duration: 0.3,
+            ease: "power2.inOut",
+          });
+        } else {
+          gsap.to(list, {
+            y: targetY,
+            duration: 0.3,
+            ease: "power2.inOut",
+            onComplete: () => {
+              gsap.set(list, { y: 0 });
+              currentIndex = 0;
+            },
+          });
+        }
+      }, 2000);
+    }, 1100);
+  });
+</script>

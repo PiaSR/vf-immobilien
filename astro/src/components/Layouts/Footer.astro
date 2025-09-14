@@ -1,88 +1,246 @@
 ---
 import { Image } from "astro:assets";
 import VikiLogo from "../../../public/logos/Viki-new-logo-white-1-with-writing-1.svg";
-import Linkedin from "../astro/public/images/Linkedin-1.svg";
-import Instagram from "../../../public/images/Instagram-1.svg";
-import Facebook from "../../../public/images/Facebook-1.svg";
-import EmailIcon from "../../../public/images/email-icon-1.svg";
-import PhoneIcon from "../../../public/images/phone-icon-1.svg";
-import LocationIcon from "../../../public/images/location-icon-1.svg";
+import Linkedin from "../astro/public/icons/Linkedin-1.svg";
+import Instagram from "../../../public/icons/Instagram-1.svg";
+import Facebook from "../../../public/icons/Facebook-1.svg";
+import EmailIcon from "../../../public/icons/email-icon-1.svg";
+import PhoneIcon from "../../../public/icons/phone-icon-1.svg";
+import LocationIcon from "../../../public/icons/location-icon-1.svg";
 ---
 
 <footer class="main-footer">
-  <div class="footer-logo-section">
-    <Image
-      src={VikiLogo}
-      alt="Viki Frohner Immobilien"
-      class="footer-logo"
-      width="150"
-      height="150"
-    />
-    <div class="footer-divider"></div>
-    <div class="footer-tagline">Verwaltung, gebaut auf Vertrauen.</div>
-    <div class="footer-socials">
-      <a href="#" class="social-link"
-        ><Image src={Linkedin} loading="lazy" alt="Linkedin" /></a
-      >
-      <a href="#" class="social-link"
-        ><Image src={Instagram} loading="lazy" alt="Instagram" /></a
-      >
-      <a href="#" class="social-link"
-        ><Image src={Facebook} loading="lazy" alt="Facebook" /></a
-      >
+  <div class="footer-container">
+    <div class="footer-logo-section">
+      <Image
+        src={VikiLogo}
+        alt="Viki Frohner Immobilien"
+        class="footer-logo"
+        width="150"
+        height="150"
+      />
+      <div class="footer-divider"></div>
+      <div class="footer-tagline">Verwaltung, gebaut auf Vertrauen.</div>
+      <div class="footer-socials">
+        <a href="#" class="social-link"
+          ><Image src={Linkedin} loading="lazy" alt="Linkedin" /></a
+        >
+        <a href="#" class="social-link"
+          ><Image src={Instagram} loading="lazy" alt="Instagram" /></a
+        >
+        <a href="#" class="social-link"
+          ><Image src={Facebook} loading="lazy" alt="Facebook" /></a
+        >
+      </div>
     </div>
-  </div>
 
-  <div class="footer-links-container">
-    <div class="footer-links">
-      <div class="links-group">
-        <h6 class="links-header">Über uns</h6>
-        <a href="uber-uns.html" class="link-item">Team</a>
-        <a href="uber-uns.html" class="link-item">Entstehung</a>
-        <a href="uber-uns.html" class="link-item">Werte</a>
+    <div class="footer-links-container">
+      <div class="footer-links">
+        <div class="links-group">
+          <h6 class="links-header">Über uns</h6>
+          <a href="uber-uns.html" class="link-item">Team</a>
+          <a href="uber-uns.html" class="link-item">Entstehung</a>
+          <a href="uber-uns.html" class="link-item">Werte</a>
+        </div>
+        <div class="links-group">
+          <h6 class="links-header">Leistungen</h6>
+          <div class="link-item">Hausverwaltung</div>
+          <div class="link-item">Immobilienvermittlung</div>
+          <div class="link-item">Eigentümer:inberatung</div>
+          <div class="link-item">Suchvorvermerkung</div>
+        </div>
+        <div class="links-group">
+          <h6 class="links-header">Immobiliensuche</h6>
+          <div class="link-item">Suchprofil</div>
+          <div class="link-item">Kaufen</div>
+          <div class="link-item">Mieten</div>
+        </div>
       </div>
-      <div class="links-group">
-        <h6 class="links-header">Leistungen</h6>
-        <div class="link-item">Hausverwaltung</div>
-        <div class="link-item">Immobilienvermittlung</div>
-        <div class="link-item">Eigentümer:inberatung</div>
-        <div class="link-item">Suchvorvermerkung</div>
-      </div>
-      <div class="links-group">
-        <h6 class="links-header">Immobiliensuche</h6>
-        <div class="link-item">Suchprofil</div>
-        <div class="link-item">Kaufen</div>
-        <div class="link-item">Mieten</div>
-      </div>
-    </div>
-    <div class="footer-contact-details">
-      <div class="contact-line">
-        <img
-          src="images/email-icon-1.svg"
-          loading="lazy"
-          alt="Email icon"
-          class="contact-icon"
-        />
-        <div class="contact-text"></div>
-      </div>
-      <div class="contact-line">
-        <img
-          src="images/phone-icon-1.svg"
-          loading="lazy"
-          alt="Phone icon"
-          class="contact-icon"
-        />
-        <div class="contact-text"></div>
-      </div>
-      <div class="contact-line">
-        <img
-          src="images/location-icon-1.svg"
-          loading="lazy"
-          alt="Location icon"
-          class="contact-icon"
-        />
-        <div class="contact-text"></div>
+      <div class="footer-contact-details">
+        <div class="contact-line">
+          <Image
+            src={EmailIcon}
+            loading="lazy"
+            alt="Email icon"
+            class="contact-icon"
+          />
+          <div class="contact-text">office@vf-immobilien.at</div>
+        </div>
+        <div class="contact-line">
+          <Image
+            src={PhoneIcon}
+            loading="lazy"
+            alt="Phone icon"
+            class="contact-icon"
+          />
+          <div class="contact-text">+43 123 456 849</div>
+        </div>
+        <div class="contact-line">
+          <Image
+            src={LocationIcon}
+            loading="lazy"
+            alt="Location icon"
+            class="contact-icon"
+          />
+          <div class="contact-text">Auhofstrasse 78C/1, 1130 Wien</div>
+        </div>
       </div>
     </div>
   </div>
 </footer>
+
+<style>
+  .main-footer {
+    background-color: var(--color-brand-dark-green);
+    color: var(--color-neutral-white);
+    padding: var(--spacing-2xl) var(--spacing-2xl);
+    font-family: var(--font-primary);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2xl);
+    flex-wrap: wrap;
+
+    width: 100%;
+  }
+
+  .footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 80rem;
+  }
+  .footer-logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+
+    padding-bottom: var(--spacing-md);
+  }
+
+  .footer-logo {
+    width: 14rem;
+  }
+
+  .footer-tagline {
+    font-size: var(--font-size-body-se);
+    font-weight: var(--font-weight-semi-bold);
+    margin-top: var(--spacing-md);
+  }
+  .footer-divider {
+    height: 0px;
+    width: 100%;
+    border: 1px solid var(--color-neutral-white);
+  }
+  .footer-socials {
+    display: flex;
+    gap: var(--spacing-xl);
+  }
+
+  .footer-socials .social-link img {
+    width: var(--spacing-lg);
+    height: var(--spacing-lg);
+  }
+
+  .footer-links-container {
+    display: flex;
+    justify-content: end;
+    flex: 2;
+    gap: var(--spacing-2xl);
+    flex-wrap: wrap;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+  }
+
+  .links-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .links-header {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-semi-bold);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-neutral-light-grey);
+  }
+
+  .link-item,
+  .contact-text {
+    font-size: var(--font-size-body-small);
+    color: var(--color-neutral-white);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .link-item:hover,
+  .contact-text:hover {
+    opacity: 1;
+  }
+
+  .footer-contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .contact-line {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-neutral-white);
+    font-size: var(--font-size-body-small);
+  }
+
+  .contact-icon {
+    width: var(--spacing-lg);
+    height: var(--spacing-lg);
+  }
+
+  /*
+ * ---
+ * RESPONSIVE STYLES
+ * ---
+*/
+  @media (max-width: 64rem) {
+    .footer-container {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-logo-container {
+      align-items: center;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .footer-links-container {
+      flex-direction: column;
+      gap: var(--spacing-xl);
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-links {
+      flex-direction: column;
+      gap: var(--spacing-xl);
+      align-items: center;
+    }
+
+    .links-group {
+      align-items: center;
+    }
+
+    .footer-contact-details {
+      order: -1; /* This moves the element to the front */
+    }
+  }
+</style>

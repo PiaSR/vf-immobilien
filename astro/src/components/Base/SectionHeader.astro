@@ -1,0 +1,90 @@
+---
+interface Props {
+  header: string;
+  subheader: string;
+  text: string;
+  subheaderSVGColor: string;
+  subheaderColor?: string;
+  headerColor?: string;
+  textColor?: string;
+}
+
+const {
+  header,
+  subheader,
+  text,
+  subheaderSVGColor = "var(--color-brand-light-green)",
+  subheaderColor = "var(--color-brand-green)",
+  headerColor = "var(--color-brand-medium-green)",
+  textColor = "var(--color-neutral-font-dark)",
+} = Astro.props;
+---
+
+<div class="section-header">
+  <div class="section-subheader">
+    <svg
+      width="200"
+      height="32"
+      viewBox="0 0 200 32"
+      xmlns="http://www.w3.org/2000/svg"
+      fill={subheaderColor}
+    >
+      <rect width="176" height="32" fill={subheaderSVGColor}></rect>
+      <path d="M176 32V0L200 32H176Z" fill={subheaderSVGColor}></path>
+    </svg>
+    <span class="subheader-text">{subheader}</span>
+  </div>
+  <h2 class="section-header-h2">{header}</h2>
+  <p class="section-header-p">{text}</p>
+</div>
+
+<style
+  define:vars={{
+    headerColor: headerColor,
+    textColor: textColor,
+    subheaderColor: subheaderColor,
+  }}
+>
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: start;
+    margin-bottom: var(--spacing-2xl);
+    gap: var(--spacing-2xl);
+    width: 60%;
+  }
+  .section-subheader {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-neutral-font-light); /* Or your dark green */
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+  }
+  .section-subheader svg {
+    /* SVG will take up its natural space */
+    display: block;
+  }
+  /* .section-subheader .subheader-icon {
+    position: relative;
+    display: flex;
+    align-items: start;
+  } */
+  .subheader-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+
+  .section-header-h2 {
+    color: var(--headerColor);
+  }
+  .section-header-p {
+    color: var(--textColor);
+    font-size: var(--font-size-body-xlarge);
+  }
+</style>

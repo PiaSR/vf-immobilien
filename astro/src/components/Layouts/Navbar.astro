@@ -15,7 +15,7 @@ const pathname = new URL(Astro.request.url).pathname;
 ---
 
 <header id="cs-navigation">
-  <div class="cs-container">
+  <div class="cs-container site-container">
     <a href="#" class="cs-logo" aria-label="back to home">
       <Image
         src={logo}
@@ -272,7 +272,7 @@ const pathname = new URL(Astro.request.url).pathname;
       }
       #cs-navigation .cs-li {
         list-style: none;
-        padding: var(--spacing-xl) 0;
+        padding: var(--spacing-md) 0;
         flex: none;
       }
       #cs-navigation .cs-li-link {
