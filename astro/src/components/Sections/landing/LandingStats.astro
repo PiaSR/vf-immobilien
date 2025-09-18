@@ -1,0 +1,197 @@
+<section class="stats-section">
+  <div class="stats-content-wrapper site-container">
+    <div class="stats-grid">
+      <div class="stats-card">
+        <div class="stats-numbers">50+</div>
+        <div class="stats-heading-wrapper">
+          <p class="stats-header">Jahre Erfahrung</p>
+        </div>
+        <div class="horizontal-line">
+          <svg
+            width="100%"
+            height="10"
+            viewBox="0 0 240 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="0"
+              y="4.5"
+              width="100%"
+              height="2"
+              rx="0.5"
+              fill="currentColor"></rect>
+          </svg>
+        </div>
+        <p class="stats-p">
+          Unser Team vereint Fachwissen aus mehreren Jahrzehnten professioneller
+          Immobilienverwaltung.
+        </p>
+      </div>
+      <div class="stats-card">
+        <div class="stats-numbers">24/7</div>
+        <div class="stats-heading-wrapper">
+          <p class="stats-header">Für Sie erreichbar</p>
+        </div>
+        <div class="horizontal-line">
+          <svg
+            width="100%"
+            height="10"
+            viewBox="0 0 240 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="0"
+              y="4.5"
+              width="100%"
+              height="2"
+              rx="0.5"
+              fill="currentColor"></rect>
+          </svg>
+        </div>
+        <p class="stats-p">
+          Weil gute Verwaltung dann da ist, wenn sie gebraucht wird - mit
+          Engagement, Erfahrung und dem Blick fürs Wesentliche.
+        </p>
+      </div>
+      <div class="stats-card">
+        <div class="stats-numbers">120</div>
+        <div class="stats-heading-wrapper">
+          <p class="stats-header">Verwaltete Einheiten</p>
+        </div>
+        <div class="horizontal-line">
+          <svg
+            width="100%"
+            height="10"
+            viewBox="0 0 240 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="0"
+              y="4.5"
+              width="100%"
+              height="2"
+              rx="0.5"
+              fill="currentColor"></rect>
+          </svg>
+        </div>
+        <p class="stats-p">
+          ...and counting! Vom Altbau bis zum Neubau – wir kümmern uns um
+          Immobilien mit Weitblick und Sorgfalt.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats-section {
+    /* The entire section now has the green background */
+    background-color: var(--color-brand-light-green);
+    color: var(--color-brand-dark-green);
+    /* This creates the diagonal shape on the bottom of the section */
+    /* transform: skewY(13deg); */
+    transform-origin: bottom right;
+    position: relative;
+    z-index: 1; /* Ensures this section is on top of content below it */
+    /* margin-top: 10vw; */
+  }
+  .stats-section::before {
+    content: "";
+    position: absolute;
+    top: -40rem;
+    left: 0;
+    width: 100%;
+    height: 40rem; /* Adjust this to control the height of the diagonal */
+    background-color: var(
+      --color-brand-dark-green
+    ); /* Color of the section ABOVE it */
+    transform: skewY(11deg);
+    transform-origin: top left;
+    z-index: -5;
+  }
+
+  /* This creates the diagonal cut at the BOTTOM of the section */
+  .stats-section::after {
+    content: "";
+    position: absolute;
+    bottom: -38rem;
+    left: 0;
+    width: 100%;
+    height: 40rem; /* Adjust this to control the height of the diagonal */
+    background-color: var(
+      --color-neutral-lightest
+    ); /* Color of the section BELOW it */
+    transform: skewY(11deg); /* Adjust this value for the angle */
+    transform-origin: bottom right;
+    z-index: -5; /* Ensures the bottom wedge is on top */
+  }
+
+  /* This inner wrapper holds the content and counter-acts the skew */
+  .stats-content-wrapper {
+    /* display: flex;
+    align-items: center; */
+    /* This counter-acts the skew on the parent, making the content straight again */
+    /* transform: skewY(-13deg); */
+    position: relative;
+    z-index: 3;
+    /* Add your padding here */
+    /* padding-top: var(--spacing-6xl);
+    padding-bottom: var(--spacing-6xl); */
+    padding-top: calc(var(--spacing-4xl) + 15vw);
+    padding-bottom: calc(var(--spacing-4xl) + 15vw);
+    padding-left: var(--spacing-2xl);
+    padding-right: var(--spacing-2xl);
+  }
+
+  /* Your existing styles for the .stats-grid and its children go here */
+  .stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2xl);
+    justify-content: center;
+  }
+
+  .stats-card {
+    flex: 1 1 18rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    max-width: 25rem;
+  }
+
+  .stats-numbers {
+    font-size: clamp(3rem, 5vw, 6rem);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-yellow);
+    line-height: 1;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .stats-heading-wrapper {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .stats-header {
+    font-weight: var(--font-weight-bold);
+  }
+
+  .horizontal-line {
+    width: 100%;
+    max-width: 240px;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .horizontal-line svg {
+    display: block;
+    vertical-align: middle;
+    fill: currentColor;
+  }
+
+  .stats-p {
+    font-size: var(--font-size-small);
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+interface Props {
+  subheader?: string;
+
+  subheaderSVGColor?: string;
+  subheaderColor?: string;
+}
+
+const {
+  subheader = "",
+
+  subheaderSVGColor = "var(--color-brand-light-green)",
+  subheaderColor = "var(--color-brand-green)",
+} = Astro.props;
+---
+
+<div class="section-subheader">
+  <svg
+    width="200"
+    height="32"
+    viewBox="0 0 200 32"
+    xmlns="http://www.w3.org/2000/svg"
+    fill={subheaderColor}
+  >
+    <rect width="176" height="32" fill={subheaderSVGColor}></rect>
+    <path d="M176 32V0L200 32H176Z" fill={subheaderSVGColor}></path>
+  </svg>
+  <span class="subheader-text">{subheader}</span>
+</div>
+
+<style define:vars={{ subheaderColor }}>
+  .section-subheader {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+  }
+  .section-subheader svg {
+    /* SVG will take up its natural space */
+    display: block;
+  }
+  .subheader-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    color: var(--subheaderColor);
+  }
+</style>

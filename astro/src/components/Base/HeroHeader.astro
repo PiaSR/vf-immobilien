@@ -1,0 +1,59 @@
+---
+interface Props {
+  header?: string;
+
+  text: string;
+
+  headerColor?: string;
+  textColor?: string;
+  fontSizeH1?: string;
+  fontSizeP?: string;
+}
+
+const {
+  header,
+
+  text,
+
+  headerColor = "var(--color-brand-medium-green)",
+  textColor = "var(--color-neutral-font-dark)",
+  fontSizeH1 = "var(--font-size-h1)",
+  fontSizeP = "var(--font-size-body-xlarge)",
+} = Astro.props;
+---
+
+<div class="hero-header">
+  <h1 class="hero-header-h1">
+    {Astro.slots.has("default") ? <slot /> : header}
+  </h1>
+
+  <p class="hero-header-p">{text}</p>
+</div>
+
+<style
+  define:vars={{
+    headerColor: headerColor,
+    textColor: textColor,
+    fontSizeH1: fontSizeH1,
+    fontSizeP: fontSizeP,
+  }}
+>
+  .hero-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: start;
+    margin-bottom: var(--spacing-2xl);
+    gap: var(--spacing-2xl);
+  }
+
+  .hero-header-h1 {
+    color: var(--headerColor);
+    font-size: var(--fontSizeH1);
+  }
+  .hero-header-p {
+    color: var(--textColor);
+
+    font-size: var(--fontSizeP);
+  }
+</style>

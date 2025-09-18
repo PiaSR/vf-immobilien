@@ -36,8 +36,8 @@ const services = [
 ];
 ---
 
-<section class="services-section padding-section">
-  <div class="site-container">
+<section class="services-section">
+  <div class="site-container padding-section">
     <SectionHeader
       header="Ihre Immobilie. Unsere Leistungen."
       subheader="WAS WIR TUN"
@@ -46,6 +46,7 @@ const services = [
       subheaderColor="var(--color-neutral-dark-grey)"
       headerColor="var(--color-brand-light-green)"
       textColor="var(--color-neutral-white)"
+      textSize="var(--font-size-body-xlarge)"
     />
 
     <div class="services-grid">
@@ -55,6 +56,8 @@ const services = [
             icon={service.icon}
             title={service.title}
             description={service.description}
+            cardBgColor="var(--color-brand-green)"
+            cardFontColor="var(--color-neutral-white)"
           />
         ))
       }
@@ -70,6 +73,10 @@ const services = [
 <style>
   .services-section {
     background: var(--color-brand-dark-green);
+  }
+  .site-container {
+    z-index: 10;
+    padding-bottom: var(--spacing-lg);
   }
   .services-grid {
     display: grid;

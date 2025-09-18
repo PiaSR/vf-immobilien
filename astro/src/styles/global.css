@@ -26,7 +26,7 @@
 
   /* Font Families */
   --font-primary: "Inter", sans-serif;
-  --font-header: "Bitstream Iowan", sans-serif;
+  --font-header: "Bitstream Iowan", serif;
 
   /* Font Sizes */
   --font-size-h1: 3.5rem;
@@ -35,10 +35,11 @@
   --font-size-h4: 1.25rem;
   --font-size-h5: 1rem;
   --font-size-h6: 0.75rem;
-  --font-size-body-xlarge: 1.25rem;
-  --font-size-body-large: 1.125rem;
-  --font-size-body-base: 1rem;
-  --font-size-body-small: 0.875rem;
+  --font-size-body-xlarge: 1.25rem; /*20px*/
+  --font-size-body-large: 1.125rem; /*18px*/
+  --font-size-body-base: 1rem; /*16px*/
+  --font-size-body-small: 0.875rem; /*14px*/
+  --font-size-body-xsmall: 0.75rem; /*12px*/
 
   /* Line Heights */
   --line-height-header: 1.2;
@@ -55,6 +56,10 @@
   --spacing-lg: 1.25rem; /* 20px */
   --spacing-xl: 2rem; /* 32px */
   --spacing-2xl: 3rem; /* 48px */
+  --spacing-3xl: 4rem; /* 64px */
+  --spacing-4xl: 6rem; /* 96px */
+  --spacing-5xl: 8rem; /* 128px */
+  --spacing-6xl: 12rem; /* 196px */
 
   /* Border Radius*/
   --border-radius: 0.25rem;
@@ -75,7 +80,7 @@ body {
   font-size: var(--font-size-body-base); /*16px*/
   line-height: var(--line-height-body);
   color: var(--color-neutral-font-dark);
-  background-color: var(--color-neutral-lightest);
+  background-color: var(--color-brand-dark-green);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -133,10 +138,11 @@ a {
 }
 /* ----------------------------------------------- BUTTONS -------------------------------------------- */
 button {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  gap: var(--spacing-md);
   border: solid 1px transparent;
   border-radius: var(--border-radius);
   font-family: var(--font-primary);
@@ -168,6 +174,11 @@ button:not([class]) {
   border-color: var(--color-brand-medium-green);
 }
 
+.button-light-green {
+  background-color: var(--color-brand-light-green);
+  color: var(--color-neutral-font-dark);
+  border-color: var(--color-brand-light-green);
+}
 .button-transparent {
   background-color: var(--color-neutral-transparent);
   color: var(--color-neutral-white);
@@ -185,6 +196,12 @@ button:not([class]) {
   background-color: var(--color-brand-light-green);
   color: var(--color-brand-dark-green);
   border: solid 1px var(--color-brand-dark-green);
+}
+
+.button-light-green:hover {
+  background-color: var(--color-brand-green);
+  color: var(--color-neutral-white);
+  border: solid 1px var(--color-brand-green);
 }
 
 .button-small {
@@ -208,16 +225,20 @@ li {
   margin: 0 0;
 }
 section {
+  width: 100%;
   display: flex;
   justify-content: center;
-  min-height: 80vh;
-
-  width: 100%;
 }
 
 .padding-section {
-  padding: var(--spacing-2xl);
-  display: flex;
+  padding: var(--spacing-4xl) var(--spacing-2xl);
+}
+
+.padding-section-diagonal {
+  padding: var(--spacing-6xl) var(--spacing-2xl);
+}
+.padding-bottom-pre-diagonal {
+  padding-bottom: 15rem;
 }
 .container-align-left {
   display: flex;
@@ -226,12 +247,37 @@ section {
 
   justify-content: center;
   gap: var(--spacing-xl);
-  /* width: 80rem; */
-  /* max-width: 80rem; */
+  padding-top: var(--spacing-4xl);
+  padding-bottom: var(--spacing-4xl);
 }
 
-/* @media (max-width: 62rem) {
-  .container-align-left {
-    max-width: 18rem;
+/* --------------------------------------------------- IMAGES  -------------------------------------------------- */
+.angled-image {
+  height: 100%;
+  width: 100%;
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 70% 100%);
+  object-fit: cover;
+}
+.angled-image-mobile {
+  display: none;
+}
+
+/* remove angled image on mobile */
+@media (max-width: 48rem) {
+  .angled-image {
+    display: none;
   }
-} */
+  .has-angled-image {
+    flex-direction: column;
+    padding-bottom: 16rem;
+  }
+  .angled-image-mobile {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 16rem;
+    object-fit: cover;
+  }
+}

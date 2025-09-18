@@ -1,0 +1,36 @@
+---
+import ButtonArrow from "../../Base/ButtonArrow.astro";
+import SectionHeader from "../../Base/SectionHeader.astro";
+---
+
+<section class="intro-section">
+  <div class="site-container padding-section">
+    <SectionHeader
+      header="Immer für Sie da."
+      subheader="ÜBER UNS"
+      text="Die Viktoria Frohner Immobilien GmbH steht für eine individuelle und verlässliche Betreuung von Immobilien in Wien und Umgebung. Als klein strukturiertes Unternehmen legen wir besonderen Wert auf persönliche Erreichbarkeit, direkte Kommunikation und eine langfristige Zusammenarbeit mit Eigentümer:innen und Mieter:innen.<br><br>Wir verstehen Immobilienverwaltung nicht nur als administrative Aufgabe, sondern als Verantwortung gegenüber den Menschen, die in den Liegenschaften wohnen und investieren. Unser Ziel ist es, durch transparente Prozesse und engagierte Betreuung den Wert Ihrer Immobilie nachhaltig zu sichern."
+      subheaderSVGColor="var(--color-brand-light-green)"
+      subheaderColor="var(--color-neutral-dark-grey)"
+      headerColor="var(--color-brand-medium-green)"
+      textColor="var(--color-neutral-font-dark)"
+    />
+    <ButtonArrow class="button-orange">Kontaktieren Sie uns.</ButtonArrow>
+  </div>
+</section>
+
+<style>
+  .intro-section {
+    background-color: var(--color-neutral-lightest);
+    justify-content: center;
+  }
+  .site-container {
+    z-index: 5;
+    max-width: 60%;
+    padding-top: 0;
+  }
+  @media (max-width: 1024px) {
+    .site-container {
+      max-width: 90%;
+    }
+  }
+</style>

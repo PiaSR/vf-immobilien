@@ -1,0 +1,40 @@
+---
+import SectionHeader from "../../Base/SectionHeader.astro";
+import ServiceCard from "../../Cards/ServiceCard.astro";
+---
+
+<section id="about-history" class="history-section">
+  <div class="site-container padding-section">
+    <SectionHeader
+      header="Gebaut auf Erfahrung"
+      text="Viktoria Frohner Immobilien hat seine Wurzeln in zwei langjährig etablierten Hausverwaltungen. Aus dem Besten beider Welten haben wir etwas Neues geschaffen – modern, engagiert und mit einem starken Fundament."
+      headerColor="var(--color-brand-medium-green)"
+      textColor="var(--color-neutral-font-dark)"
+    />
+
+    <div class="card-wrapper">
+      <ServiceCard
+        title="HV Mag. Alexandra Richling"
+        description="Unsere Immobilienverwaltung in Wien bietet Ihnen eine umfassende, zuverlässige Betreuung für Ihre Liegenschaften. Wir kümmern uns um alle administrativen Aufgaben – von der Instandhaltung bis hin zur effizienten Mieterbetreuung."
+        cardBgColor="var(--color-neutral-light-grey)"
+        cardFontColor="var(--color-neutral-font-dark)"
+      />
+      <ServiceCard
+        title="HV Hörtlehner"
+        description="Die Hausverwaltung Hörtlehner wurde in den 60iger Jahren von Frau Ida Hörtlehner gegründet und nach ihrem Tod von ihrem Mann, Dr. Alexander Hörtlehner weitergeführt. 1992 erwarben Georg und Veronika Warhanek das Unternehmen und es wird seither als Ges.m.b.H. unter der Geschäftsführung von Frau Veronika Warhanek betrieben."
+        cardBgColor="var(--color-neutral-light-grey)"
+        cardFontColor="var(--color-neutral-font-dark)"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .history-section {
+    background-color: var(--color-neutral-lightest);
+  }
+  .card-wrapper {
+    display: inline-flex;
+    gap: var(--spacing-md);
+  }
+</style>

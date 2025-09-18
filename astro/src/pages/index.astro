@@ -1,11 +1,17 @@
 ---
 // src/pages/index.astro
+import CTAContactSection from "../components/Base/CTAContactSection.astro";
 import Hero from "../components/Sections/landing/Hero.astro";
 import LandingServices from "../components/Sections/landing/LandingServices.astro";
+import LandingStats from "../components/Sections/landing/LandingStats.astro";
+import LandingValues from "../components/Sections/landing/LandingValues.astro";
 import MainLayout from "../layouts/MainLayout.astro";
 ---
 
 <MainLayout>
   <Hero />
   <LandingServices />
+  <LandingStats />
+  <LandingValues />
+  <CTAContactSection />
 </MainLayout>

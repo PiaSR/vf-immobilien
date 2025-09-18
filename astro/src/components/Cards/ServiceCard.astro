@@ -1,10 +1,12 @@
 ---
 interface Props {
-  icon: string;
+  icon?: string;
   title: string;
   description: string;
+  cardBgColor: string;
+  cardFontColor: string;
 }
-const { icon, title, description } = Astro.props;
+const { icon, title, description, cardBgColor, cardFontColor } = Astro.props;
 ---
 
 <div class="service-card">
@@ -16,10 +18,10 @@ const { icon, title, description } = Astro.props;
   </div>
 </div>
 
-<style>
+<style define:vars={{ cardBgColor, cardFontColor }}>
   .service-card {
-    background-color: var(--color-brand-green);
-    color: var(--color-neutral-white);
+    background-color: var(--cardBgColor);
+    color: var(--cardFontColor);
     padding: var(--spacing-xl);
     display: flex;
     flex-direction: column;
@@ -35,8 +37,9 @@ const { icon, title, description } = Astro.props;
   .card-line {
     width: 4rem;
     height: 3px;
-    background-color: var(--color-neutral-white);
+
     margin-bottom: var(--spacing-sm);
+    background-color: var(--cardFontColor);
   }
   .card-content {
     display: flex;
