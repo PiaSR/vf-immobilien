@@ -1,0 +1,266 @@
+---
+import { Image } from "astro:assets";
+import { servicesData } from "../../../data/services";
+import EllipseImg from "../../../assets/images/Ellipse-6-1.svg";
+---
+
+<section id="services-offers" class="offers-section">
+  <div class="site-container padding-section">
+    <div class="section-header-wrapper">
+      <div class="header-icon-wrapper">
+        <Image src={EllipseImg} alt="" class="header-icon" />
+        <h2 class="heading-h2">Hausverwaltung</h2>
+      </div>
+      <div class="header-line"></div>
+    </div>
+
+    {
+      servicesData.map((service, index) => (
+        <div class="service-block">
+          <div
+            class={`service-card-container ${index % 2 !== 0 ? "reverse" : ""}`}
+          >
+            //{" "}
+            <div class="service-content">
+              <h3 class="heading-h3" set:html={service.title} />
+              <p class="service-description">{service.description}</p>
+              <div class="service-collapsible-wrapper">
+                <div class="collapsible-header">
+                  <h6 class="collapsible-heading">Unsere Leistungen</h6>
+                  <img
+                    src="images/Triangle-green.svg"
+                    alt=""
+                    class="collapsible-icon"
+                  />
+                </div>
+                <ul class="collapsible-list">
+                  {service.listItems.map((item) => (
+                    <li>
+                      <div class="list-item-icon" />
+                      <p>{item}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .offers-section {
+    position: relative;
+    background-color: var(--color-neutral-lightest);
+  }
+
+  .site-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--spacing-lg);
+  }
+
+  /* Header & Icon */
+  .section-header-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .header-icon-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .heading-h2 {
+    font-size: 2.5rem !important;
+    font-family: var(--font-primary);
+    color: var(--color-brand-dark-green);
+  }
+  .header-line {
+    width: 100%;
+    max-width: 23rem;
+    height: 2px;
+    background-color: var(--color-brand-dark-green);
+  }
+
+  /* Service Card Layout */
+  .service-block {
+    margin-bottom: var(--spacing-4xl);
+  }
+
+  .service-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    align-items: center;
+  }
+
+  .service-card-container.reverse {
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px) {
+    .service-card-container {
+      flex-direction: row;
+    }
+    .service-card-container.reverse {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .services-offers-imag {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+  }
+
+  .service-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  /* Collapsible Section */
+  .service-collapsible-wrapper {
+    width: 100%;
+    margin-top: var(--spacing-md);
+  }
+
+  .collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    background-color: var(--color-light-grey);
+  }
+
+  .collapsible-icon {
+    width: 1rem;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+
+  .collapsible-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    height: 0; /* This should be controlled by JavaScript for the collapsible effect */
+    transition: height 0.3s ease;
+  }
+
+  .collapsible-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+  }
+
+  .list-item-icon {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+  }
+
+  /* Search Profile Section */
+  .search-profile-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: var(--spacing-4xl);
+    padding-bottom: var(--spacing-4xl);
+    margin-top: var(--spacing-4xl);
+    margin-bottom: var(--spacing-4xl);
+    background-color: var(--color-primary-green);
+  }
+
+  .search-description {
+    margin-top: var(--spacing-lg);
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+
+  .search-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .benefit-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .benefit-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  /* Utility Classes & Components */
+  .heading-h2 {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+  }
+
+  .heading-h3 {
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+  }
+
+  .button-arrow {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .button-arrow:hover {
+    background-color: transparent;
+    color: var(--color-primary);
+  }
+
+  .section-divider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    color: var(--color-neutral-lightest);
+    z-index: 1;
+  }
+
+  .section-divider path {
+    fill: currentColor;
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+import { Image } from "astro:assets";
+import Button from "../../Base/Button.astro";
+import ButtonArrow from "../../Base/ButtonArrow.astro";
+import HeroHeader from "../../Base/HeroHeader.astro";
+import servicesHero from "/src/assets/images/services-hero.jpg";
+---
+
+<section id="services-hero" class="hero has-angled-image">
+  <div class="site-container hero-grid-content padding-section">
+    <div class="container-align-left">
+      <HeroHeader
+        header="Ihr Partner rund um Immobilien"
+        text="Unsere Leistungen im Überblick."
+        headerColor="var(--color-neutral-white)"
+        textColor="var(--color-neutral-white)"
+      />
+
+      <ButtonArrow class="button-orange">Kontaktieren Sie uns</ButtonArrow>
+    </div>
+    <Image
+      src={servicesHero}
+      alt="White building facade"
+      class="angled-image"
+    />
+    <Image
+      src={servicesHero}
+      alt="White building facade"
+      class="angled-image-mobile"
+    />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--color-brand-green);
+  }
+  .padding-section {
+    padding-right: 0;
+  }
+
+  .site-container {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .hero-grid-content {
+    display: grid;
+    grid-template-columns: 1fr 28%;
+    gap: var(--spacing-2xl);
+    height: 100%;
+  }
+
+  h1 {
+    line-height: var(--line-height-header);
+  }
+  .subtitle {
+    color: var(--color-neutral-font-dark);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-body-xlarge);
+  }
+</style>

@@ -45,6 +45,9 @@ import ctaimage from "./src/assets/images/cta-image1.jpg";
     position: relative;
     overflow: hidden;
   }
+  .padding-section {
+    padding-right: 0;
+  }
   .site-container {
     display: grid;
     grid-template-columns: 1fr 28%;
@@ -74,16 +77,13 @@ import ctaimage from "./src/assets/images/cta-image1.jpg";
     .site-container {
       padding-top: var(--spacing-2xl);
       padding-bottom: var(--spacing-2xl);
+      grid-template-columns: 1fr;
     }
-
-    .button-container {
-      flex-direction: column;
-    }
-  }
-
-  @media (max-width: 990px) {
     .text-container {
       padding-left: 0;
+    }
+    .button-container {
+      flex-direction: column;
     }
   }
 </style>

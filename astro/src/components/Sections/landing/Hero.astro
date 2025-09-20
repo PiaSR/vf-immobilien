@@ -47,6 +47,9 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     background: var(--color-neutral-lightest);
     color: var(--color-brand-dark-green);
   }
+  .padding-section {
+    padding-right: 0;
+  }
 
   .site-container {
     padding-top: 0;
@@ -63,16 +66,15 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     line-height: var(--line-height-header);
   }
   .subtitle {
-    color: #2c3e50;
+    color: var(--color-neutral-font-dark);
     font-weight: var(--font-weight-regular);
     font-size: var(--font-size-body-xlarge);
   }
 
   .animated-word-wrapper {
     display: inline-flex;
-    /* height: var(--line-height-header); */
+
     overflow: hidden;
-    /* line-height: var(--line-height-header); */
     position: relative;
     box-sizing: content-box;
     vertical-align: top; /* Changed to top for consistent alignment */
@@ -90,9 +92,12 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     font-size: inherit;
     font-weight: inherit;
   }
-  @media (max-width: 64rem) {
+  @media (max-width: 61.875rem) {
     h1 {
       font-size: var(--font-size-h2);
+    }
+    .hero-grid-content {
+      grid-template-columns: 1fr;
     }
     .animated-word-wrapper {
       height: var(--line-height-header);

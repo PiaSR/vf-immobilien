@@ -5,8 +5,18 @@ interface Props {
   description: string;
   cardBgColor: string;
   cardFontColor: string;
+  cardBgHover: string;
+  cardFontHover: string;
 }
-const { icon, title, description, cardBgColor, cardFontColor } = Astro.props;
+const {
+  icon,
+  title,
+  description,
+  cardBgColor,
+  cardFontColor,
+  cardBgHover,
+  cardFontHover,
+} = Astro.props;
 ---
 
 <div class="service-card">
@@ -18,10 +28,11 @@ const { icon, title, description, cardBgColor, cardFontColor } = Astro.props;
   </div>
 </div>
 
-<style define:vars={{ cardBgColor, cardFontColor }}>
+<style define:vars={{ cardBgColor, cardFontColor, cardBgHover, cardFontHover }}>
   .service-card {
     background-color: var(--cardBgColor);
     color: var(--cardFontColor);
+
     padding: var(--spacing-xl);
     display: flex;
     flex-direction: column;
@@ -29,10 +40,24 @@ const { icon, title, description, cardBgColor, cardFontColor } = Astro.props;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-small);
   }
+  .service-card:hover {
+    background-color: var(--cardBgHover) !important;
+    color: var(--cardFontHover);
+  }
+  .service-card:hover .heading-style-h5,
+  .service-card:hover .text-s {
+    color: var(--cardFontHover);
+  }
+  .service-card:hover .card-line {
+    background-color: var(--cardFontHover);
+  }
+  .service-card:hover .card-icon {
+    color: var(--cardFontHover);
+  }
   .card-icon {
     width: 3rem;
     height: 3rem;
-    color: var(--color-brand-medium-green);
+    /* color: var(cardFontColor); */
   }
   .card-line {
     width: 4rem;

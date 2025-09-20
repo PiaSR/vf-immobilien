@@ -1,0 +1,54 @@
+---
+import SectionHeader from "../../Base/SectionHeader.astro";
+import TeamCard from "../../Cards/TeamCard.astro";
+---
+
+<section class="team-section">
+  <div class="site-container padding-section">
+    <SectionHeader
+      header="Unser Team"
+      subheader="WER WIR SIND"
+      text="Wir sind ein kleines, eingespieltes Team, das seine Liegenschaften kennt - und auch deren Bewohner. Unsere Mitarbeiter:innen sind langjährig in der Branche tätig und sorgen für Kontinuität in der Betreuung. Es gibt bei uns keine wechselnden Ansprechpersonen, keine langen Wartezeiten und keine Standardlösungen."
+      subheaderSVGColor="var(--color-brand-light-green)"
+      subheaderColor="var(--color-neutral-dark-grey)"
+      headerColor="var(--color-brand-light-green)"
+      textColor="var(--color-neutral-white)"
+    />
+    <div class="team-card-wrapper">
+      <TeamCard
+        imageSrc="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg"
+        imageAlt="A placeholder image for a team member"
+        name="Viktoria Frohner"
+        role="Geschäftsführerin"
+        description="Viktoria Frohner ist seit 2017 in der Immobilienverwaltung tätig und hat sich seither kontinuierlich fachlich weiterentwickelt. Ihre umfassende Erfahrung sammelte sie in den renommierten Hausverwaltungen Mag. Richling und Hörtlehner - zwei Unternehmen, die sie unter einem neuen Dach fusionierte."
+      />
+      <TeamCard
+        imageSrc="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg"
+        imageAlt="A placeholder image for a team member"
+        name="Viktoria Frohner"
+        role="Geschäftsführerin"
+        description="Viktoria Frohner ist seit 2017 in der Immobilienverwaltung tätig und hat sich seither kontinuierlich fachlich weiterentwickelt. Ihre umfassende Erfahrung sammelte sie in den renommierten Hausverwaltungen Mag. Richling und Hörtlehner - zwei Unternehmen, die sie unter einem neuen Dach fusionierte."
+      />
+      <TeamCard
+        imageSrc="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg"
+        imageAlt="A placeholder image for a team member"
+        name="Viktoria Frohner"
+        role="Geschäftsführerin"
+        description="Viktoria Frohner ist seit 2017 in der Immobilienverwaltung tätig und hat sich seither kontinuierlich fachlich weiterentwickelt. Ihre umfassende Erfahrung sammelte sie in den renommierten Hausverwaltungen Mag. Richling und Hörtlehner - zwei Unternehmen, die sie unter einem neuen Dach fusionierte."
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .team-section {
+    background-color: var(--color-brand-medium-green);
+    padding-top: 35rem;
+    margin-top: -35rem;
+  }
+  .team-card-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: var(--spacing-lg);
+  }
+</style>

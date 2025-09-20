@@ -263,7 +263,7 @@ section {
 }
 
 /* remove angled image on mobile */
-@media (max-width: 48rem) {
+@media (max-width: 61.875rem) {
   .angled-image {
     display: none;
   }

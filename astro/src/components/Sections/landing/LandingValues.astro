@@ -151,13 +151,12 @@ import { Image } from "astro:assets";
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-2xl);
-    justify-content: center;
+    justify-content: flex-end;
     align-items: flex-start;
   }
 
   .value-card {
     display: flex;
-
     align-items: center;
     text-align: start;
     gap: var(--spacing-lg);
@@ -192,5 +191,13 @@ import { Image } from "astro:assets";
     .values-grid {
       grid-template-columns: 1fr;
     }
-  }
+    .values-list {
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--spacing-md);
+    }
+    .value-card {
+      flex: 1 1 12rem;
+    }
+   
 </style>
