@@ -1,0 +1,189 @@
+---
+import { Image } from "astro:assets";
+import { servicesData } from "../../data/services";
+import TriangleGreen from "../../assets/images/Triangle-green.svg";
+
+interface Props {
+  service: (typeof import("../../data/services"))["servicesData"][0];
+  isReversed: boolean;
+}
+
+const { service, isReversed } = Astro.props;
+---
+
+<div class={`service-card-container ${isReversed ? "reverse" : ""}`}>
+  <Image src={service.image} alt={service.alt} class="services-offers-image" />
+  <div class="service-content">
+    <h3 class="heading-h3" set:html={service.title} />
+    <p class="service-description">{service.description}</p>
+    <div class="service-collapsible-wrapper">
+      <div class="collapsible-header">
+        <h5 class="collapsible-heading">Unsere Leistungen</h5>
+        <Image
+          src={TriangleGreen}
+          alt="green triangle for down arrow"
+          class="collapsible-icon"
+        />
+      </div>
+      <ul class="collapsible-list">
+        {
+          service.listItems.map((item) => (
+            <li>
+              <p>{item}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .service-block {
+    margin-bottom: var(--spacing-4xl);
+  }
+
+  .service-card-container {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--spacing-xl);
+    align-items: flex-start;
+  }
+
+  .service-card-container.reverse {
+    flex-direction: column;
+  }
+  .service-content {
+    display: flex;
+    flex-wrap: wrap;
+
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+
+    min-width: 0;
+    flex: 1;
+  }
+  .heading-h3 {
+    font-size: var(--font-size-h2) !important;
+    color: var(--color-brand-medium-green);
+    word-break: break-word;
+    min-width: 0;
+  }
+  @media (min-width: 768px) {
+    .service-card-container {
+      flex-direction: row;
+    }
+    .service-card-container.reverse {
+      flex-direction: row-reverse;
+    }
+  }
+  .services-offers-image {
+    width: 100%;
+    max-width: 400px;
+    min-height: 500px;
+    height: auto;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .services-offers-image {
+      max-width: 100%;
+    }
+  }
+  /* Collapsible Section */
+  .service-collapsible-wrapper {
+    width: 100%;
+    margin-top: var(--spacing-md);
+  }
+
+  .collapsible-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+  }
+  .collapsible-heading {
+    font-family: var(--font-primary);
+  }
+
+  .collapsible-icon {
+    width: 1rem;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  .collapsible-icon.active {
+    transform: rotate(180deg);
+  }
+
+  .collapsible-list {
+    font-size: var(--font-size-body-xsmall);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    height: 0;
+    transition: height 0.3s ease;
+  }
+
+  .collapsible-list.active {
+    height: auto;
+  }
+  .collapsible-list li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+  .collapsible-list li::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Fine-tune centering */
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--color-neutral-medium-grey);
+    border-radius: 50%;
+  }
+  .collapsible-list p {
+    padding-left: var(--spacing-md);
+  }
+  .list-item-icon {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--color-neutral-lightest);
+    border-radius: 50%;
+  }
+</style>
+
+<script>
+  // Select all collapsible headers on the page
+  const headers = document.querySelectorAll(".collapsible-header");
+
+  headers.forEach((header) => {
+    // Select the icon and list relative to the current header
+    const icon = header.querySelector(".collapsible-icon");
+    const list = header.nextElementSibling; // The list is the next sibling element
+
+    header.addEventListener("click", () => {
+      // Toggle the 'active' class on both the icon and the list
+      icon.classList.toggle("active");
+      list.classList.toggle("active");
+
+      // Set the height dynamically for a smooth transition
+      if (list.classList.contains("active")) {
+        list.style.height = `${list.scrollHeight}px`;
+      } else {
+        list.style.height = "0";
+      }
+    });
+  });
+</script>

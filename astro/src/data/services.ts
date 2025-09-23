@@ -1,9 +1,14 @@
+import MietzinshausImage from "../assets/images/Mietzinshäuser.jpg";
+import WEGImage from "../assets/images/WEG.jpg";
+import SubverwaltungImage from "../assets/images/Subverwaltung.jpg";
+
+
 export const servicesData = [
 	{
-	  title: "Mietzinshäuser (Zinshausverwaltung)",
+	  title: "Miet&shy;zins&shy;häuser (Zins&shy;haus&shy;ver&shy;wal&shy;tung)",
 	  description:
 		"Bei Mietzinshäusern steht neben der technischen Betreuung vor allem die wirtschaftliche Optimierung im Mittelpunkt. Wir übernehmen die vollständige kaufmännische und mietrechtliche Verwaltung und sorgen für einen reibungslosen Ablauf im laufenden Betrieb. Je nach Ihren Wünschen stellen wir Ihnen unser Leistungspaket zusammen.",
-	  image: "images/Zinshaus-img.jpg",
+	  image: MietzinshausImage,
 	  alt: "Zinshaus",
 	  listItems: [
 		"Verwaltung der Mieteinnahmen und Betriebskosten",
@@ -17,10 +22,10 @@ export const servicesData = [
 	  ],
 	},
 	{
-	  title: "Wohnungseigentums- gemeinschaften (WEG-Verwaltung)",
+	  title: "Wohnungs&shy;eigentums&shy;gemein&shy;schaften (WEG-Ver&shy;wal&shy;tung)",
 	  description:
 		"Im Rahmen der Verwaltung von Wohnungseigentumsgemeinschaften übernehmen wir die kaufmännische, technische und organisatorische Betreuung der gesamten Liegenschaft. Grundlage ist das Wohnungseigentumsgesetz (WEG).",
-	  image: "images/WEG-image.jpg",
+	  image: WEGImage,
 	  alt: "WEG-Verwaltung",
 	  listItems: [
 		"Erstellung der jährlichen Abrechnung (Betriebskosten und Rücklage) gemäß § 34 WEG",
@@ -34,11 +39,11 @@ export const servicesData = [
 	  ],
 	},
 	{
-	  title: "Subverwaltung einzelner Einheiten",
+	  title: "Sub&shy;ver&shy;wal&shy;tung einzelner Ein&shy;heiten",
 	  description:
 		"Wir übernehmen auch die Verwaltung einzelner Eigentumswohnungen innerhalb größerer Liegenschaften - z. B. für vermietete Wohnungen, deren Eigentümer:innen nicht selbst vor Ort sind oder keine laufende Betreuung übernehmen möchten.",
-	  image: "images/subverwaltung-image.jpg",
-	  alt: "Subverwaltung",
+	  image: SubverwaltungImage,
+	  alt: "image",
 	  listItems: [
 		"Mietvorschreibung und Abrechnung der Betriebskosten",
 		"Mietverträge, Indexierung, Kommunikation mit Mieter:innen",

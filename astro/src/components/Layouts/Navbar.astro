@@ -6,9 +6,9 @@ import MobileNavToggle from "../Utils/MobileNavToggle";
 const navItems = [
   { name: "Home", href: "/" },
   { name: "Über uns", href: "/about" },
-  { name: "Leistungen", href: "services" },
-  { name: "FAQs", href: "resources" },
-  { name: "Immobiliensuche", href: "properties" },
+  { name: "Leistungen", href: "/services" },
+  { name: "FAQs", href: "/faqs" },
+  { name: "Immobiliensuche", href: "/properties" },
 ];
 
 const pathname = new URL(Astro.request.url).pathname;
