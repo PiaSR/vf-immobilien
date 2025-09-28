@@ -1,0 +1,53 @@
+---
+// Landing page hero
+import Button from "../../Base/Button.astro";
+import { Image } from "astro:assets";
+import heroImage from "/src/assets/images/faq-hero.jpg";
+import HeroHeader from "../../Base/HeroHeader.astro";
+---
+
+<section id="faq-hero" class="faq-hero has-angled-image">
+  <div class="site-container hero-grid-content padding-section">
+    <div class="container-align-left">
+      <HeroHeader
+        header="Alles, was Sie brauchen."
+        text="Wissenswertes & Dokumente"
+        headerColor="var(--color-neutral-white)"
+        textColor="var(--color-neutral-white)"
+      />
+    </div>
+    <Image src={heroImage} alt="brown wooden door" class="angled-image" />
+    <Image
+      src={heroImage}
+      alt="brown wooden door"
+      class="angled-image-mobile"
+    />
+  </div>
+</section>
+
+<style>
+  .faq-hero {
+    position: relative;
+    background: var(--color-brand-medium-gree);
+  }
+  .padding-section {
+    padding-right: 0;
+  }
+
+  .site-container {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .hero-grid-content {
+    display: grid;
+    grid-template-columns: 1fr 28%;
+    gap: var(--spacing-2xl);
+    height: 100%;
+  }
+
+  @media (max-width: 61.875rem) {
+    h1 {
+      font-size: var(--font-size-h2);
+    }
+  }
+</style>

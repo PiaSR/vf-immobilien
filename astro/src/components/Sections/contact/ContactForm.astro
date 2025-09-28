@@ -1,0 +1,296 @@
+---
+import ButtonArrow from "../../Base/ButtonArrow.astro";
+---
+
+<section id="contact-form-section" class="contact-section">
+  <div class="site-container padding-section">
+    <div class="contact-card-wrapper">
+      <div class="section-header-wrapper">
+        <h2 class="heading-h2">Kontaktieren Sie uns</h2>
+
+        <p class="text-description">
+          Für Anfragen, Informationen oder Terminvereinbarungen – wir stehen
+          Ihnen gerne zur Verfügung.
+        </p>
+      </div>
+
+      <div class="contact-form-container">
+        <form
+          id="contact-form"
+          name="contact-form"
+          data-name="contact form"
+          method="POST"
+        >
+          <div class="form-grid-2-col">
+            <div class="form-field-group">
+              <label for="first-name">Vorname</label>
+              <input
+                class="form-input"
+                maxlength="256"
+                name="first-name"
+                placeholder=""
+                type="text"
+                id="first-name"
+                required
+              />
+            </div>
+            <div class="form-field-group">
+              <label for="last-name">Nachname</label>
+              <input
+                class="form-input"
+                maxlength="256"
+                name="last-name"
+                placeholder=""
+                type="text"
+                id="last-name"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="padding-bottom padding-small"></div>
+
+          <div class="form-field-group">
+            <label for="email">Email</label>
+            <input
+              class="form-input"
+              maxlength="256"
+              name="email"
+              placeholder=""
+              type="email"
+              id="email"
+              required
+            />
+          </div>
+          <div class="form-field-group">
+            <label for="phone">Telefonnummer</label>
+            <input
+              class="form-input"
+              maxlength="256"
+              name="phone"
+              placeholder=""
+              type="tel"
+              id="phone"
+              required
+            />
+          </div>
+
+          <div class="padding-bottom padding-small"></div>
+
+          <div class="form-field-group">
+            <label for="message">Ihre Nachricht</label>
+            <textarea
+              id="message"
+              name="message"
+              maxlength="5000"
+              placeholder=""
+              class="form-textarea"></textarea>
+          </div>
+
+          <div class="padding-bottom padding-medium"></div>
+
+          <label class="form-checkbox-label">
+            <input
+              type="checkbox"
+              name="TandCs"
+              id="TandCs"
+              data-name="TandCs"
+              required
+            />
+            <span class="checkbox-custom-indicator"></span>
+            <span class="checkbox-text" for="TandCs"
+              >Ich habe die AGB und Datenschutzbestimmungen gelesen und erkläre
+              mich damit einverstanden.</span
+            >
+          </label>
+
+          <div class="padding-bottom padding-small"></div>
+
+          <ButtonArrow type="submit" class="button-orange">
+            Anfrage absenden
+          </ButtonArrow>
+        </form>
+
+        <div class="form-success-message">
+          <div>
+            Danke für Ihre Anfrage! Unser Team wird sich bald bei Ihnen melden.
+          </div>
+        </div>
+        <div class="form-error-message">
+          <div>
+            Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte
+            versuchen Sie es erneut.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- Global Containers --- */
+  .contact-section {
+    position: relative;
+    padding: var(--spacing-4xl) 0;
+    background-color: var(--color-neutral-lightest);
+    z-index: 5;
+    padding-bottom: calc(var(--spacing-4xl) + 15vw);
+  }
+
+  .contact-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+  }
+  /* --- Header and Text --- */
+  .section-header-wrapper {
+    text-align: start;
+    word-wrap: break-word;
+  }
+
+  .heading-h2 {
+    color: var(--color-brand-medium-green);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .text-description {
+    font-size: var(--font-size-body-base);
+    color: var(--color-neutral-dark);
+  }
+
+  /* --- Form Layout and Grid --- */
+  .contact-form-container {
+    padding-top: var(--spacing-3xl);
+    color: var(--color-neutral-font-dark);
+  }
+
+  .form-field-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-lg);
+    width: 100%;
+  }
+
+  .form-grid-2-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  @media (min-width: 780px) {
+    .form-grid-2-col {
+      grid-template-columns: 1fr 1fr; /* Two columns on desktop */
+    }
+  }
+
+  /* --- Form Labels and Inputs --- */
+
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-neutral-medium-grey);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-body);
+    transition: border-color 0.3s ease;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    border-color: var(--color-neutral-font-dark);
+    outline: none;
+  }
+
+  .form-textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  /* --- Checkbox Styling --- */
+  .form-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: var(--font-size-body-small);
+    color: var(--color-neutral-dark);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .form-checkbox-label input[type="checkbox"] {
+    /* Hide the default browser checkbox */
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .checkbox-custom-indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-brand-medium-green);
+    border-radius: 4px;
+    margin-right: var(--spacing-sm);
+    flex-shrink: 0;
+    position: relative;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  /* Custom checkmark using pseudo-element */
+  .checkbox-custom-indicator::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: none;
+  }
+
+  .form-checkbox-label
+    input[type="checkbox"]:checked
+    + .checkbox-custom-indicator {
+    background-color: var(--color-brand-medium-green);
+    border-color: var(--color-brand-medium-green);
+  }
+
+  .form-checkbox-label
+    input[type="checkbox"]:checked
+    + .checkbox-custom-indicator::after {
+    display: block;
+  }
+
+  .checkbox-text {
+    line-height: 1.4;
+  }
+
+  /* --- Submit Button --- */
+  .button-orange {
+    width: 100%;
+  }
+
+  /* --- Form Feedback Messages --- */
+  .form-success-message,
+  .form-error-message {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+    display: none; /* Hide by default, JavaScript handles showing/hiding */
+  }
+
+  .form-success-message {
+    background-color: #d4edda; /* Light green */
+    color: #155724; /* Dark green text */
+  }
+
+  .form-error-message {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red text */
+  }
+</style>

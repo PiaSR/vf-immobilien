@@ -1,0 +1,157 @@
+---
+import { Image } from "astro:assets";
+import ButtonArrow from "../../Base/ButtonArrow.astro";
+import calendarIcon from "/src/assets/images/calendar-early-icon.svg";
+import framePerson from "/src/assets/images/frame-person-icon.svg";
+import hourglass from "/src/assets/images/hourglass-icon.svg";
+---
+
+<section class="subscription-section">
+  <div class="subscription-content-wrapper site-container">
+    <div class="subscription-header-wrapper">
+      <h2 class="subscription-header">Suchkundenvormerkung</h2>
+      <p class="subscription-subheader">
+        <strong>Sie wissen, was Sie suchen?</strong>
+        <br /> Füllen Sie einfach unser Suchformular mit Ihren Wunschkriterien
+        aus. Neue Miet- oder Kaufobjekte gleichen wir automatisch mit Ihrem
+        Profil ab. Bei einem Treffer erhalten Sie das Angebot direkt per E-Mail
+        – noch vor der öffentlichen Veröffentlichung. So sind Sie dem Markt
+        immer einen Schritt voraus!
+      </p>
+    </div>
+    <div class="subscription-grid">
+      <div class="subscription-card">
+        <Image
+          class="subscription-icon"
+          src={calendarIcon}
+          alt="calendar icon"
+        />
+        <div class="subscription-heading-wrapper">
+          <p class="subscription-card-header">Frühzeitige Informationen</p>
+        </div>
+      </div>
+      <div class="subscription-card">
+        <Image
+          class="subscription-icon"
+          src={framePerson}
+          alt="icon of person outlined in frame"
+        />
+        <div class="subscription-heading-wrapper">
+          <p class="subscription-card-header">Individuell Rückmeldung</p>
+        </div>
+      </div>
+      <div class="subscription-card">
+        <Image class="subscription-icon" src={hourglass} alt="hourglass icon" />
+        <div class="subscription-heading-wrapper">
+          <p class="subscription-card-header">Zeit <br /> gewinnen</p>
+        </div>
+      </div>
+    </div>
+    <ButtonArrow class="button-orange">Zum Suchprofil</ButtonArrow>
+  </div>
+</section>
+
+<style>
+  .subscription-section {
+    /* The entire section now has the green background */
+    background-color: var(--color-brand-light-green);
+    color: var(--color-brand-dark-green);
+    /* This creates the diagonal shape on the bottom of the section */
+    /* transform: skewY(13deg); */
+    transform-origin: bottom right;
+    position: relative;
+    z-index: 1; /* Ensures this section is on top of content below it */
+    /* margin-top: 10vw; */
+  }
+  .subscription-section::before {
+    content: "";
+    position: absolute;
+    top: 0rem;
+    left: 0;
+    width: 100%;
+    height: 40rem; /* Adjust this to control the height of the diagonal */
+    background-color: var(
+      --color-brand-light-green
+    ); /* Color of the section ABOVE it */
+    transform: skewY(-11deg);
+    transform-origin: top left;
+    z-index: -5;
+  }
+
+  /* This creates the diagonal cut at the BOTTOM of the section */
+  .subscription-section::after {
+    content: "";
+    position: absolute;
+    bottom: 0rem;
+    left: 0;
+    width: 100%;
+    height: 40rem; /* Adjust this to control the height of the diagonal */
+    background-color: var(
+      --color-brand-light-green
+    ); /* Color of the section BELOW it */
+    transform: skewY(-11deg); /* Adjust this value for the angle */
+    transform-origin: bottom right;
+    z-index: -5; /* Ensures the bottom wedge is on top */
+  }
+
+  /* This inner wrapper holds the content and counter-acts the skew */
+  .subscription-content-wrapper {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-4xl);
+    padding-top: calc(var(--spacing-2xl) + 5vw);
+    padding-bottom: calc(var(--spacing-2xl) + 5vw);
+    padding-left: var(--spacing-2xl);
+    padding-right: var(--spacing-2xl);
+  }
+  .subscription-header-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 75%;
+    gap: var(--spacing-xl);
+  }
+  .subscription-header {
+    font-family: var(--font-primary);
+    font-size: 2.5rem;
+  }
+  .subscription-subheader {
+    text-align: center;
+  }
+  /* Your existing styles for the .stats-grid and its children go here */
+  .subscription-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--spacing-2xl);
+    justify-content: center;
+  }
+
+  .subscription-card {
+    flex: 1 1 18rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    max-width: 25rem;
+  }
+
+  .subscription-icon {
+    width: 3.75rem;
+    height: 3.75rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .subscription-heading-wrapper {
+    display: flex;
+    align-items: center;
+    /* margin-bottom: var(--spacing-md); */
+  }
+
+  .subscription-card-header {
+    font-weight: var(--font-weight-bold);
+  }
+</style>

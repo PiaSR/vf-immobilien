@@ -1,0 +1,76 @@
+---
+import { Image } from "astro:assets";
+import { servicesVerwaltungData } from "../../../data/servicesVerwaltung";
+import EllipseImg from "../../../assets/images/Ellipse-6-1.svg";
+import OffersCard from "../../Cards/OffersCard.astro";
+---
+
+<section id="services-offers" class="offers-section">
+  <div class="site-container padding-section">
+    <div class="section-header-wrapper">
+      <div class="header-icon-wrapper">
+        <Image src={EllipseImg} alt="" class="header-icon" />
+        <h2 class="heading-h2">Hausverwaltung</h2>
+      </div>
+      <div class="header-line"></div>
+    </div>
+
+    <div class="service-block-wrapper">
+      {
+        servicesVerwaltungData.map((service, index) => (
+          <OffersCard service={service} isReversed={index % 2 !== 0} />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .offers-section {
+    position: relative;
+    background-color: var(--color-neutral-lightest);
+  }
+
+  .site-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Header & Icon */
+  .section-header-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .header-icon-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .heading-h2 {
+    font-size: 2.5rem !important;
+    font-family: var(--font-primary);
+    color: var(--color-brand-dark-green);
+  }
+  .header-line {
+    width: 100%;
+    max-width: 23rem;
+    height: 2px;
+    background-color: var(--color-brand-dark-green);
+  }
+  .service-block-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4xl);
+  }
+</style>

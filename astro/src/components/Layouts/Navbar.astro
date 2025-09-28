@@ -47,7 +47,9 @@ const pathname = new URL(Astro.request.url).pathname;
             ))
           }
           <li class="cs-li">
-            <button class="button-orange button-nav">Kontakt</button>
+            <a class="button button-orange button-nav" href="/contact"
+              >Kontakt</a
+            >
           </li>
         </ul>
       </div>
@@ -301,6 +303,30 @@ const pathname = new URL(Astro.request.url).pathname;
       #cs-navigation .button-nav {
         font-size: clamp(0.875rem, 1vw, 1rem);
         padding: var(--spacing-sm) var(--spacing-lg);
+      }
+      .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        gap: var(--spacing-md);
+        border: solid 1px transparent;
+        border-radius: var(--border-radius);
+        font-family: var(--font-primary);
+        font-weight: var(--font-weight-regular);
+        line-height: var(--line-height-body);
+        font-size: var(--font-size-body-base);
+        padding: var(--spacing-md) var(--spacing-xl);
+        cursor: pointer;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+
+      .button:not([class]) {
+        border: solid 1px var(--color-neutral-font-dark);
+        background-color: var(--color-neutral-lightest);
+        color: var(--color-neutral-font-dark);
       }
     }
   </style>

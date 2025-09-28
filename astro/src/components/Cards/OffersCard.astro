@@ -1,10 +1,9 @@
 ---
 import { Image } from "astro:assets";
-import { servicesData } from "../../data/services";
 import TriangleGreen from "../../assets/images/Triangle-green.svg";
 
 interface Props {
-  service: (typeof import("../../data/services"))["servicesData"][0];
+  // service: (typeof import("../../data/servicesVerwaltung"))["servicesData"][0];
   isReversed: boolean;
 }
 
@@ -47,7 +46,7 @@ const { service, isReversed } = Astro.props;
     display: flex;
     flex-direction: column;
 
-    gap: var(--spacing-xl);
+    gap: var(--spacing-5xl);
     align-items: flex-start;
   }
 
@@ -116,6 +115,7 @@ const { service, isReversed } = Astro.props;
     width: 1rem;
     height: auto;
     transition: transform 0.3s ease;
+    transition-delay: 0.2s;
   }
   .collapsible-icon.active {
     transform: rotate(180deg);
@@ -180,10 +180,13 @@ const { service, isReversed } = Astro.props;
 
       // Set the height dynamically for a smooth transition
       if (list.classList.contains("active")) {
-        list.style.height = `${list.scrollHeight}px`;
+        setTimeout(() => {
+          list.style.height = `${list.scrollHeight}px`;
+        }, 300);
       } else {
         list.style.height = "0";
       }
     });
   });
 </script>
+ ../../data/servicesVerwaltung

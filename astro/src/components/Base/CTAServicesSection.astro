@@ -1,0 +1,93 @@
+---
+import ButtonArrow from "./ButtonArrow.astro";
+import SectionHeader from "./SectionHeader.astro";
+import { Image } from "astro:assets";
+import ctaimage from "./src/assets/images/cta-services-alt.jpg";
+---
+
+<section class="contact-cta-section has-angled-image">
+  <div class="site-container padding-section">
+    <div class="text-container">
+      <SectionHeader
+        header="Noch Fragen offen?"
+        text="Entdecken Sie unsere Leistungen – mit Herz, Verstand und einem offenen Ohr für Ihre Anliegen."
+        headerColor="var(--color-brand-medium-green)"
+        textColor="var(--color-neutral-font-dark)"
+      />
+      <div class="button-container">
+        <ButtonArrow href="/faqs" class="button-orange button-small">
+          Unsere Leistungen
+        </ButtonArrow>
+        <ButtonArrow href="/contact" class="button-transparent button-small">
+          FAQs
+        </ButtonArrow>
+      </div>
+    </div>
+
+    <Image
+      src={ctaimage}
+      loading="lazy"
+      alt="building facade, white, with green ivy climbing up"
+      class="angled-image"
+    />
+    <Image
+      src={ctaimage}
+      alt="building facade, white, with green ivy climbing up"
+      class="angled-image-mobile"
+    />
+  </div>
+</section>
+
+<style>
+  .contact-cta-section {
+    background-color: var(--color-neutral-lightest);
+
+    position: relative;
+    overflow: hidden;
+  }
+  .padding-section {
+    padding-right: 0;
+  }
+  .site-container {
+    display: grid;
+    grid-template-columns: 1fr 28%;
+    gap: var(--spacing-2xl);
+    height: 100%;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .text-container {
+    /* flex: 1; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    padding-left: var(--spacing-6xl);
+    z-index: 1;
+    /* max-width: 50%; */
+  }
+  .button-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--spacing-lg);
+  }
+  .button-transparent {
+    color: var(--color-cta-orange);
+    border-color: var(--color-cta-orange);
+  }
+
+  @media (max-width: 990px) {
+    .site-container {
+      padding-top: var(--spacing-2xl);
+      padding-bottom: var(--spacing-2xl);
+      grid-template-columns: 1fr;
+    }
+    .text-container {
+      padding-left: 0;
+    }
+    .button-container {
+      flex-direction: column;
+    }
+  }
+</style>
