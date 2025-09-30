@@ -97,5 +97,60 @@ export default defineType({
       rows: 2, // Hint that it might be a small block of text
       description: 'e.g., Termin nach telefonischer Vereinbarung erbeten.',
     }),
+
+    // =========================================================
+    // --- NEW: Social Media Links ---
+    // =========================================================
+    defineField({
+      name: 'socialsHeading',
+      title: 'Social Media Links',
+      type: 'string',
+      // The fieldset option groups these fields visually in the studio
+      options: {
+        collapsible: true,
+        collapsed: false,
+      },
+      // Using a custom fieldset name to group the following fields
+      fieldset: 'socials', 
+    }),
+
+    defineField({
+      name: 'facebookUrl',
+      title: 'Facebook URL',
+      type: 'url',
+      description: 'Full URL to your Facebook profile. INCLUDE http://',
+      fieldset: 'socials',
+    }),
+    defineField({
+      name: 'instagramUrl',
+      title: 'Instagram URL',
+      type: 'url',
+      description: 'Full URL to your Instagram profile. INCLUDE http://',
+      fieldset: 'socials',
+    }),
+    defineField({
+      name: 'linkedinUrl',
+      title: 'LinkedIn URL',
+      type: 'url',
+      description: 'Full URL to your LinkedIn profile. INCLUDE http://',
+      fieldset: 'socials',
+    }),
+    defineField({
+      name: 'customSocialUrl',
+      title: 'Custom Social/Other URL (Optional)',
+      type: 'url',
+      description: 'Optional link for platforms like X/Twitter, Xing, etc.',
+      fieldset: 'socials',
+    }),
+  ],
+
+  fieldsets: [
+    {
+      name: 'socials',
+      title: 'Social Media Links',
+      options: {
+        columns: 2, // Optional: arrange the social fields into two columns
+      },
+    },
   ],
 });
