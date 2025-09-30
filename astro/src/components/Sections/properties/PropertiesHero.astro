@@ -1,24 +1,20 @@
 ---
-// Landing page hero
-import Button from "../../Base/Button.astro";
 import { Image } from "astro:assets";
-import heroImage from "/src/assets/images/faq-hero.jpg";
+import propertiesHero from "/src/assets/images/properties-hero.jpg";
 import HeroHeader from "../../Base/HeroHeader.astro";
 ---
 
-<section id="faq-hero" class="faq-hero has-angled-image">
+<section id="properties-hero" class="properties-hero">
   <div class="site-container hero-grid-content padding-section">
     <div class="container-align-left">
       <HeroHeader
-        header="Alles, was Sie brauchen."
-        text="Wissenswertes & Dokumente"
-        headerColor="var(--color-neutral-white)"
-        textColor="var(--color-neutral-white)"
+        header="Immobiliensuche"
+        headerColor="var(--color-brand-dark-green)"
       />
     </div>
-    <Image src={heroImage} alt="brown wooden door" class="angled-image" />
+    <Image src={propertiesHero} alt="brown wooden door" class="angled-image" />
     <Image
-      src={heroImage}
+      src={propertiesHero}
       alt="brown wooden door"
       class="angled-image-mobile"
     />
@@ -26,10 +22,11 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 </section>
 
 <style>
-  .faq-hero {
+  .properties-hero {
+    background-color: var(--color-brand-light-green);
     position: relative;
-    background: var(--color-brand-medium-green);
   }
+
   .padding-section {
     padding-right: 0;
   }
@@ -43,11 +40,5 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     grid-template-columns: 1fr 28%;
     gap: var(--spacing-2xl);
     height: 100%;
-  }
-
-  @media (max-width: 61.875rem) {
-    h1 {
-      font-size: var(--font-size-h2);
-    }
   }
 </style>
