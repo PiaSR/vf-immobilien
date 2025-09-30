@@ -7,6 +7,8 @@ import publicTransport from './publicTransport';
 import agent from './agent';
 import siteSettings from './siteSettings';
 import faqs from './faqs';
+import files from './files';
+import officeDetails from './officeDetails';
 
 export const schemaTypes = [
   property,
@@ -15,5 +17,7 @@ export const schemaTypes = [
   publicTransport,
   agent,
   siteSettings,
-  faqs
+  faqs,
+  files,
+  officeDetails
 ];

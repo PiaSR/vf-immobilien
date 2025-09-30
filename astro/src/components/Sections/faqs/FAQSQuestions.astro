@@ -1,0 +1,384 @@
+---
+// 1. Sanity Client Import (assuming path is correct)
+import { getFaqs } from "/src/lib/sanityClient.js";
+import TriangleGreen from "/src/assets/images/Triangle-green.svg";
+import { Image } from "astro:assets";
+
+// 2. Fetch all FAQ items from Sanity
+const fetchedFaqItems = await getFaqs();
+const allFaqItems = fetchedFaqItems || [];
+
+// 3. Data Grouping and Preparation
+// Group items into a Map: { 'renters': [...items], 'owners': [...items] }
+const groupedFaqs = allFaqItems.reduce((acc, item) => {
+  const categoryKey = item.category || "general"; // Use a fallback key
+  if (!acc.has(categoryKey)) {
+    acc.set(categoryKey, []);
+  }
+  acc.get(categoryKey).push(item);
+  return acc;
+}, new Map());
+
+// Map for display names (for the filter buttons and section headers)
+const categoryDisplayNames = {
+  all: "Alle",
+  renters: "Mieter",
+  owners: "Eigentümer",
+};
+
+// Get the unique, non-empty categories
+const categories = Array.from(groupedFaqs.keys()).filter(
+  (key) => key !== "all"
+);
+
+// Fallback to avoid breaking if no data is found
+const hasFaqs = allFaqItems.length > 0;
+---
+
+<section id="faq-section" class="faq-section">
+  <div class="site-container padding-section">
+    <div class="section-header-wrapper">
+      <h2 class="heading-h3 faq-header-title">Häufig gestellte Fragen</h2>
+    </div>
+
+    {
+      hasFaqs && (
+        <>
+          <div class="faq-filter-wrapper" data-filter-controls>
+            <div class="faq-categories-list-ui">
+              <button data-filter-value="all" class="button-filter active">
+                Alle
+              </button>
+              {categories.map((key) => (
+                <button
+                  data-filter-value={key}
+                  class="button-filter"
+                  data-has-separator
+                >
+                  {categoryDisplayNames[key]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div class="faq-list-wrapper">
+            {Array.from(groupedFaqs.keys()).map(
+              (
+                categoryKey // Added parentheses around categoryKey
+              ) => (
+                <div
+                  class="faq-category-group"
+                  data-category-group={categoryKey}
+                >
+                  <div class="faq-item-list">
+                    {/* Map over the items in this specific category group */}
+                    {groupedFaqs.get(categoryKey).map(
+                      (
+                        item // Added parentheses around item
+                      ) => (
+                        <div
+                          class="faq-item"
+                          data-category={categoryKey}
+                          data-accordion-item
+                        >
+                          <svg
+                            class="top-line"
+                            width="100%"
+                            height="10"
+                            viewBox="0 0 auto 10"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              x="0"
+                              y="4.5"
+                              width="100%"
+                              height="1"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <div class="faq-question-container">
+                            {/* Question and Arrow/Icon */}
+                            <div
+                              class="faq-question-header"
+                              data-accordion-header
+                            >
+                              <div class="faq-question-text">
+                                {item.question}
+                              </div>
+                              <div class="faq-arrow-icon-wrapper">
+                                <Image
+                                  src={TriangleGreen}
+                                  alt="green triangle for down arrow"
+                                  class="collapsible-icon"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            class="faq-answer-wrapper"
+                            data-accordion-content
+                          >
+                            <p class="faq-answer-text">{item.answer}</p>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  // Accordion Logic
+  const headers = document.querySelectorAll("[data-accordion-header]");
+  headers.forEach((header) => {
+    header.addEventListener("click", () => {
+      const item = header.closest("[data-accordion-item]");
+      const answerWrapper = item.querySelector("[data-accordion-content]");
+      const isCurrentlyOpen = item.classList.contains("is-open");
+
+      // Close all others (optional: remove this if you want multiple open)
+      document
+        .querySelectorAll("[data-accordion-item].is-open")
+        .forEach((openItem) => {
+          openItem.classList.remove("is-open");
+          openItem.querySelector("[data-accordion-content]").style.height = "0";
+        });
+
+      if (!isCurrentlyOpen) {
+        // Opening the clicked item
+        item.classList.add("is-open");
+        answerWrapper.style.height = `${answerWrapper.scrollHeight}px`;
+      } else {
+        // Closing the clicked item
+        item.classList.remove("is-open");
+        answerWrapper.style.height = "0";
+      }
+    });
+  });
+
+  // Category Filtering Logic
+  const filterButtons = document.querySelectorAll("[data-filter-value]");
+  const categoryGroups = document.querySelectorAll("[data-category-group]");
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filterValue = button.getAttribute("data-filter-value");
+
+      // Update active state on buttons
+      filterButtons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // Toggle visibility of category groups
+      categoryGroups.forEach((group) => {
+        const groupCategory = group.getAttribute("data-category-group");
+
+        if (filterValue === "all" || groupCategory === filterValue) {
+          group.style.display = "block";
+        } else {
+          group.style.display = "none";
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  /* --- Global Containers --- */
+  .faq-section {
+    padding: var(--spacing-4xl) 0;
+    background-color: var(--color-neutral-lightest);
+  }
+
+  .site-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+  }
+
+  .padding-section {
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
+  }
+
+  /* --- Section Header --- */
+  .section-header-wrapper {
+    text-align: start;
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .faq-header-title {
+    color: var(--color-brand-medium-green);
+  }
+
+  /* --- Category Filters --- */
+  .faq-filter-wrapper {
+    display: flex;
+    justify-content: start;
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .faq-categories-list-ui {
+    display: flex;
+    position: relative; /* For absolute positioning of separator */
+    border-radius: var(--border-radius); /* Rounded pill shape */
+    overflow: hidden; /* Crucial for clipping the inner content */
+    background-color: var(
+      --color-brand-medium-green
+    ); /* The main green background */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+  }
+
+  .button-filter {
+    position: relative; /* For z-index and pseudo-elements */
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none; /* Remove individual button borders */
+    background: transparent; /* Default to transparent, relies on parent bg */
+    cursor: pointer;
+    color: var(
+      --color-neutral-white
+    ); /* Default text color on green background */
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.2s ease;
+    z-index: 1; /* Ensure text is above separators */
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+
+  .button-filter:hover,
+  .button-filter.active {
+    background-color: var(
+      --color-neutral-white
+    ); /* White background for active button */
+    color: var(
+      --color-brand-dark-green
+    ); /* Dark green text for active button */
+    /* Add a border around the active button, matching the background color */
+    box-shadow: inset 0 0 0 1px var(--color-brand-dark-green);
+    z-index: 2; /* Ensure active button is above siblings and separators */
+  }
+
+  /* Separator (the | symbol) */
+  .button-filter[data-has-separator]::before {
+    content: ""; /* Required for pseudo-elements */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px; /* Thickness of the separator line */
+    height: 60%; /* Height of the separator line */
+    background-color: var(
+      --color-neutral-white
+    ); /* Semi-transparent white line */
+    opacity: 0.6; /* Make it slightly less prominent */
+    z-index: 0; /* Behind the button content */
+  }
+
+  /* Hide separator if the button to its left is active or if it's the first button */
+  .button-filter[data-has-separator]:first-child::before {
+    display: none; /* No separator before the first button */
+  }
+
+  /* If the button BEFORE me is active, hide my separator */
+  .button-filter.active + .button-filter[data-has-separator]::before {
+    display: none;
+  }
+  /* And if *I* am active, hide my own separator */
+  .button-filter[data-has-separator].active::before {
+    display: none;
+  }
+  /* --- FAQ List and Items --- */
+  .faq-list-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .faq-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .faq-item {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+
+  .faq-question-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: var(--spacing-md) 0;
+  }
+
+  .top-line {
+    color: var(--color-neutral-dark-grey);
+    display: block;
+  }
+
+  /* --- Question Header and Icon --- */
+  .faq-question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    padding-right: var(--spacing-md);
+  }
+
+  .faq-question-text {
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-font-dark);
+  }
+
+  .faq-arrow-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* --- ROTATION LOGIC FIX: Targetting the correct class --- */
+  .collapsible-icon {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    /* Default: Triangle pointing down */
+    transform: rotate(0deg);
+  }
+
+  .faq-item.is-open .collapsible-icon {
+    /* Open: Triangle pointing up */
+    transform: rotate(180deg);
+  }
+  /* --- END ROTATION LOGIC FIX --- */
+
+  /* --- Answer Content (Collapsible) --- */
+  .faq-answer-wrapper {
+    /* Set to 0 and managed by JS for smooth collapse */
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+  }
+
+  .faq-answer-text {
+    /* Inner padding for the answer text */
+    padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-lg)
+      calc(var(--spacing-lg) + 20px);
+    font-size: var(--font-size-body-small);
+    line-height: 1.6;
+    color: var(--color-neutral-font-dark);
+  }
+</style>

@@ -1,8 +1,10 @@
 interface ImportMetaEnv {
-	readonly SANITY_PROJECT_ID: string
-	readonly SANITY_DATASET: string
-	// Add other environment variables here as needed
-  }
+    // Astro's PUBLIC prefix for client-side variables
+    readonly PUBLIC_SANITY_PROJECT_ID: string;
+    readonly PUBLIC_SANITY_DATASET: string;
+    readonly PUBLIC_SANITY_API_VERSION: string;
+    // Add any other PUBLIC_ variables you use
+}
   
   interface ImportMeta {
 	readonly env: ImportMetaEnv

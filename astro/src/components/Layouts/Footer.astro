@@ -1,4 +1,5 @@
 ---
+// Import the necessary components and data as before
 import { Image } from "astro:assets";
 import VikiLogo from "../../../public/logos/Viki-new-logo-white-1-with-writing-1.svg";
 import Linkedin from "../astro/public/icons/Linkedin-1.svg";
@@ -7,6 +8,39 @@ import Facebook from "../../../public/icons/Facebook-1.svg";
 import EmailIcon from "../../../public/icons/email-icon-1.svg";
 import PhoneIcon from "../../../public/icons/phone-icon-1.svg";
 import LocationIcon from "../../../public/icons/location-icon-1.svg";
+
+// Sanity Imports (ADJUST PATHS HERE!)
+import { sanityClient, type OfficeDetails } from "../../lib/sanityClient";
+
+// Define the GROQ Query
+const officeDetailsQuery = `
+  *[_type == "officeDetails"][0] {
+    email,
+    phone,
+    streetAddress,
+    cityPostal
+  }
+`;
+
+// Fetch the Data
+const officeDetails: OfficeDetails | null =
+  await sanityClient.fetch(officeDetailsQuery);
+
+// Fallback data
+const fallback = {
+  email: "office@vf-immobilien.at",
+  phone: "+43 123 456 849",
+  streetAddress: "Auhofstrasse 78C/1",
+  cityPostal: "1130 Wien",
+};
+
+// Use fetched data or fallback
+const data = officeDetails || fallback;
+
+// Helper functions for linking
+const cleanPhoneNumber = data.phone.replace(/[\s\-\(\)]/g, "");
+const rawAddress = `${data.streetAddress}, ${data.cityPostal}`;
+const mapAddressUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rawAddress)}`;
 ---
 
 <footer class="main-footer">
@@ -38,58 +72,80 @@ import LocationIcon from "../../../public/icons/location-icon-1.svg";
       <div class="footer-links">
         <div class="links-group">
           <h6 class="links-header">Über uns</h6>
-          <a href="uber-uns.html" class="link-item">Team</a>
-          <a href="uber-uns.html" class="link-item">Entstehung</a>
-          <a href="uber-uns.html" class="link-item">Werte</a>
+          <a href="about.html#about-team" class="link-item">Team</a>
+          <a href="about.html#about-history" class="link-item">Entstehung</a>
+          <a href="about.html#about-values" class="link-item">Werte</a>
         </div>
         <div class="links-group">
           <h6 class="links-header">Leistungen</h6>
-          <div class="link-item">Hausverwaltung</div>
-          <div class="link-item">Immobilienvermittlung</div>
-          <div class="link-item">Eigentümer:inberatung</div>
-          <div class="link-item">Suchvorvermerkung</div>
+          <a href="services.html#services-hausverwaltung" class="link-item"
+            >Hausverwaltung</a
+          >
+          <a href="services.html#services-vermittlung" class="link-item"
+            >Immobilienvermittlung</a
+          >
+
+          <a href="services.html#subscription" class="link-item"
+            >Suchvorvermerkung</a
+          >
         </div>
         <div class="links-group">
           <h6 class="links-header">Immobiliensuche</h6>
-          <div class="link-item">Suchprofil</div>
-          <div class="link-item">Kaufen</div>
-          <div class="link-item">Mieten</div>
+          <a href="immobiliensuche.html#suchprofil" class="link-item"
+            >Suchprofil</a
+          >
+          <a href="immobiliensuche.html#kaufen" class="link-item">Kaufen</a>
+          <a href="immobiliensuche.html#mieten" class="link-item">Mieten</a>
         </div>
       </div>
+
       <div class="footer-contact-details">
-        <div class="contact-line">
+        <a href={`mailto:${data.email}`} class="contact-line">
           <Image
             src={EmailIcon}
             loading="lazy"
             alt="Email icon"
             class="contact-icon"
           />
-          <div class="contact-text">office@vf-immobilien.at</div>
-        </div>
-        <div class="contact-line">
+          <div class="contact-text">{data.email}</div>
+        </a>
+
+        <a href={`tel:${cleanPhoneNumber}`} class="contact-line">
           <Image
             src={PhoneIcon}
             loading="lazy"
             alt="Phone icon"
             class="contact-icon"
           />
-          <div class="contact-text">+43 123 456 849</div>
-        </div>
-        <div class="contact-line">
+          <div class="contact-text">{data.phone}</div>
+        </a>
+
+        <a
+          href={mapAddressUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-line"
+        >
           <Image
             src={LocationIcon}
             loading="lazy"
             alt="Location icon"
             class="contact-icon"
           />
-          <div class="contact-text">Auhofstrasse 78C/1, 1130 Wien</div>
-        </div>
+          <div class="contact-text">
+            {data.streetAddress},<br />
+            {data.cityPostal}
+          </div>
+        </a>
       </div>
     </div>
   </div>
 </footer>
 
 <style>
+  /* NOTE: I converted all <div class="link-item"> to <a href="..." class="link-item"> 
+     to make them functional links. All your existing styles still apply.
+  */
   .main-footer {
     background-color: var(--color-brand-dark-green);
     color: var(--color-neutral-white);
@@ -191,17 +247,32 @@ import LocationIcon from "../../../public/icons/location-icon-1.svg";
     gap: var(--spacing-md);
   }
 
-  .contact-line {
+  .footer-contact-details .contact-line {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--spacing-sm);
     color: var(--color-neutral-white);
     font-size: var(--font-size-body-small);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-contact-details .contact-line:hover {
+    opacity: 1;
+  }
+
+  .contact-text {
+    margin: 0;
+    line-height: 1.4;
+    opacity: 1;
   }
 
   .contact-icon {
     width: var(--spacing-lg);
     height: var(--spacing-lg);
+    flex-shrink: 0;
+    margin-top: 2px;
   }
 
   /*
@@ -240,7 +311,15 @@ import LocationIcon from "../../../public/icons/location-icon-1.svg";
     }
 
     .footer-contact-details {
-      order: -1; /* This moves the element to the front */
+      order: -1;
+    }
+
+    .footer-contact-details .contact-line {
+      align-items: center;
+      justify-content: center;
+    }
+    .footer-contact-details .contact-line:last-child {
+      align-items: flex-start;
     }
   }
 </style>

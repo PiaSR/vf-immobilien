@@ -1,9 +1,58 @@
 ---
+// 1. Astro Component Imports (Existing)
 import { Image } from "astro:assets";
 import emailIcon from "/src/assets/images/email-icon-1.svg";
 import phoneIcon from "/src/assets/images/phone-icon-1.svg";
 import locationIcon from "/src/assets/images/location-icon-1.svg";
 import clockIcon from "/src/assets/images/time-clock-1.svg";
+
+// 2. Sanity Imports (Adjust path to your client file and generated types!)
+import { sanityClient, type OfficeDetails } from "../../../lib/sanityClient";
+
+// 3. Define the GROQ Query (Existing)
+const officeDetailsQuery = `
+  *[_type == "officeDetails"][0] {
+    email,
+    phone,
+    streetAddress,
+    cityPostal,
+    additionalInfo,
+    officeHours[] {
+      days,
+      time
+    }
+  }
+`;
+
+// 4. Fetch the Data (Existing)
+const officeDetails: OfficeDetails | null =
+  await sanityClient.fetch(officeDetailsQuery);
+
+// Fallback data (Existing)
+const fallback = {
+  email: "office@yourdomain.at",
+  phone: "+43 1 123 45 67",
+  streetAddress: "Hauptstraße 10",
+  cityPostal: "1140 Wien, Österreich",
+  additionalInfo: "Termin nach telefonischer Vereinbarung erbeten.",
+  officeHours: [
+    { days: "Montag - Donnerstag", time: "9:00 - 16:00" },
+    { days: "Freitag", time: "9:00 - 12:00" },
+  ],
+};
+
+// Use fetched data or fallback
+const data = officeDetails || fallback;
+
+//  Prepare address for Google Maps links/search
+const rawAddress = `${data.streetAddress}, ${data.cityPostal}`;
+const mapAddress = encodeURIComponent(rawAddress);
+
+//  Generate the Google Maps URL for an external link
+const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapAddress}`;
+
+// Helper function to clean phone number for 'tel:' link (Existing)
+const cleanPhoneNumber = data.phone.replace(/[\s\-\(\)]/g, "");
 ---
 
 <section id="contact-details-section" class="details-section">
@@ -11,7 +60,8 @@ import clockIcon from "/src/assets/images/time-clock-1.svg";
     <div class="details-content-wrapper">
       <div class="map-embed-container">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2659.865080847406!2d16.282088576592464!3d48.189950971249225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476da7ed004e4f6b%3A0x51393baa636e11eb!2sAuhofstra%C3%9Fe%2078C%2F1%2C%201130%20Wien%2C%20Austria!5e0!3m2!1sen!2sza!4v1759068240888!5m2!1sen!2sza"
+          src={`https://maps.google.com/maps?q=${mapAddress}&output=embed`}
+          title={`Google Maps location for ${rawAddress}`}
           style="border:0;"
           allowfullscreen=""
           loading="lazy"
@@ -37,7 +87,9 @@ import clockIcon from "/src/assets/images/time-clock-1.svg";
               class="item-icon"
             />
             <div class="contact-item-text">
-              <p>office@yourdomain.at</p>
+              <a href={`mailto:${data.email}`}>
+                <p>{data.email}</p>
+              </a>
             </div>
           </div>
 
@@ -49,7 +101,9 @@ import clockIcon from "/src/assets/images/time-clock-1.svg";
               class="item-icon"
             />
             <div class="contact-item-text">
-              <p>+43 1 123 45 67</p>
+              <a href={`tel:${cleanPhoneNumber}`}>
+                <p>{data.phone}</p>
+              </a>
             </div>
           </div>
 
@@ -61,8 +115,10 @@ import clockIcon from "/src/assets/images/time-clock-1.svg";
               class="item-icon"
             />
             <div class="contact-item-text">
-              <p>Hauptstraße 10</p>
-              <p>1140 Wien, Österreich</p>
+              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                <p>{data.streetAddress}</p>
+                <p>{data.cityPostal}</p>
+              </a>
             </div>
           </div>
 
@@ -74,11 +130,19 @@ import clockIcon from "/src/assets/images/time-clock-1.svg";
               class="item-icon"
             />
             <div class="contact-item-text">
-              <p>Montag - Donnerstag: 9:00 - 16:00</p>
-              <p>Freitag: 9:00 - 12:00</p>
-              <div class="notice-text">
-                Termin nach telefonischer Vereinbarung erbeten.
-              </div>
+              {
+                data.officeHours.map((hours) => (
+                  <p>
+                    {hours.days}: {hours.time}
+                  </p>
+                ))
+              }
+
+              {
+                data.additionalInfo && (
+                  <div class="notice-text">{data.additionalInfo}</div>
+                )
+              }
             </div>
           </div>
         </div>
@@ -178,6 +242,15 @@ import clockIcon from "/src/assets/images/time-clock-1.svg";
 
   .contact-item-text p:first-child {
     font-weight: var(--font-weight-medium);
+  }
+
+  /* 🟢 NEW: Ensure the linked text is visible */
+  .contact-item-text a {
+    color: inherit; /* Inherit white text color */
+    text-decoration: none; /* Remove underline, or add a subtle one */
+  }
+  .contact-item-text a:hover {
+    text-decoration: underline;
   }
 
   .notice-text {

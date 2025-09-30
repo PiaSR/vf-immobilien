@@ -1,0 +1,127 @@
+---
+// src/pages/faq.astro
+
+import SectionHeader from "../../Base/SectionHeader.astro";
+import { getDocuments } from "/src/lib/sanityClient.js"; // <-- Ensure getDocuments is imported
+import docIcon from "/src/assets/images/Document-icon-svg.svg";
+import openInNewWindow from "/src/assets/images/Open-in-new-window.svg";
+import { Image } from "astro:assets";
+
+// 2. Fetch all FAQ items and DOCUMENTS from Sanity
+const fetchedDocuments = await getDocuments();
+const allDocuments = fetchedDocuments || [];
+
+// NEW: Data Grouping for Documents
+const groupedDocuments = allDocuments.reduce((acc, doc) => {
+  const categoryKey = doc.category || "general";
+  if (!acc.has(categoryKey)) {
+    acc.set(categoryKey, []);
+  }
+  acc.get(categoryKey).push(doc);
+  return acc;
+}, new Map());
+
+// Fallback to avoid breaking if no data is found
+const hasDocuments = allDocuments.length > 0; // <-- NEW
+---
+
+<section id="faq-documents-section" class="faq-document-section">
+  <div class="site-container padding-section">
+    <SectionHeader
+      header="Alle Dokumente an einem Ort"
+      text="Ob Anmeldeformulare, Mieterservice oder Behördenwege – hier finden Sie alle wichtigen Unterlagen schnell und unkompliziert."
+      headerColor="var(--color-brand-light-green)"
+      textColor="var(--color-neutral-white)"
+    />
+
+    {
+      hasDocuments && (
+        <section class="document-wrapper">
+          <div class="document-list-wrapper">
+            {Array.from(groupedDocuments.keys()).map((categoryKey) => (
+              <div class="doc-category-group" data-category-group={categoryKey}>
+                <div class="doc-item-list">
+                  {groupedDocuments.get(categoryKey).map((doc) => (
+                    <a
+                      href={doc.fileUrl}
+                      class="document-link-item"
+                      target="_blank"
+                      download
+                    >
+                      <div class="document-icon-title-wrapper">
+                        <Image
+                          src={docIcon}
+                          alt="document icon"
+                          class="document-icon"
+                        />
+                        <span class="document-title">{doc.title}</span>
+                      </div>
+
+                      <Image
+                        src={openInNewWindow}
+                        alt="icon for open in new window"
+                        class="document-icon"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .faq-document-section {
+    background-color: var(--color-brand-medium-green);
+  }
+
+  .document-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .doc-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  .document-link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--spacing-md);
+    background-color: var(--color-neutral-lightest);
+
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .document-link-item:hover {
+    background-color: var(--color-brand-light-green);
+  }
+
+  .document-icon-title-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--spacing-xl);
+  }
+  .document-title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-dark);
+  }
+
+  /* .document-icon {
+    font-size: var(--font-size-body-small);
+    color: var(--color-brand-dark-green);
+    font-weight: var(--font-weight-bold);
+  } */
+</style>
