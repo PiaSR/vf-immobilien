@@ -1,52 +1,205 @@
-<!-- ---
-import { client } from "../lib/sanity";
-import { PropertySchema } from "../lib/schemas/property.ts";
+---
+// PropertyCard.astro
+import { Image } from "astro:assets";
 
-// Fetch properties
-const rawProperties = await client.fetch('*[_type == "property"]');
-
-// Validate it with Zod
-const safe = PropertySchema.array().safeParse(rawProperties);
-
-if (!safe.success) {
-  console.error("Sanity returned bad data:", safe.error);
-  throw new Error("Invalid property data");
+// Define the properties this card expects
+interface Property {
+  slug: string;
+  imageUrl: string;
+  title: string;
+  location: string;
+  area: number;
+  rooms: number;
+  price: number;
+  marketingType: "miete" | "kauf";
 }
 
-const properties = safe.data;
-// Fetch site settings
-const settings = await client.fetch('*[_type == "siteSettings"][0]');
+const { property } = Astro.props as { property: Property };
+
+// Helper to format currency
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  })
+    .format(price)
+    .replace("€", "")
+    .trim(); // Remove the € sign since we add it separately
+};
+
+const priceSuffix = property.marketingType === "miete" ? "/Monat" : "";
 ---
 
-<html lang="de">
-  <head>
-    <title>{settings?.title || "VF Immobilien"}</title>
-  </head>
-  <body>
-    <header>
-      <h1>{settings?.title}</h1>
-      {settings?.logo && <img src={settings.logo.asset.url} alt="Logo" />}
-    </header>
+<a href={`/property/${property.slug}`} class="property-card-link">
+  <div class="property-card-wrapper">
+    <div class="property-card-image-box">
+      <img
+        src={property.imageUrl}
+        loading="lazy"
+        alt={property.title}
+        class="property-card-image"
+      />
+    </div>
 
-    <main>
-      <h2>Properties List</h2>
-      <div class="properties">
-        {
-          properties.map((property) => (
-            <article>
-              <h3>{property.title}</h3>
-              {property.mainImage && (
-                <img
-                  src={property.mainImage.asset.url}
-                  alt={property.title}
-                  width="400"
-                />
-              )}
-              <p>Preis: &euro;{property.price?.toLocaleString("de-DE")}</p>
-            </article>
-          ))
-        }
+    <div class="property-card-info-wrapper">
+      <div class="property-card-location-wrapper">
+        <img
+          src="/assets/icons/location-pin-1.svg"
+          loading="lazy"
+          alt="Location Pin"
+          class="location-icon"
+        />
+        <div class="property-card-address text-style-tiny">
+          {property.location}
+        </div>
       </div>
-    </main>
-  </body>
-</html> -->
+
+      <div class="spacer spacer-small"></div>
+      <h3 class="heading-style-h5 property-card-heading">{property.title}</h3>
+      <div class="spacer spacer-small"></div>
+
+      <div class="property-card-icons-wrapper">
+        <div class="property-card-icon-text">
+          <img
+            src="/assets/icons/squaremeter-1.svg"
+            loading="lazy"
+            alt="Living Area Icon"
+            class="detail-icon"
+          />
+          <div class="spacer spacer-tiny"></div>
+          <div class="text-style-extra-tiny">{property.area}</div>
+          <div class="text-style-extra-tiny">qm</div>
+        </div>
+
+        <div class="property-card-icon-text">
+          <img
+            src="/assets/icons/room-icon-1.svg"
+            loading="lazy"
+            alt="Room Icon"
+            class="detail-icon"
+          />
+          <div class="spacer spacer-tiny"></div>
+          <div class="text-style-extra-tiny">{property.rooms}</div>
+          <div class="spacer spacer-micro"></div>
+          <div class="text-style-extra-tiny">Zimmer</div>
+        </div>
+      </div>
+
+      <div class="spacer spacer-small"></div>
+      <div class="property-icon-price-wrapper">
+        <div class="price-currency-sign">€</div>
+        <div class="price-value">{formatPrice(property.price)}</div>
+        <div class="spacer spacer-tiny"></div>
+        <div class="price-suffix text-style-regular">{priceSuffix}</div>
+      </div>
+    </div>
+  </div>
+</a>
+
+<style>
+  /* --- PROPERTY CARD STYLES (Pasted from previous response) --- */
+
+  .property-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .property-card-link:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-medium);
+  }
+
+  .property-card-wrapper {
+    background-color: white;
+    border: 1px solid var(--color-neutral-light);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .property-card-image-box {
+    position: relative;
+    padding-bottom: 66.66%;
+    overflow: hidden;
+  }
+
+  .property-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .property-card-info-wrapper {
+    padding: var(--spacing-regular);
+    flex-grow: 1;
+  }
+
+  .property-card-location-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-tiny);
+    margin-bottom: var(--spacing-small);
+  }
+
+  .location-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .property-card-heading {
+    margin-top: 0;
+    color: var(--color-neutral-dark);
+  }
+
+  .property-card-icons-wrapper {
+    display: flex;
+    gap: var(--spacing-regular);
+    margin-top: var(--spacing-small);
+  }
+
+  .property-card-icon-text {
+    display: flex;
+    align-items: center;
+    color: var(--color-neutral-dark);
+    font-size: var(--font-size-extra-tiny);
+  }
+
+  .detail-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: var(--spacing-tiny);
+  }
+
+  .property-icon-price-wrapper {
+    display: flex;
+    align-items: baseline;
+    font-weight: 700;
+    color: var(--color-brand-dark-green);
+  }
+
+  .price-currency-sign {
+    font-size: var(--font-size-regular);
+    margin-right: var(--spacing-xs);
+  }
+
+  .price-value {
+    font-size: var(--font-size-h5);
+    line-height: 1;
+  }
+
+  .price-suffix {
+    font-size: var(--font-size-tiny);
+    font-weight: 400;
+    color: var(--color-neutral-dark);
+  }
+</style>
