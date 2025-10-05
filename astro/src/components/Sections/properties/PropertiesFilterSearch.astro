@@ -1,0 +1,865 @@
+---
+import { Image } from "astro:assets";
+// 💡 IMPORTANT: Ensure you have your Sanity client initialized here
+import { sanityClient } from "../../../lib/sanityClient";
+import SearchIcon from "/src/assets/images/search_24dp_FFF_FILL0_wght400_GRAD0_opsz24.svg";
+
+// --- 1. Define Vienna Districts (Hardcoded for reliability) ---
+const viennaDistricts = [
+  "1. Innere Stadt",
+  "2. Leopoldstadt",
+  "3. Landstraße",
+  "4. Wieden",
+  "5. Margareten",
+  "6. Mariahilf",
+  "7. Neubau",
+  "8. Josefstadt",
+  "9. Alsergrund",
+  "10. Favoriten",
+  "11. Simmering",
+  "12. Meidling",
+  "13. Hietzing",
+  "14. Penzing",
+  "15. Rudolfsheim-Fünfhaus",
+  "16. Ottakring",
+  "17. Hernals",
+  "18. Währing",
+  "19. Döbling",
+  "20. Brigittenau",
+  "21. Floridsdorf",
+  "22. Donaustadt",
+  "23. Liesing",
+];
+
+// --- 2. Fetch Dynamic Filter Options from Sanity (Objektart, Amenities) ---
+const filterOptionsQuery = `{
+    // Fetch property type options (still reliable if a property exists)
+    "propertyTypes": *[_type == "property"][0].propertyType.options.list[].value,
+    "amenities": *[_type == "ausstattung"].title,
+    "surroundingDistrictsRaw": *[_type == "property"].locationSurrounding
+}`;
+
+// Fetch the data
+const filterData = await sanityClient.fetch(filterOptionsQuery);
+
+const objektarten: string[] = filterData.propertyTypes || [
+  "Wohnung",
+  "Haus",
+  "Grundstueck",
+  "Parkplatz",
+  "Gewerbeimmobilie",
+];
+const amenities: string[] = filterData.amenities || [];
+const rawSurrounding: (string | null)[] =
+  filterData.surroundingDistrictsRaw || [];
+const surroundingDistricts: string[] = Array.from(
+  new Set(
+    // Filter out null/undefined values (loc is string => !!loc), then create a unique Set
+    rawSurrounding.filter((loc): loc is string => !!loc)
+  )
+);
+
+// Combine the two lists for the Ort panel
+const districts = {
+  Wien: viennaDistricts, // Now using the hardcoded list
+  Niederösterreich: surroundingDistricts,
+};
+
+// --- Helper to capitalize first letter ---
+const capitalize = (s: string) =>
+  s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, " ");
+---
+
+<section id="properties-filter" class="section-properties-filter-form">
+  <div class="properties-filter-wrapper">
+    <div id="property-filter-form" class="form-block">
+      <form
+        id="property-filter-form-element"
+        name="property-filter-form"
+        class="form"
+      >
+        <div id="filter-heading-bar" class="filter-heading-bar">
+          <div data-tab="immobilie" class="filter-heading-tab tab-container">
+            <div class="filter-heading-tab-name">Immobilie</div>
+            <div class="filter-heading-tab-selection">Alle Kategorien</div>
+          </div>
+
+          <div data-tab="ort" class="filter-heading-tab tab-container">
+            <div class="filter-heading-tab-name">Ort</div>
+            <div class="filter-heading-tab-selection">Alle Orte</div>
+          </div>
+
+          <div data-tab="groesse" class="filter-heading-tab tab-container">
+            <div class="filter-heading-tab-name">Größe</div>
+            <div class="filter-heading-tab-selection">Jede Größe</div>
+          </div>
+
+          <div data-tab="preis" class="filter-heading-tab tab-container">
+            <div class="filter-heading-tab-name">Preis</div>
+            <div class="filter-heading-tab-selection">Jeder Preis</div>
+          </div>
+
+          <div data-tab="ausstattung" class="filter-heading-tab tab-container">
+            <div class="filter-heading-tab-name">Ausstattung</div>
+            <div class="filter-heading-tab-selection">Details</div>
+          </div>
+
+          <div id="search-button" class="search-button-wrapper">
+            <button type="submit" class="custom-submit-button">
+              <Image
+                src={SearchIcon}
+                alt="Suchen"
+                width={24}
+                height={24}
+                class="search-icon"
+              />
+               Suchen
+            </button>
+          </div>
+        </div>
+
+        <div id="filter-panel-wrapper" class="filter-panel-wrapper">
+          <div id="panel-immobilie" class="filter-panel panel-immobilie">
+            <div id="filter-vermarktungsart" class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">
+                Vermarktungsart
+              </h2>
+              <div class="filter-form-input-wrapper radio-input-group">
+                <label class="radio-button-with-border">
+                  <input
+                    type="radio"
+                    name="vermarktungsart"
+                    value="miete"
+                    class="radio-input"
+                  /><span class="radio-label">Miete</span>
+                </label>
+                <label class="radio-button-with-border">
+                  <input
+                    type="radio"
+                    name="vermarktungsart"
+                    value="kauf"
+                    class="radio-input"
+                  /><span class="radio-label">Kauf</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="filter-objektart" class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Objektart</h2>
+              <div
+                class="filter-form-input-wrapper checkbox-columns objektart-filter"
+              >
+                {
+                  objektarten.map((type) => (
+                    <label class="checkbox-label">
+                      <input
+                        type="checkbox"
+                        name="objektart"
+                        value={type}
+                        class="checkbox-input"
+                      />
+                      <span class="checkbox-text">{type}</span>
+                    </label>
+                  ))
+                }
+              </div>
+            </div>
+            <a href="#" class="reset-button button">Zurücksetzen</a>
+          </div>
+
+          <div id="panel-ort" class="filter-panel panel-ort">
+            {
+              Object.keys(districts).map((region) => (
+                <div class="filter-form-group">
+                  <h2 class="filter-form-heading heading-style-h6">{region}</h2>
+                  <div class="filter-form-input-wrapper checkbox-columns">
+                    <div class="checkbox-column">
+                      {districts[region]
+                        .slice(0, Math.ceil(districts[region].length / 2))
+                        .map((district) => (
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="lage"
+                              value={district}
+                              class="checkbox-input"
+                            />
+                            <span class="checkbox-text">{district}</span>
+                          </label>
+                        ))}
+                    </div>
+                    <div class="checkbox-column">
+                      {districts[region]
+                        .slice(Math.ceil(districts[region].length / 2))
+                        .map((district) => (
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="lage"
+                              value={district}
+                              class="checkbox-input"
+                            />
+                            <span class="checkbox-text">{district}</span>
+                          </label>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+            <a href="#" class="reset-button button">Zurücksetzen</a>
+          </div>
+
+          <div id="panel-groesse" class="filter-panel panel-groesse">
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="zimmer-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-zimmer-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="zimmer-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-zimmer-max"
+                />
+              </div>
+            </div>
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Fläche (m²)</h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="flaeche-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-flaeche-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="flaeche-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-flaeche-max"
+                />
+              </div>
+            </div>
+            <a href="#" class="reset-button button">Zurücksetzen</a>
+          </div>
+
+          <div id="panel-preis" class="filter-panel panel-preis">
+            <div class="filter-form-group price-group price-group-kauf">
+              <h2 class="filter-form-heading heading-style-h6">
+                Kaufpreis (€)
+              </h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="preis-kauf-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-preis-kauf-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="preis-kauf-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-preis-kauf-max"
+                />
+              </div>
+            </div>
+
+            <div class="filter-form-group price-group price-group-miete">
+              <h2 class="filter-form-heading heading-style-h6">Miete (€)</h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="preis-miete-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-preis-miete-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="preis-miete-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-preis-miete-max"
+                />
+              </div>
+            </div>
+
+            <a href="#" class="reset-button button">Zurücksetzen</a>
+          </div>
+          <div id="panel-ausstattung" class="filter-panel panel-ausstattung">
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Details</h2>
+              <div class="filter-form-input-wrapper checkbox-columns">
+                <div class="checkbox-column">
+                  {
+                    amenities
+                      .slice(0, Math.ceil(amenities.length / 2))
+                      .map((amenity) => (
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            name="ausstattung"
+                            value={amenity}
+                            class="checkbox-input"
+                          />
+                          <span class="checkbox-text">
+                            {capitalize(amenity)}
+                          </span>
+                        </label>
+                      ))
+                  }
+                </div>
+                <div class="checkbox-column">
+                  {
+                    amenities
+                      .slice(Math.ceil(amenities.length / 2))
+                      .map((amenity) => (
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            name="ausstattung"
+                            value={amenity}
+                            class="checkbox-input"
+                          />
+                          <span class="checkbox-text">
+                            {capitalize(amenity)}
+                          </span>
+                        </label>
+                      ))
+                  }
+                </div>
+              </div>
+            </div>
+            <a href="#" class="reset-button button">Zurücksetzen</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==============================================================
+  BASE STRUCTURE & LAYOUT
+  ============================================================== */
+
+  .section-properties-filter-form {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-brand-light-green);
+  }
+
+  .properties-filter-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  /* ==============================================================
+  FILTER HEADER (TABS)
+  ============================================================== */
+
+  .filter-heading-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--spacing-sm);
+    background-color: var(--color-neutral-lightest);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .filter-heading-tab {
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    transition:
+      background-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .filter-heading-tab:hover {
+    background-color: var(--color-neutral-light);
+  }
+
+  /* Active state for tab logic (requires JavaScript) */
+  .filter-heading-tab.active {
+    box-shadow: inset 0 0 0 2px var(--color-brand-dark-green);
+    background-color: var(--color-neutral-light);
+  }
+
+  .filter-heading-tab-name {
+    font-size: var(--font-size-caption);
+    color: var(--color-neutral-medium);
+  }
+
+  .filter-heading-tab-selection {
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-neutral-dark);
+    /* Ensure selection text doesn't overflow */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* ==============================================================
+  SEARCH BUTTON
+  ============================================================== */
+
+  .search-button-wrapper {
+    grid-column: 6 / 7;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .custom-submit-button {
+    background-color: var(--color-brand-dark-green);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-body);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 100%;
+    transition: background-color 0.2s;
+  }
+
+  .custom-submit-button:hover {
+    background-color: var(--color-brand-medium-green);
+  }
+
+  .search-icon {
+    width: 1.5em;
+    height: 1.5em;
+  }
+
+  /* ==============================================================
+  FILTER PANELS (The drop-downs)
+  ============================================================== */
+
+  .filter-panel-wrapper {
+    /* Set min-height to prevent layout jumping when panels hide/show */
+    min-height: 200px;
+    position: relative;
+    padding-top: var(--spacing-md);
+  }
+
+  .filter-panel {
+    display: none; /* Default state, hide all */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--color-neutral-lightest);
+    border: 1px solid var(--color-neutral-light);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl);
+    z-index: 10;
+    /* Transition for smoother display (opacity, not display) */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Active state for panel (requires JavaScript) */
+  .filter-panel.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .filter-form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .filter-form-heading {
+    font-size: var(--font-size-h6);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-neutral-dark);
+  }
+
+  /* ==============================================================
+  INPUT STYLES: RADIO/CHECKBOX
+  ============================================================== */
+
+  .radio-input-group {
+    display: flex;
+    gap: var(--spacing-md);
+  }
+
+  .radio-button-with-border,
+  .checkbox-label {
+    cursor: pointer;
+    user-select: none;
+    font-size: var(--font-size-body-small);
+    color: var(--color-neutral-dark);
+  }
+
+  .radio-button-with-border {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-neutral-medium);
+    border-radius: var(--border-radius);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
+  }
+
+  .radio-button-with-border:has(.radio-input:checked) {
+    background-color: var(--color-brand-dark-green);
+    border-color: var(--color-brand-dark-green);
+    color: white;
+  }
+
+  /* Hide native radio input and show custom label span */
+  .radio-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .radio-label {
+    margin-left: 0;
+  }
+
+  /* Checkbox Grid Layout */
+  .checkbox-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg) var(--spacing-2xl); /* Vertical and horizontal gap */
+  }
+
+  .checkbox-column {
+    flex: 1;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  /* Hide native checkbox input */
+  .checkbox-input {
+    /* You might style a custom checkbox here, but for simplicity, we just use the native one */
+    margin: 0;
+  }
+
+  /* ==============================================================
+  INPUT STYLES: NUMBER/TEXT FIELDS
+  ============================================================== */
+
+  .number-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    max-width: 300px; /* Constrain width for number inputs */
+  }
+
+  .text-field {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-neutral-medium);
+    border-radius: var(--border-radius-sm);
+    width: 100px;
+    flex-grow: 1; /* Allow fields to fill space up to max-width */
+    font-size: var(--font-size-body-small);
+  }
+
+  .input-separator {
+    color: var(--color-neutral-medium);
+    font-size: var(--font-size-body-small);
+  }
+
+  .price-group.hidden {
+    display: none !important;
+  }
+  /* ==============================================================
+  UTILITY & RESPONSIVENESS
+  ============================================================== */
+
+  .reset-button {
+    margin-top: var(--spacing-md);
+    display: inline-block;
+    color: var(--color-brand-dark-green);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: var(--font-size-body-small);
+  }
+
+  @media (max-width: 992px) {
+    .filter-heading-bar {
+      grid-template-columns: repeat(5, 1fr); /* 5 tabs + search below */
+      padding: var(--spacing-sm);
+    }
+    .search-button-wrapper {
+      grid-column: 1 / span 5; /* Full width button */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .filter-heading-bar {
+      grid-template-columns: repeat(2, 1fr); /* 2 tabs per row */
+    }
+    .search-button-wrapper {
+      grid-column: 1 / span 2;
+    }
+    .checkbox-columns {
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    .checkbox-column {
+      min-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterBar = document.getElementById("filter-heading-bar");
+    const panelWrapper = document.getElementById("filter-panel-wrapper");
+    const formElement = document.getElementById("property-filter-form-element");
+
+    const vermarktungsartInputs = formElement.querySelectorAll(
+      'input[name="vermarktungsart"]'
+    );
+    const priceGroupKauf = document.querySelector(".price-group-kauf");
+    const priceGroupMiete = document.querySelector(".price-group-miete");
+
+    // Safety check
+    if (
+      !filterBar ||
+      !panelWrapper ||
+      !formElement ||
+      !priceGroupKauf ||
+      !priceGroupMiete
+    )
+      return;
+
+    // --- Core Logic: Hide all active tabs and panels ---
+    const hideAllPanels = () => {
+      // Deactivate all tabs
+      document.querySelectorAll(".filter-heading-tab.active").forEach((tab) => {
+        tab.classList.remove("active");
+      });
+
+      // Hide all panels
+      document.querySelectorAll(".filter-panel.active").forEach((panel) => {
+        panel.classList.remove("active");
+        panel.style.opacity = "0";
+        // Set display: none after transition (0.3s defined in CSS)
+        setTimeout(() => {
+          // Ensure no subsequent action has made it active again
+          if (!panel.classList.contains("active")) {
+            panel.style.display = "none";
+          }
+        }, 300);
+      });
+    };
+
+    // --- New Logic: Conditional Price Panel Visibility ---
+    const updatePricePanelVisibility = () => {
+      const selectedType = formElement.querySelector(
+        'input[name="vermarktungsart"]:checked'
+      )?.value;
+
+      // If no type is selected, show both (the default state)
+      if (!selectedType) {
+        priceGroupKauf.classList.remove("hidden");
+        priceGroupMiete.classList.remove("hidden");
+      }
+      // If 'kauf' is selected, show Kaufpreis and hide Mietpreis
+      else if (selectedType === "kauf") {
+        priceGroupKauf.classList.remove("hidden");
+        priceGroupMiete.classList.add("hidden");
+      }
+      // If 'miete' is selected, show Mietpreis and hide Kaufpreis
+      else if (selectedType === "miete") {
+        priceGroupKauf.classList.add("hidden");
+        priceGroupMiete.classList.remove("hidden");
+      }
+    };
+
+    // --- Tab Click Handler ---
+    const handleTabClick = (event) => {
+      const clickedTab = event.target.closest(".filter-heading-tab");
+      if (!clickedTab) return;
+
+      // Prevent accidental clicks on search button from triggering panel logic
+      if (event.target.closest(".search-button-wrapper")) return;
+
+      const targetPanelId = clickedTab.getAttribute("data-tab");
+      const targetPanel = document.getElementById(`panel-${targetPanelId}`);
+
+      // 1. If the clicked tab is ALREADY active, dismiss the panel
+      if (clickedTab.classList.contains("active")) {
+        hideAllPanels();
+        return;
+      }
+
+      // 2. Hide all other panels first (this handles the tab switching)
+      hideAllPanels();
+
+      // 3. Activate the new tab and panel
+      if (targetPanel) {
+        clickedTab.classList.add("active");
+
+        targetPanel.style.display = "block"; // Make it visible first
+
+        // Allow a tiny moment for display:block to register before opacity transition starts
+        setTimeout(() => {
+          targetPanel.classList.add("active");
+          targetPanel.style.opacity = "1";
+        }, 10);
+      }
+    };
+
+    // --- Global Click Dismissal Logic ---
+    const handleGlobalClick = (event) => {
+      // Check if the click occurred outside the filter form container
+      const isClickInsideForm = formElement.contains(event.target);
+
+      // If the click is outside the form AND there is an active panel, hide everything
+      if (
+        !isClickInsideForm &&
+        panelWrapper.querySelector(".filter-panel.active")
+      ) {
+        hideAllPanels();
+      }
+    };
+
+    // --- Reset Button Handler ---
+    const handleResetClick = (event) => {
+      const resetButton = event.target.closest(".reset-button");
+      if (!resetButton) return;
+
+      event.preventDefault(); // Stop the link from navigating (#)
+
+      const parentPanel = resetButton.closest(".filter-panel");
+      if (!parentPanel) return;
+
+      // 1. Reset all relevant input fields within that panel
+      parentPanel.querySelectorAll("input, select").forEach((input) => {
+        if (input.type === "checkbox" || input.type === "radio") {
+          // @ts-ignore
+          input.checked = false; // Uncheck checkboxes and radios
+        } else if (input.type === "number" || input.type === "text") {
+          // @ts-ignore
+          input.value = ""; // Clear text and number inputs
+        }
+      });
+
+      // If the reset happens in the 'immobilie' panel, reset the price visibility too
+      if (parentPanel.id === "panel-immobilie") {
+        // Ensure radio buttons for vermarktungsart are unchecked
+        vermarktungsartInputs.forEach((input) => (input.checked = false));
+        updatePricePanelVisibility(); // Show both price groups again
+      }
+
+      // If the reset happens in the 'preis' panel, ensure both are visible
+      if (parentPanel.id === "panel-preis") {
+        // Note: This only clears price inputs, but visibility depends on vermarktungsart
+        // We keep visibility as per the current vermarktungsart selection.
+      }
+    };
+
+    // --- Attach Event Listeners ---
+    filterBar.addEventListener("click", handleTabClick);
+    document.addEventListener("click", handleGlobalClick);
+    panelWrapper.addEventListener("click", handleResetClick);
+
+    // Attach listener for Vermarktungsart changes
+    vermarktungsartInputs.forEach((input) => {
+      input.addEventListener("change", updatePricePanelVisibility);
+    });
+
+    // --- Initial State Setup (No panel visible on load) ---
+    document.querySelectorAll(".filter-panel").forEach((panel) => {
+      panel.classList.remove("active");
+      // @ts-ignore
+      panel.style.display = "none";
+      // @ts-ignore
+      panel.style.opacity = "0";
+    });
+
+    // Set initial price panel visibility on load (should show both if nothing is checked)
+    updatePricePanelVisibility();
+
+    // ==========================================================
+    // CRITICAL FIX: Switch to POST method to send form data in the body
+    // ==========================================================
+    formElement.addEventListener("submit", async (event) => {
+      // 1. STOP the page from reloading.
+      event.preventDefault();
+
+      // 2. Collect filter data into a FormData object.
+      const formData = new FormData(formElement);
+
+      // Convert FormData to URLSearchParams format for the body
+      const filterParams = new URLSearchParams(formData).toString();
+
+      console.log("CLIENT-SIDE POST BODY (Encoded):", filterParams); // Final Client Log
+
+      // 3. Make the API call using POST method.
+      try {
+        const response = await fetch("/api/filter-properties", {
+          method: "POST", // CRITICAL: Use POST
+          // Send the form data as 'application/x-www-form-urlencoded' body
+          body: filterParams,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Filtered Data Received:", data);
+
+          // Dispatch a custom event so the component rendering the property cards
+          // (likely the main page or another component) can update its list.
+          document.dispatchEvent(
+            new CustomEvent("propertiesUpdate", { detail: data })
+          );
+        } else {
+          console.error("API Error:", response.statusText);
+        }
+
+        // Optional: Close the filter panel after search
+        hideAllPanels();
+      } catch (error) {
+        console.error("Fetch failed:", error);
+      }
+    });
+  });
+</script>

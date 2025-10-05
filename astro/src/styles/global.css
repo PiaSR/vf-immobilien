@@ -222,7 +222,7 @@ li {
 /* -------------------------- LAYOUTS: SECTIONS, CONTAINERS & GLOBAL PADDING  ------------------------------ */
 .site-container {
   max-width: 80rem; /* Use the same max-width as your navbar */
-  margin: 0 0;
+  margin: 0 auto;
 }
 section {
   width: 100%;
@@ -280,4 +280,149 @@ section {
     height: 16rem;
     object-fit: cover;
   }
+}
+
+/* -------------------------------------------PROPERTY CARD -------------------------------------------------- */
+
+.property-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.property-card-link:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-medium);
+}
+
+.property-card-wrapper {
+  background-color: var(--color-neutral-lightest);
+
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-primary);
+  box-shadow: 1px 1px 2px var(--color-neutral-dark-grey);
+  /* min-width: 290px; */
+  max-width: 310px;
+}
+
+.property-card-image-box {
+  position: relative;
+  padding-bottom: 66.66%;
+  overflow: hidden;
+}
+
+.property-card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.property-card-location-wrapper,
+.property-card-icon-text {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-small);
+}
+
+.location-icon-wrapper,
+.detail-icon-wrapper {
+  /* Ensure the container doesn't override the size set in the SVG markup */
+  width: 16px;
+  height: 16px;
+
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Ensure the SVG itself respects the container size */
+.location-icon-wrapper svg,
+.detail-icon-wrapper svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.property-card-location-wrapper {
+  color: var(--color-neutral-dark-grey);
+}
+/*wrapper for card text*/
+.property-card-info-wrapper {
+  padding: var(--spacing-lg);
+  flex-grow: 1;
+  gap: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.location-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.property-card-heading {
+  margin-top: 0;
+  color: var(--color-neutral-dark);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  line-height: var(--line-height-header);
+}
+
+.property-card-icons-wrapper {
+  display: flex;
+  gap: var(--spacing-regular);
+  justify-content: space-between;
+}
+
+.property-card-icon-text {
+  display: flex;
+  align-items: center;
+  color: var(--color-neutral-dark);
+  font-size: var(--font-size-extra-tiny);
+}
+
+.property-card-address,
+.icon-p {
+  font-size: var(--font-size-body-xsmall);
+}
+
+.detail-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: var(--spacing-tiny);
+}
+
+.property-icon-price-wrapper {
+  display: flex;
+  align-items: baseline;
+  font-weight: 700;
+  color: var(--color-brand-dark-green);
+  margin-top: var(--spacing-sm);
+}
+
+.price-currency-sign {
+  font-size: var(--font-size-regular);
+  margin-right: var(--spacing-xs);
+}
+
+.price-value {
+  font-size: var(--font-size-h5);
+  line-height: 1;
+  font-weight: var(--font-weight-regular);
+}
+
+.price-suffix {
+  font-size: var(--font-size-tiny);
+  font-weight: 400;
+  color: var(--color-neutral-dark);
 }

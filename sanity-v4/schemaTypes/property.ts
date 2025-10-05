@@ -27,7 +27,6 @@ export default defineType({
           {title: 'Gewerbeimmobilie', value: 'Gewerbeimmobilie'},
         ],
       },
-      // The `slug` from Webflow is 'immobilientyp'
     }),
     defineField({
       name: 'marketingType',
