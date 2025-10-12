@@ -1,0 +1,85 @@
+---
+import { sanityClient } from "../../lib/sanityClient";
+import MainLayout from "../../layouts/MainLayout.astro";
+import PropertyListingDetails from "../../components/Sections/properties/propertyListingDetails.astro";
+
+//  REQUIRED FUNCTION: getStaticPaths
+export async function getStaticPaths() {
+  // GROQ query to fetch all property slugs
+  const allSlugsQuery = `*[_type == "property" && defined(slug.current)]{ "slug": slug.current }`;
+
+  const slugs = await sanityClient.fetch(allSlugsQuery);
+
+  // Map the slugs into the format Astro expects: [{ params: { slug: '...' } }]
+  return slugs.map((property) => ({
+    params: { slug: property.slug },
+  }));
+}
+
+// 4. GET THE CURRENT SLUG & FETCH DATA
+const { slug } = Astro.params;
+
+// comprehensive GROQ query
+const detailedPropertyQuery = `
+  *[
+    _type == "property" 
+    && slug.current == $slug
+  ] | {
+    "id": _id,
+    title,
+    propertyType,
+    available,
+	availableDate,
+    propertyDescription,
+    "marketingType": marketingType->title, 
+    address,
+    locationVienna,
+    locationSurrounding,
+    postalCodeSurrounding,
+    locationDescription,
+    purchasePrice,
+    rentalPrice,
+    livingArea,
+    rooms,
+    bathrooms,
+    yearBuilt,
+    floor,
+    energyCertificate,
+    parking,
+    garden,
+    "mainImage": mainImage.asset->url,
+    "photos": photos[] {
+        _key,
+        "url": asset->url,
+        alt
+    },
+    agent->{
+      name,
+      phone,
+      email
+    },
+    ausstattungDetails,
+    betriebskosten
+  }[0]
+`;
+
+const propertyData = await sanityClient.fetch(detailedPropertyQuery, { slug });
+
+// Handle case where property is not found
+if (!propertyData) {
+  // Note: Astro.redirect only works in SSR mode, but this is best practice.
+  // In SSG mode (default), Astro will usually show a static 404 if the path wasn't generated.
+  return Astro.redirect("/404");
+}
+
+// 5. Serialize the data to pass it as a JSON string to the client-side component
+const propertyDataJson = JSON.stringify(propertyData);
+
+// Set the page title for the Layout component
+const pageTitle = propertyData.title || "Immobilien Detail";
+---
+
+<MainLayout title={pageTitle}>
+  <!-- 6. PASS THE FETCHED DATA TO YOUR COMPONENT -->
+  <PropertyListingDetails propertyDataJson={propertyDataJson} />
+</MainLayout>

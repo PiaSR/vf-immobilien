@@ -132,9 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	const renderPropertyCard = (property) => {
 		const priceSuffix = property.marketingType === "Miete" ? "/Monat" : "";
 		const formattedPrice = formatPrice(property.price);
-
+		const propertyPath = "/properties/" + property.slug;
 		return `
-					<a href="/property/${property.slug}" class="property-card-link">
+        <a  href=${propertyPath}  class="property-card">
 						<div class="property-card-wrapper">
 							<div class="property-card-image-box">
 

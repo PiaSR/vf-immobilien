@@ -1,6 +1,10 @@
 import { sanityClient } from "../../lib/sanityClient";
 import type { APIRoute } from "astro";
 
+// CRITICAL FIX: This line forces Astro to treat this route as server-rendered, 
+// allowing it to correctly handle dynamic POST requests and read the request body.
+export const prerender = false; 
+
 // --- Utility function to build the GROQ filter string ---
 // This function now expects filter data to come from a FormData object (from the POST body)
 const buildGroqFilter = (formData: FormData): string => {

@@ -15,6 +15,24 @@ export default defineType({
       // The `slug` from Webflow is 'titel-von-inserat'
     }),
     defineField({
+      name: 'name',
+      title: 'Name',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+      // The `slug` from Webflow is 'name'
+    }),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
+      validation: (Rule) => Rule.required(),
+      
+    }),
+    defineField({
       name: 'propertyType',
       title: 'Objektart',
       type: 'string',
@@ -39,6 +57,13 @@ export default defineType({
       name: 'available',
       title: 'Verfügbar?',
       type: 'boolean',
+      // This is a `Switch` field in Webflow with slug 'verfugbar'
+    }),
+    defineField({
+      name: 'availableDate',
+      title: 'Verfügbar ab DATUM',
+      type: 'string',
+      description: "Entweder 'Sofort' oder Datum eingeben (e.g. 1. Jänner 2026)"
       // This is a `Switch` field in Webflow with slug 'verfugbar'
     }),
     defineField({
@@ -162,7 +187,6 @@ export default defineType({
           {title: 'D', value: 'D'},
         ],
       },
-      // The `slug` from Webflow is 'energiezertifikat'
     }),
     defineField({
       name: 'parking',
@@ -193,6 +217,34 @@ export default defineType({
       // The `slug` from Webflow is 'offentliche-anbindung' and it's a `MultiReference` field
     }),
 
+    defineField({
+      name: 'ausstattungDetails',
+      title: 'Ausstattung (Detailierte Beschreibung / Bullet Points)',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [{title: 'Normal', value: 'normal'}],
+          lists: [{title: 'Bullet', value: 'bullet'}], // Allow bullet points
+          marks: {
+            decorators: [
+              {title: 'Strong', value: 'strong'},
+              {title: 'Emphasis', value: 'em'},
+            ],
+          },
+        },
+      ],
+      description: 'Use this for the bulleted list of specific property amenities (e.g., floor heating, specific window types).',
+    }),
+
+    // ** NEW FIELD: Complex Amenities / Community Features **
+    defineField({
+      name: 'complexFeatures',
+      title: 'Komplex- / Gemeinschaftsmerkmale (z.B. Sauna, Fitnessraum)',
+      type: 'array',
+      of: [{type: 'string'}], // Use an array of strings for simple tags/features
+      description: 'Used for features like "Fitnessraum," "Sauna," "Kinderwagenabstellraum," etc., displayed as clickable tags.',
+    }),
     // Images
     defineField({
       name: 'mainImage',
@@ -207,6 +259,51 @@ export default defineType({
       of: [{type: 'image'}],
       // The `slug` from Webflow is 'fotos' and it's a `MultiImage` field
     }),
+
+    // The 'Details & Downloads' section in the screenshot shows many single-value facts that should be explicit fields:
+    defineField({
+      name: 'betriebskosten',
+      title: 'Betriebskosten (inkl. USt.)',
+      type: 'number',
+      description: 'e.g., 107.45',
+  }),
+  defineField({
+      name: 'provision',
+      title: 'Provision',
+      type: 'string', // Storing as string to handle "3% des Kaufpreises zzgl. 20% USt."
+  }),
+  defineField({
+      name: 'hwb',
+      title: 'Heizwärmebedarf (HWB)',
+      type: 'string', // Storing as string to handle "34,2 kWh/m²"
+      description: 'Nummer plus kWh/m² schreiben, e.g. 34,2 kWh/m²'
+  }),
+ 
+  defineField({
+      name: 'gee',
+      title: 'Gesamtenergieeffizienz-Faktor (fGEE)',
+      type: 'string', // Storing as string to handle "wird nachgerechnet"
+  }),
+  
+  // Loggia/Balcony details
+  defineField({
+    name: 'loggiaArea',
+    title: 'Loggia/Balkon Fläche (optional)',
+    type: 'string', // E.g., "1(4 m²)" or just a number
+    description: 'E.g., "1(4 m²)" or just a number'
+  }),
+
+  // Status Tags
+  defineField({
+    name: 'isFullyFurnished',
+    title: 'Voll möbliert?',
+    type: 'boolean',
+  }),
+  defineField({
+    name: 'hasStellplatz',
+    title: 'Stellplatz / Parkplatz (optional)',
+    type: 'string', // You might want to capture specific costs or details here (e.g., "Tiefgarage, zzgl. 30.000,-")
+  }),
     defineField({
       name: 'floorPlan',
       title: 'Grundriss',
@@ -223,24 +320,6 @@ export default defineType({
       // The `slug` from Webflow is 'makler' and it's a `Reference` field
     }),
 
-    // Sanity-specific fields for linking to Webflow
-    defineField({
-      name: 'name',
-      title: 'Name',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-      // The `slug` from Webflow is 'name'
-    }),
-    defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: {
-        source: 'name',
-        maxLength: 96,
-      },
-      validation: (Rule) => Rule.required(),
-      // The `slug` from Webflow is 'slug'
-    }),
+    
   ],
 })
