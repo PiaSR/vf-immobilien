@@ -21,6 +21,9 @@
 
   /* System Colors */
   --color-system-success: #cef5ca;
+  --color-system-error: rgb(227, 122, 122);
+  --color-system-success-font: #2f3c35;
+  --color-system-error-font: rgb(206, 2, 2);
 
   /* --- Typography --- */
 

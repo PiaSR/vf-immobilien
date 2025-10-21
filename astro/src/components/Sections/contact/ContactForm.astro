@@ -20,6 +20,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
           name="contact-form"
           data-name="contact form"
           method="POST"
+          action="/api/contactFormResend"
+          novalidate
         >
           <div class="form-grid-2-col">
             <div class="form-field-group">
@@ -33,6 +35,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
                 id="first-name"
                 required
               />
+              <!-- FIX: Korrekte ID für Vorname -->
+              <span id="error-first-name" class="input-error-message"></span>
             </div>
             <div class="form-field-group">
               <label for="last-name">Nachname</label>
@@ -45,6 +49,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
                 id="last-name"
                 required
               />
+              <!-- FIX: Korrekte ID für Nachname -->
+              <span id="error-last-name" class="input-error-message"></span>
             </div>
           </div>
 
@@ -61,6 +67,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
               id="email"
               required
             />
+            <!-- FIX: Korrekte ID für Email -->
+            <span id="error-email" class="input-error-message"></span>
           </div>
           <div class="form-field-group">
             <label for="phone">Telefonnummer</label>
@@ -73,6 +81,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
               id="phone"
               required
             />
+            <!-- ID ist hier korrekt (error-phone) -->
+            <span id="error-phone" class="input-error-message"></span>
           </div>
 
           <div class="padding-bottom padding-small"></div>
@@ -84,7 +94,10 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
               name="message"
               maxlength="5000"
               placeholder=""
-              class="form-textarea"></textarea>
+              class="form-textarea"
+              required></textarea>
+            <!-- FIX: Korrekte ID für Nachricht -->
+            <span id="error-message" class="input-error-message"></span>
           </div>
 
           <div class="padding-bottom padding-medium"></div>
@@ -99,10 +112,14 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
             />
             <span class="checkbox-custom-indicator"></span>
             <span class="checkbox-text" for="TandCs"
-              >Ich habe die AGB und Datenschutzbestimmungen gelesen und erkläre
-              mich damit einverstanden.</span
+              >Ich habe die AGB und <a href="src/pages/datenschutz"
+                >Datenschutzbestimmungen</a
+              > gelesen und erkläre mich damit einverstanden.</span
             >
           </label>
+          <div class="checkbox-error-wrapper">
+            <span id="error-TandCs" class="input-error-message"></span>
+          </div>
 
           <div class="padding-bottom padding-small"></div>
 
@@ -111,12 +128,13 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
           </ButtonArrow>
         </form>
 
-        <div class="form-success-message">
+        <!-- Form Feedback Messages -->
+        <div id="form-success" class="form-success-message">
           <div>
             Danke für Ihre Anfrage! Unser Team wird sich bald bei Ihnen melden.
           </div>
         </div>
-        <div class="form-error-message">
+        <div id="form-error" class="form-error-message">
           <div>
             Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte
             versuchen Sie es erneut.
@@ -128,7 +146,47 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
 </section>
 
 <style>
-  /* --- Global Containers --- */
+  /* --- Style Block (Unchanged, for context) --- */
+  :root {
+    /* Define CSS Variables for better organization (Mockup values) */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-3xl: 3rem;
+    --spacing-4xl: 4rem;
+    --color-neutral-lightest: #f4f7f6;
+    --color-neutral-dark: #4a4a4a;
+    --color-neutral-medium-grey: #ccc;
+    --color-neutral-font-dark: #1a1a1a;
+    --color-brand-medium-green: #38a169;
+    --color-system-error: #f87171; /* Example red */
+    --color-system-success: #60a5fa; /* Example blue */
+    --color-system-error-font: #ffffff;
+    --color-system-success-font: #ffffff;
+    --border-radius: 0.5rem;
+    --font-size-body-base: 1rem;
+    --font-size-body-small: 0.875rem;
+    --font-size-body: 1rem;
+    --font-weight-bold: 700;
+  }
+
+  /* NEU: Styling für Fehlermeldungen */
+  .input-error-message {
+    font-size: 0.8rem;
+    color: var(--color-system-error);
+    margin-top: 0.25rem;
+    display: none; /* Wichtig: Standardmäßig ausblenden */
+    font-weight: 500;
+  }
+
+  /* NEU: Styling für fehlerhafte Eingaben */
+  .form-input.error,
+  .form-textarea.error {
+    border-color: var(--color-system-error);
+  }
+
+  /* --- Existing Styles --- */
   .contact-section {
     position: relative;
     padding: var(--spacing-4xl) 0;
@@ -142,7 +200,17 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     flex-direction: column;
     max-width: 700px;
   }
-  /* --- Header and Text --- */
+  .site-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+  .padding-section {
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
+  }
   .section-header-wrapper {
     text-align: start;
     word-wrap: break-word;
@@ -151,6 +219,7 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   .heading-h2 {
     color: var(--color-brand-medium-green);
     margin-bottom: var(--spacing-md);
+    font-size: 2.5rem;
   }
 
   .text-description {
@@ -158,7 +227,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     color: var(--color-neutral-dark);
   }
 
-  /* --- Form Layout and Grid --- */
   .contact-form-container {
     padding-top: var(--spacing-3xl);
     color: var(--color-neutral-font-dark);
@@ -179,11 +247,16 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
 
   @media (min-width: 780px) {
     .form-grid-2-col {
-      grid-template-columns: 1fr 1fr; /* Two columns on desktop */
+      grid-template-columns: 1fr 1fr;
     }
   }
 
-  /* --- Form Labels and Inputs --- */
+  label {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 0.5rem;
+    display: block;
+    color: var(--color-neutral-font-dark);
+  }
 
   .form-input,
   .form-textarea {
@@ -193,6 +266,7 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     border-radius: var(--border-radius);
     font-size: var(--font-size-body);
     transition: border-color 0.3s ease;
+    font-family: var(--font-primary);
   }
 
   .form-input:focus,
@@ -206,10 +280,9 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     resize: vertical;
   }
 
-  /* --- Checkbox Styling --- */
   .form-checkbox-label {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     cursor: pointer;
     font-size: var(--font-size-body-small);
     color: var(--color-neutral-dark);
@@ -217,7 +290,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   }
 
   .form-checkbox-label input[type="checkbox"] {
-    /* Hide the default browser checkbox */
     opacity: 0;
     width: 0;
     height: 0;
@@ -232,12 +304,12 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     margin-right: var(--spacing-sm);
     flex-shrink: 0;
     position: relative;
+    top: 2px;
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease;
   }
 
-  /* Custom checkmark using pseudo-element */
   .checkbox-custom-indicator::after {
     content: "";
     position: absolute;
@@ -268,12 +340,16 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     line-height: 1.4;
   }
 
-  /* --- Submit Button --- */
-  .button-orange {
-    width: 100%;
+  .padding-bottom {
+    padding-bottom: 1rem;
+  }
+  .padding-small {
+    padding-bottom: 0.5rem;
+  }
+  .padding-medium {
+    padding-bottom: 1rem;
   }
 
-  /* --- Form Feedback Messages --- */
   .form-success-message,
   .form-error-message {
     padding: var(--spacing-md);
@@ -281,16 +357,238 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     border-radius: var(--border-radius);
     font-weight: var(--font-weight-bold);
     text-align: center;
-    display: none; /* Hide by default, JavaScript handles showing/hiding */
+    display: none;
   }
 
+  .button-orange {
+    width: 100%;
+  }
   .form-success-message {
-    background-color: #d4edda; /* Light green */
-    color: #155724; /* Dark green text */
+    background-color: var(--color-system-success);
+    color: var(--color-system-success-font);
   }
 
   .form-error-message {
-    background-color: #f8d7da; /* Light red */
-    color: #721c24; /* Dark red text */
+    background-color: var(--color-system-error);
+    color: var(--color-system-error-font);
   }
 </style>
+
+<script>
+  // Zuordnung der Feldnamen zu deutschen Fehlermeldungen
+  const ERROR_MESSAGES = {
+    "first-name": "Vorname ist erforderlich.",
+    "last-name": "Nachname ist erforderlich.",
+    email: "E-Mail-Adresse ist erforderlich.",
+    phone: "Telefonnummer ist erforderlich.",
+    message: "Eine Nachricht ist erforderlich.",
+    TandCs: "Sie müssen den AGBs und Datenschutzbestimmungen zustimmen.",
+  };
+
+  const form = document.getElementById("contact-form");
+  const successMessage = document.getElementById("form-success");
+  const errorMessage = document.getElementById("form-error");
+  const formErrorDiv = errorMessage.querySelector("div");
+
+  // Funktion zum Zurücksetzen aller Fehler
+  function clearErrors() {
+    // 1. Nachrichten (Success/Error) ausblenden
+    successMessage.style.display = "none";
+    errorMessage.style.display = "none";
+
+    // 2. Alle Feld-Fehlermeldungen zurücksetzen
+    document.querySelectorAll(".input-error-message").forEach((el) => {
+      el.textContent = "";
+      el.style.display = "none";
+    });
+
+    // 3. Fehler-Klassen von Inputs entfernen
+    document.querySelectorAll(".form-input, .form-textarea").forEach((el) => {
+      el.classList.remove("error");
+    });
+  }
+
+  // Funktion zur Anzeige der Erfolgs-/Fehlermeldungen (für Server-Antwort)
+  function showMessage(element, isSuccess, errorDetail = null) {
+    clearErrors(); // Zuerst alle Fehlermeldungen vom Formular löschen
+
+    // Server-Nachricht anzeigen
+    if (element) {
+      element.style.display = "block";
+      if (element === errorMessage && errorDetail) {
+        formErrorDiv.innerHTML = `
+          Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte
+          versuchen Sie es erneut.
+          <br><br>
+          <strong>Fehler-Details:</strong> ${errorDetail}
+        `;
+      } else if (element === errorMessage) {
+        formErrorDiv.textContent = `Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.`;
+      }
+      // Formular bei Erfolg ausblenden
+      if (isSuccess) {
+        form.style.display = "none";
+      }
+    }
+  }
+
+  // NEUE Funktion zur Client-Side-Validierung
+  function validateForm() {
+    clearErrors(); // Vor jeder Validierung zurücksetzen
+    let isValid = true;
+    let firstInvalidField = null;
+
+    // Alle required Felder (Input, Textarea, Checkbox) holen
+    const requiredFields = form.querySelectorAll("[required]");
+
+    requiredFields.forEach((field) => {
+      const fieldName = field.name;
+      // Hier wird die korrekte, eindeutige ID verwendet: error-Feldname
+      const errorElement = document.getElementById(`error-${fieldName}`);
+
+      // Fehlerprüfung
+      let hasError = false;
+
+      if (field.type === "checkbox") {
+        if (!field.checked) {
+          hasError = true;
+        }
+      } else if (field.value.trim() === "") {
+        hasError = true;
+      }
+
+      // Fehler anzeigen, falls vorhanden
+      if (hasError) {
+        isValid = false;
+
+        if (errorElement) {
+          errorElement.textContent = ERROR_MESSAGES[fieldName];
+          errorElement.style.display = "block";
+        }
+
+        // 'error' Klasse zum Input-Feld hinzufügen
+        if (field.type !== "checkbox") {
+          field.classList.add("error");
+        }
+
+        // Das erste ungültige Feld speichern, um dorthin zu scrollen/fokussieren
+        if (!firstInvalidField) {
+          firstInvalidField = field;
+        }
+      } else {
+        // Bei gültigen Feldern 'error' Klasse entfernen und Fehlermeldung ausblenden (wichtig!)
+        if (field.type !== "checkbox") {
+          field.classList.remove("error");
+        }
+        if (errorElement) {
+          errorElement.style.display = "none";
+        }
+      }
+    });
+
+    // Wenn ungültig, zum ersten Fehlerfeld scrollen und Fokus setzen
+    if (!isValid && firstInvalidField) {
+      firstInvalidField.focus();
+      firstInvalidField.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    return isValid;
+  }
+
+  // Funktion, um Fehler bei der Eingabe sofort zu entfernen
+  function handleInput(event) {
+    const field = event.target;
+    // Prüfen, ob das Feld ausgefüllt ist
+    if (field.value.trim() !== "") {
+      field.classList.remove("error");
+      const errorElement = document.getElementById(`error-${field.name}`);
+      if (errorElement) {
+        errorElement.style.display = "none";
+      }
+    } else if (field.hasAttribute("required")) {
+      // Bei Leere die Validierung (inkl. Fehler anzeigen) erneut laufen lassen
+      validateForm();
+    }
+    // Spezielles Handling für Checkbox, da 'input' event nicht ideal ist
+    if (field.type === "checkbox") {
+      validateForm();
+    }
+  }
+
+  // Listener für sofortige Validierung/Feedback beim Tippen/Klicken
+  form.querySelectorAll("[required]").forEach((field) => {
+    field.addEventListener("input", handleInput);
+  });
+
+  // Spezialfall für die Checkbox: Ändern des Zustands sofort validieren
+  document.getElementById("TandCs")?.addEventListener("change", handleInput);
+
+  // Handle form submission using AJAX (Fetch API)
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault(); // Standard-Formularübermittlung verhindern
+
+    // *** SCHRITT 1: Client-Side Validierung ausführen ***
+    if (!validateForm()) {
+      console.log("Client-Side Validierung fehlgeschlagen.");
+      return; // Formular nicht senden
+    }
+
+    // Wenn die Validierung erfolgreich war, mit dem Senden beginnen
+    const button = form.querySelector("button[type='submit']");
+    const originalButtonText = button.textContent;
+    button.textContent = "Sende...";
+    button.disabled = true;
+
+    const data = new FormData(event.target);
+    const formUrl = event.target.action;
+
+    // Konvertiere FormData zu URLSearchParams
+    const urlEncodedData = new URLSearchParams(data);
+
+    try {
+      const response = await fetch(formUrl, {
+        method: "POST",
+        body: urlEncodedData.toString(),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      if (response.ok) {
+        showMessage(successMessage, true);
+        form.reset(); // Formularfelder leeren
+        clearErrors(); // Auch die Erfolgsmeldung löscht alle Fehler
+      } else {
+        // Fehler-Handling von Server-Antwort
+        let errorDetail = `Status ${response.status}`;
+        const contentType = response.headers.get("content-type");
+
+        if (response.status === 404) {
+          errorDetail = `404: API-Endpunkt unter ${formUrl} nicht gefunden.`;
+        } else if (contentType && contentType.includes("application/json")) {
+          const errorBody = await response.json();
+          errorDetail =
+            errorBody.error || `Serverfehler (Status: ${response.status})`;
+        } else {
+          errorDetail = `Unbekannte Antwort (HTML/Text). Status: ${response.status}`;
+        }
+
+        console.error(
+          "Formularübermittlung fehlgeschlagen:",
+          response.status,
+          errorDetail
+        );
+        showMessage(errorMessage, false, errorDetail);
+      }
+    } catch (error) {
+      console.error("Netzwerkfehler beim Absenden des Formulars:", error);
+      showMessage(errorMessage, false, `Netzwerkfehler: ${error.message}`);
+    } finally {
+      // Button-Status zurücksetzen (außer bei Erfolg, da das Formular dann ausgeblendet wird)
+      if (successMessage.style.display !== "block") {
+        button.textContent = originalButtonText;
+        button.disabled = false;
+      }
+    }
+  });
+</script>
