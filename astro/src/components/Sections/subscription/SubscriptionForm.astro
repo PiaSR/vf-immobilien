@@ -1,0 +1,1126 @@
+<section class="section-properties-filter-form">
+  <div class="properties-filter-wrapper">
+    <h1
+      style="font-size: 2rem; font-weight: 700; text-align: center; padding-top: 20px;"
+    >
+      Property Alert Subscription
+    </h1>
+    <p
+      style="text-align: center; color: var(--text-faded); padding-bottom: 20px;"
+    >
+      Define your ideal search criteria in the steps below.
+    </p>
+    <div id="property-filter-form" class="form-block">
+      <!-- Progress Indicator (Replicating filter-heading-bar) -->
+      <div id="filter-heading-bar" class="filter-heading-bar">
+        <div
+          data-tab="immobilie"
+          id="step-tab-immobilie"
+          class="filter-heading-tab tab-container active"
+        >
+          <div class="filter-heading-tab-name">1. Immobilie</div>
+          <div id="selection-immobilie" class="filter-heading-tab-selection">
+            Alle Kategorien
+          </div>
+        </div>
+
+        <div
+          data-tab="ort"
+          id="step-tab-ort"
+          class="filter-heading-tab tab-container"
+        >
+          <div class="filter-heading-tab-name">2. Ort</div>
+          <div id="selection-ort" class="filter-heading-tab-selection">
+            Alle Orte
+          </div>
+        </div>
+
+        <div
+          data-tab="groesse"
+          id="step-tab-groesse"
+          class="filter-heading-tab tab-container"
+        >
+          <div class="filter-heading-tab-name">3. Größe</div>
+          <div id="selection-groesse" class="filter-heading-tab-selection">
+            Jede Größe
+          </div>
+        </div>
+
+        <div
+          data-tab="preis"
+          id="step-tab-preis"
+          class="filter-heading-tab tab-container"
+        >
+          <div class="filter-heading-tab-name">4. Preis</div>
+          <div id="selection-preis" class="filter-heading-tab-selection">
+            Jeder Preis
+          </div>
+        </div>
+
+        <div
+          data-tab="ausstattung"
+          id="step-tab-ausstattung"
+          class="filter-heading-tab tab-container"
+        >
+          <div class="filter-heading-tab-name">5. Ausstattung</div>
+          <div id="selection-ausstattung" class="filter-heading-tab-selection">
+            Details
+          </div>
+        </div>
+
+        <div
+          data-tab="abo"
+          id="step-tab-abo"
+          class="filter-heading-tab tab-container"
+        >
+          <div class="filter-heading-tab-name">6. Abo</div>
+          <div id="selection-abo" class="filter-heading-tab-selection">
+            Ihre Daten
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Wrapper -->
+      <div id="filter-panel-wrapper" class="filter-panel-wrapper">
+        <form
+          id="property-filter-form-element"
+          name="property-filter-form"
+          class="form"
+        >
+          <!-- Panel 1: Immobilie -->
+          <div id="panel-immobilie" class="filter-panel active-panel">
+            <div id="filter-vermarktungsart" class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">
+                Vermarktungsart
+              </h2>
+              <div class="filter-form-input-wrapper radio-input-group">
+                <label class="radio-classic-label">
+                  <input
+                    type="radio"
+                    name="vermarktungsart"
+                    value="miete"
+                  />Miete
+                </label>
+                <label class="radio-classic-label">
+                  <input type="radio" name="vermarktungsart" value="kauf" />Kauf
+                </label>
+              </div>
+            </div>
+
+            <div id="filter-objektart" class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Objektart</h2>
+              <!-- Dynamic content will be injected here -->
+              <div
+                id="objektart-options"
+                class="filter-form-input-wrapper checkbox-columns objektart-filter"
+              >
+                <!-- Dynamic options -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2: Ort -->
+          <div id="panel-ort" class="filter-panel">
+            <h2 class="filter-form-heading heading-style-h6">
+              Lage (Districts)
+            </h2>
+            <div id="ort-options-wrapper">
+              <!-- Dynamic content will be injected here -->
+            </div>
+          </div>
+
+          <!-- Panel 3: Größe -->
+          <div id="panel-groesse" class="filter-panel">
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="zimmer-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-zimmer-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="zimmer-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-zimmer-max"
+                />
+              </div>
+            </div>
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Fläche (m²)</h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="flaeche-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-flaeche-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="flaeche-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-flaeche-max"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 4: Preis -->
+          <div id="panel-preis" class="filter-panel">
+            <div class="filter-form-group price-group price-group-kauf">
+              <h2 class="filter-form-heading heading-style-h6">
+                Kaufpreis (€)
+              </h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="preis-kauf-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-preis-kauf-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="preis-kauf-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-preis-kauf-max"
+                />
+              </div>
+            </div>
+
+            <div class="filter-form-group price-group price-group-miete hidden">
+              <h2 class="filter-form-heading heading-style-h6">Miete (€)</h2>
+              <div class="number-input-wrapper">
+                <input
+                  class="text-field"
+                  name="preis-miete-min"
+                  placeholder="Min"
+                  type="number"
+                  id="filter-preis-miete-min"
+                />
+                <div class="input-separator">bis</div>
+                <input
+                  class="text-field"
+                  name="preis-miete-max"
+                  placeholder="Max"
+                  type="number"
+                  id="filter-preis-miete-max"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 5: Ausstattung -->
+          <div id="panel-ausstattung" class="filter-panel">
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">Details</h2>
+              <div
+                id="ausstattung-options"
+                class="filter-form-input-wrapper checkbox-columns"
+              >
+                <!-- Dynamic content will be injected here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 6: Final Subscription Details -->
+          <div id="panel-abo" class="filter-panel">
+            <div class="filter-form-group">
+              <h2 class="filter-form-heading heading-style-h6">
+                Ihre Kontaktdaten
+              </h2>
+              <label style="display: block; margin-bottom: 5px;">Email</label>
+              <input
+                class="text-field"
+                name="abo-email"
+                placeholder="ihre@email.at"
+                type="email"
+                required
+              />
+            </div>
+            <div class="filter-form-group">
+              <label style="display: block; margin-bottom: 5px;">Name</label>
+              <input
+                class="text-field"
+                name="abo-name"
+                placeholder="Ihr Name"
+                type="text"
+                required
+              />
+            </div>
+            <p
+              style="font-size: 0.9rem; color: var(--text-faded); margin-top: 20px;"
+            >
+              By clicking "Subscribe", you agree to receive property alerts
+              based on the selected criteria.
+            </p>
+          </div>
+
+          <!-- Final Success/Error Placeholder -->
+          <div id="panel-success" class="filter-panel">
+            <div style="text-align: center; padding: 40px 0;">
+              <h2
+                style="color: var(--accent-color); font-size: 1.8rem; margin-bottom: 15px;"
+              >
+                Abonnement erfolgreich!
+              </h2>
+              <p style="color: var(--text-light); font-size: 1.1rem;">
+                Ihre Suchkriterien wurden gespeichert. Sie erhalten nun passende
+                Immobilienangebote.
+              </p>
+              <pre
+                id="submitted-criteria"
+                style="background-color: var(--background-dark); padding: 15px; border-radius: 6px; margin-top: 30px; font-size: 0.85rem; overflow-x: auto; text-align: left;">
+              </pre>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Navigation Bar -->
+      <div class="navigation-wrapper">
+        <button
+          id="back-button"
+          class="custom-submit-button back-button"
+          disabled>← Zurück</button
+        >
+
+        <div
+          id="error-message"
+          class="message-box hidden"
+          style="color: #ef4444;"
+        >
+          Bitte füllen Sie alle erforderlichen Felder aus.
+        </div>
+
+        <button id="next-button" class="custom-submit-button next-button"
+          >Weiter →</button
+        >
+        <button
+          id="submit-button"
+          class="custom-submit-button next-button hidden">Abonnieren!</button
+        >
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  /* --- Custom Classes matching the provided component structure --- */
+
+  .section-properties-filter-form {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .properties-filter-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background-color: var(--card-bg);
+  }
+
+  .form-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- Progress Indicator (Filter Heading Bar) --- */
+  .filter-heading-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* Stretch tabs vertically */
+    background-color: var(--background-dark);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    padding: 0 var(--spacing-md);
+    border-bottom: 1px solid var(--border-dark);
+    overflow-x: auto; /* Allow scrolling on small screens */
+    white-space: nowrap;
+  }
+
+  .filter-heading-tab {
+    flex: 1;
+    min-width: 120px; /* Ensure space for each tab */
+    padding: var(--spacing-md) var(--spacing-sm);
+    text-align: center;
+    border-bottom: 4px solid transparent;
+    cursor: default;
+    transition:
+      border-color 0.3s,
+      color 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filter-heading-tab.active {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .filter-heading-tab-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+    color: var(--text-light);
+  }
+
+  .filter-heading-tab.active .filter-heading-tab-name {
+    color: var(--accent-color);
+  }
+
+  .filter-heading-tab-selection {
+    font-size: 0.75rem;
+    color: var(--text-faded);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  /* The final 'Search Button' in the user's original component is replaced by navigation */
+  .search-button-wrapper {
+    display: none;
+  }
+
+  /* --- Panel Wrapper and Panels --- */
+  .filter-panel-wrapper {
+    position: relative;
+    min-height: 400px; /* Ensure space for content */
+    overflow: hidden;
+    padding: var(--spacing-lg);
+  }
+
+  .filter-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--spacing-lg);
+    background-color: var(--card-bg);
+    box-sizing: border-box;
+    opacity: 0;
+    transition:
+      opacity 0.4s ease-in-out,
+      transform 0.4s ease-in-out;
+    pointer-events: none;
+    /* Reset position for active panel */
+    transform: translateX(100%);
+  }
+
+  .filter-panel.active-panel {
+    position: static;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .filter-panel.hidden-panel-prev {
+    /* For the panel that was just active and is moving left */
+    transform: translateX(-100%);
+  }
+
+  /* Ensure panels take up space when active */
+  .filter-panel:not(.active-panel) {
+    position: absolute;
+    height: 100%;
+  }
+
+  /* --- Form Elements --- */
+  .filter-form-group {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-dark);
+    border-radius: 8px;
+  }
+
+  .filter-form-heading {
+    /* Corresponds to heading-style-h6 */
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--accent-color);
+  }
+
+  /* Radio/Checkbox Input Styling */
+  .radio-input-group,
+  .checkbox-columns {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+
+  .checkbox-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .radio-classic-label,
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid var(--border-dark);
+    border-radius: 6px;
+    background-color: var(--background-dark);
+    transition:
+      border-color 0.2s,
+      background-color 0.2s;
+    flex-grow: 1; /* For radio groups */
+  }
+
+  .checkbox-label {
+    width: 100%;
+  }
+
+  .radio-classic-label:hover,
+  .checkbox-label:hover {
+    border-color: var(--accent-color);
+  }
+
+  .radio-classic-label input,
+  .checkbox-label input {
+    margin-right: 10px;
+    accent-color: var(--accent-color);
+  }
+
+  .checkbox-text {
+    font-size: 0.95rem;
+  }
+
+  /* Number Input Wrapper (for Größe and Preis) */
+  .number-input-wrapper {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+  }
+
+  .text-field {
+    padding: 10px 12px;
+    border: 1px solid var(--border-dark);
+    border-radius: 6px;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    transition: border-color 0.2s;
+    flex-grow: 1;
+  }
+
+  .text-field:focus {
+    outline: none;
+    border-color: var(--accent-color);
+  }
+
+  .input-separator {
+    white-space: nowrap;
+    color: var(--text-faded);
+  }
+
+  /* Price Visibility */
+  .price-group.hidden {
+    display: none !important;
+  }
+
+  /* --- Navigation and Buttons --- */
+  .navigation-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid var(--border-dark);
+  }
+
+  .custom-submit-button {
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      opacity 0.2s;
+    font-size: 1rem;
+  }
+
+  .next-button,
+  .submit-button {
+    background-color: var(--accent-color);
+    color: var(--background-dark);
+  }
+
+  .back-button {
+    background-color: var(--border-dark);
+    color: var(--text-light);
+  }
+
+  .next-button:hover:not(:disabled),
+  .submit-button:hover:not(:disabled) {
+    background-color: #059669;
+  }
+
+  .back-button:hover:not(:disabled) {
+    background-color: #6b7280;
+  }
+
+  .custom-submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .message-box {
+    flex-grow: 1;
+    margin: 0 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  // --- HARDCODED DATA from provided component snippet ---
+  const viennaDistricts = [
+    "1. Innere Stadt",
+    "2. Leopoldstadt",
+    "3. Landstraße",
+    "4. Wieden",
+    "5. Margareten",
+    "6. Mariahilf",
+    "7. Neubau",
+    "8. Josefstadt",
+    "9. Alsergrund",
+    "10. Favoriten",
+    "11. Simmering",
+    "12. Meidling",
+    "13. Hietzing",
+    "14. Penzing",
+    "15. Rudolfsheim-Fünfhaus",
+    "16. Ottakring",
+    "17. Hernals",
+    "18. Währing",
+    "19. Döbling",
+    "20. Brigittenau",
+    "21. Floridsdorf",
+    "22. Donaustadt",
+    "23. Liesing",
+  ];
+  // Mocked up surrounding districts and amenities based on user code
+  const surroundingDistricts = [
+    "Baden (Umgebung)",
+    "Mödling (Umgebung)",
+    "Korneuburg (Umgebung)",
+    "Gänserndorf (Umgebung)",
+    "Tulln (Umgebung)",
+  ];
+  const objektarten = [
+    "Wohnung",
+    "Haus",
+    "Grundstueck",
+    "Parkplatz",
+    "Gewerbeimmobilie",
+  ];
+  const amenities = [
+    "Balkon",
+    "Garten",
+    "Klimaanlage",
+    "Lift",
+    "Keller",
+    "Garage",
+    "Sauna",
+    "Dachboden",
+  ];
+
+  const districts = {
+    Wien: viennaDistricts,
+    Niederösterreich: surroundingDistricts,
+  };
+
+  const STEPS = [
+    "panel-immobilie",
+    "panel-ort",
+    "panel-groesse",
+    "panel-preis",
+    "panel-ausstattung",
+    "panel-abo",
+  ];
+  const TAB_IDS = [
+    "step-tab-immobilie",
+    "step-tab-ort",
+    "step-tab-groesse",
+    "step-tab-preis",
+    "step-tab-ausstattung",
+    "step-tab-abo",
+  ];
+  let currentStepIndex = 0; // 0-indexed
+
+  // Element References
+  const formElement = document.getElementById("property-filter-form-element");
+  const backButton = document.getElementById("back-button");
+  const nextButton = document.getElementById("next-button");
+  const submitButton = document.getElementById("submit-button");
+  const errorMessage = document.getElementById("error-message");
+  const priceGroupKauf = document.querySelector(".price-group-kauf");
+  const priceGroupMiete = document.querySelector(".price-group-miete");
+  const submittedCriteria = document.getElementById("submitted-criteria");
+
+  // --- Utility Functions ---
+
+  const capitalize = (s) =>
+    s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, " ");
+
+  const getInputValue = (name) => {
+    const input = formElement.querySelector(`[name="${name}"]`);
+    return input?.value ? input.value : null;
+  };
+
+  const formatPrice = (price) => {
+    if (price === null || isNaN(Number(price))) return "";
+    return new Intl.NumberFormat("de-DE", {
+      maximumFractionDigits: 0,
+    }).format(Number(price));
+  };
+
+  function displayError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove("hidden");
+    setTimeout(() => {
+      errorMessage.classList.add("hidden");
+    }, 3500);
+  }
+
+  function validateStep(stepId) {
+    const currentPanel = document.getElementById(stepId);
+    if (!currentPanel) return true;
+
+    const inputs = currentPanel.querySelectorAll("[required]");
+
+    // Check for required inputs in the final 'Abo' step
+    if (stepId === "panel-abo") {
+      for (const input of inputs) {
+        if (!input.value.trim()) {
+          displayError("Bitte E-Mail und Name eingeben.");
+          return false;
+        }
+      }
+      if (!getInputValue("abo-email").includes("@")) {
+        displayError("Bitte eine gültige E-Mail-Adresse eingeben.");
+        return false;
+      }
+    }
+
+    // Other steps (filters) are optional criteria, so we only validate required inputs if they exist.
+    return true;
+  }
+
+  // --- Content Injection Functions (Mimicking Astro/JSX mapping) ---
+  function renderObjektarten() {
+    const container = document.getElementById("objektart-options");
+    if (!container) return;
+    container.innerHTML = objektarten
+      .map(
+        (type) => `
+                <label class="checkbox-label">
+                    <input type="checkbox" name="objektart" value="${type}" class="checkbox-input" />
+                    <span class="checkbox-text">${type}</span>
+                </label>
+            `
+      )
+      .join("");
+  }
+
+  function renderDistricts() {
+    const container = document.getElementById("ort-options-wrapper");
+    if (!container) return;
+
+    let html = "";
+    Object.keys(districts).forEach((region) => {
+      const list = districts[region];
+      const half = Math.ceil(list.length / 2);
+
+      const column1 = list
+        .slice(0, half)
+        .map(
+          (district) => `
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="lage" value="${district}" class="checkbox-input" />
+                        <span class="checkbox-text">${district}</span>
+                    </label>
+                `
+        )
+        .join("");
+
+      const column2 = list
+        .slice(half)
+        .map(
+          (district) => `
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="lage" value="${district}" class="checkbox-input" />
+                        <span class="checkbox-text">${district}</span>
+                    </label>
+                `
+        )
+        .join("");
+
+      html += `
+                    <div class="filter-form-group">
+                        <h2 class="filter-form-heading heading-style-h6">${region}</h2>
+                        <div class="filter-form-input-wrapper checkbox-columns">
+                            <div class="checkbox-column">${column1}</div>
+                            <div class="checkbox-column">${column2}</div>
+                        </div>
+                    </div>
+                `;
+    });
+    container.innerHTML = html;
+  }
+
+  function renderAmenities() {
+    const container = document.getElementById("ausstattung-options");
+    if (!container) return;
+
+    let html = "";
+    const half = Math.ceil(amenities.length / 2);
+
+    const column1 = amenities
+      .slice(0, half)
+      .map(
+        (amenity) => `
+                <label class="checkbox-label">
+                    <input type="checkbox" name="ausstattung" value="${amenity}" class="checkbox-input" />
+                    <span class="checkbox-text">${capitalize(amenity)}</span>
+                </label>
+            `
+      )
+      .join("");
+
+    const column2 = amenities
+      .slice(half)
+      .map(
+        (amenity) => `
+                <label class="checkbox-label">
+                    <input type="checkbox" name="ausstattung" value="${amenity}" class="checkbox-input" />
+                    <span class="checkbox-text">${capitalize(amenity)}</span>
+                </label>
+            `
+      )
+      .join("");
+
+    html = `
+                <div class="checkbox-column">${column1}</div>
+                <div class="checkbox-column">${column2}</div>
+            `;
+    container.innerHTML = html;
+  }
+
+  // --- CORE LOGIC: UPDATE TAB SELECTION TEXTS ---
+  const updateTabSelections = () => {
+    const formData = new FormData(formElement);
+
+    // 1. IMMOBILIE (vermarktungsart, objektart)
+    const vmArt = formData.get("vermarktungsart");
+    const objArts = formData.getAll("objektart").filter((v) => v.length > 0);
+    const selectionImmobilie = document.getElementById("selection-immobilie");
+
+    let immobilietext = "Alle Kategorien";
+    const vmAction = vmArt === "miete" ? "mieten" : "kaufen";
+    const vmType = vmArt === "miete" ? "Miete" : "Kauf";
+
+    if (vmArt && objArts.length === 0) {
+      immobilietext = vmType;
+    } else if (vmArt && objArts.length === 1) {
+      immobilietext = `${objArts[0]} ${vmAction}`;
+    } else if (vmArt && objArts.length > 1) {
+      immobilietext = `${objArts.length} Objektarten ${vmAction}`;
+    } else if (!vmArt && objArts.length > 0) {
+      immobilietext = `${objArts.length} Objektarten`;
+    }
+    selectionImmobilie.textContent = immobilietext;
+
+    // 2. ORT (lage)
+    const selectedLages = formData.getAll("lage").filter((v) => v.length > 0);
+    const selectionOrt = document.getElementById("selection-ort");
+    let ortText = "Alle Orte";
+
+    if (selectedLages.length === 1) {
+      ortText = selectedLages[0].split("(")[0].trim();
+    } else if (selectedLages.length > 1) {
+      ortText = `${selectedLages.length} Orte`;
+    }
+    selectionOrt.textContent = ortText;
+
+    // 3. GRÖSSE (zimmer, flaeche)
+    let zimmerMin = getInputValue("zimmer-min");
+    let zimmerMax = getInputValue("zimmer-max");
+    let flaecheMin = getInputValue("flaeche-min");
+    let flaecheMax = getInputValue("flaeche-max");
+    const selectionGroesse = document.getElementById("selection-groesse");
+
+    let groesseText = "Jede Größe";
+    let parts = [];
+
+    if (zimmerMin || zimmerMax) {
+      let zText = "";
+      if (zimmerMin && zimmerMax) zText = `${zimmerMin} - ${zimmerMax} Z.`;
+      else if (zimmerMin) zText = `ab ${zimmerMin} Z.`;
+      else if (zimmerMax) zText = `bis ${zimmerMax} Z.`;
+      parts.push(zText);
+    }
+
+    if (flaecheMin || flaecheMax) {
+      let fText = "";
+      if (flaecheMin && flaecheMax) fText = `${flaecheMin} - ${flaecheMax} m²`;
+      else if (flaecheMin) fText = `ab ${flaecheMin} m²`;
+      else if (flaecheMax) fText = `bis ${flaecheMax} m²`;
+      parts.push(fText);
+    }
+
+    if (parts.length > 0) {
+      groesseText = parts.join(", ");
+    }
+    selectionGroesse.textContent = groesseText;
+
+    // 4. PREIS (price-kauf/miete)
+    let kaufMin = getInputValue("preis-kauf-min");
+    let kaufMax = getInputValue("preis-kauf-max");
+    let mieteMin = getInputValue("preis-miete-min");
+    let mieteMax = getInputValue("preis-miete-max");
+    const selectionPreis = document.getElementById("selection-preis");
+
+    let preisText = "Jeder Preis";
+    let hasKauf = kaufMin || kaufMax;
+    let hasMiete = mieteMin || mieteMax;
+
+    if (vmArt === "kauf" && hasKauf) {
+      let range = "";
+      if (kaufMin && kaufMax)
+        range = `${formatPrice(kaufMin)} - ${formatPrice(kaufMax)} €`;
+      else if (kaufMin) range = `ab ${formatPrice(kaufMin)} €`;
+      else if (kaufMax) range = `bis ${formatPrice(kaufMax)} €`;
+      preisText = range;
+    } else if (vmArt === "miete" && hasMiete) {
+      let range = "";
+      if (mieteMin && mieteMax)
+        range = `${formatPrice(mieteMin)} - ${formatPrice(mieteMax)} €`;
+      else if (mieteMin) range = `ab ${formatPrice(mieteMin)} €`;
+      else if (mieteMax) range = `bis ${formatPrice(mieteMax)} €`;
+      preisText = range;
+    } else if (hasKauf || hasMiete) {
+      preisText =
+        hasKauf && hasMiete
+          ? "Kauf & Miete"
+          : hasKauf
+            ? "Kauf definiert"
+            : "Miete definiert";
+    }
+
+    selectionPreis.textContent = preisText;
+
+    // 5. AUSSTATTUNG (ausstattung)
+    const selectedAmenities = formData
+      .getAll("ausstattung")
+      .filter((v) => v.length > 0);
+    const selectionAusstattung = document.getElementById(
+      "selection-ausstattung"
+    );
+    let ausstattungText = "Details";
+
+    if (selectedAmenities.length === 1) {
+      ausstattungText = capitalize(selectedAmenities[0]);
+    } else if (selectedAmenities.length > 1) {
+      ausstattungText = `${selectedAmenities.length} Details`;
+    }
+    selectionAusstattung.textContent = ausstattungText;
+
+    // 6. ABO (email)
+    const email = getInputValue("abo-email");
+    const selectionAbo = document.getElementById("selection-abo");
+    selectionAbo.textContent =
+      email && email.includes("@") ? email : "Ihre Daten";
+  };
+
+  // --- Price Group Visibility Logic ---
+  function handleVermarktungsartChange() {
+    const vmArt = getInputValue("vermarktungsart");
+
+    priceGroupKauf.classList.add("hidden");
+    priceGroupMiete.classList.add("hidden");
+
+    if (vmArt === "miete") {
+      priceGroupMiete.classList.remove("hidden");
+    } else if (vmArt === "kauf") {
+      priceGroupKauf.classList.remove("hidden");
+    } else {
+      // Show both if nothing is selected (default, or if 'Immobilie' panel is skipped)
+      priceGroupKauf.classList.remove("hidden");
+      priceGroupMiete.classList.remove("hidden");
+    }
+  }
+
+  // --- Multi-Step Navigation Logic ---
+
+  function updateUI(direction = "next") {
+    // 1. Update Panel Visibility
+    STEPS.forEach((panelId, index) => {
+      const panel = document.getElementById(panelId);
+      panel.classList.remove(
+        "active-panel",
+        "hidden-panel-next",
+        "hidden-panel-prev"
+      );
+
+      if (index === currentStepIndex) {
+        panel.classList.add("active-panel");
+      } else {
+        // Control transition direction based on history
+        if (index < currentStepIndex && direction === "prev") {
+          panel.classList.add("hidden-panel-prev");
+        } else if (index > currentStepIndex || direction === "next") {
+          panel.classList.add("hidden-panel-next");
+        }
+      }
+    });
+
+    // Handle success panel display
+    const successPanel = document.getElementById("panel-success");
+    if (currentStepIndex >= STEPS.length) {
+      successPanel.classList.add("active-panel");
+      navigationWrapper.classList.add("hidden");
+    } else {
+      successPanel.classList.remove("active-panel");
+      navigationWrapper.classList.remove("hidden");
+    }
+
+    // 2. Update Progress Tabs
+    TAB_IDS.forEach((tabId, index) => {
+      const tab = document.getElementById(tabId);
+      tab.classList.remove("active");
+      if (index <= currentStepIndex) {
+        tab.classList.add("active");
+      }
+    });
+
+    // 3. Update Navigation Buttons
+    backButton.disabled = currentStepIndex === 0;
+
+    if (currentStepIndex === STEPS.length - 1) {
+      nextButton.classList.add("hidden");
+      submitButton.classList.remove("hidden");
+    } else {
+      nextButton.classList.remove("hidden");
+      submitButton.classList.add("hidden");
+    }
+  }
+
+  function nextStep() {
+    if (validateStep(STEPS[currentStepIndex])) {
+      if (currentStepIndex < STEPS.length - 1) {
+        currentStepIndex++;
+        updateUI("next");
+      } else if (currentStepIndex === STEPS.length - 1) {
+        submitForm();
+      }
+    }
+  }
+
+  function prevStep() {
+    if (currentStepIndex > 0) {
+      currentStepIndex--;
+      updateUI("prev");
+    }
+  }
+
+  function submitForm() {
+    // Final validation is done in nextStep before calling this
+
+    // 1. Collect all non-empty form data (filters and subscription details)
+    const formData = new FormData(formElement);
+    const data = {};
+    const criteria = {};
+
+    // Define which fields are filters and which are subscription details
+    const filterFields = [
+      "vermarktungsart",
+      "objektart",
+      "lage",
+      "zimmer-min",
+      "zimmer-max",
+      "flaeche-min",
+      "flaeche-max",
+      "preis-kauf-min",
+      "preis-kauf-max",
+      "preis-miete-min",
+      "preis-miete-max",
+      "ausstattung",
+    ];
+
+    // Build the criteria object
+    formData.forEach((value, key) => {
+      const trimmedValue = typeof value === "string" ? value.trim() : value;
+      if (trimmedValue) {
+        if (filterFields.includes(key)) {
+          // Handle multiple values for checkboxes
+          if (criteria[key] && Array.isArray(criteria[key])) {
+            criteria[key].push(trimmedValue);
+          } else if (criteria[key]) {
+            criteria[key] = [criteria[key], trimmedValue];
+          } else {
+            criteria[key] = trimmedValue;
+          }
+        } else if (key.startsWith("abo-")) {
+          data[key] = trimmedValue;
+        }
+      }
+    });
+
+    // Add criteria to the final data object
+    data.criteria = criteria;
+
+    // 2. Display collected criteria in the success panel
+    submittedCriteria.textContent =
+      "Abo-Details:\n" + JSON.stringify(data, null, 2);
+
+    // 3. Move to the final (success) step
+    currentStepIndex++;
+    updateUI();
+  }
+
+  // --- Event Listeners and Initialization ---
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Inject dynamic options
+    renderObjektarten();
+    renderDistricts();
+    renderAmenities();
+
+    // Set up listeners
+    nextButton.addEventListener("click", nextStep);
+    backButton.addEventListener("click", prevStep);
+    submitButton.addEventListener("click", submitForm);
+
+    // Listen to any input change for real-time progress bar update
+    formElement.addEventListener("input", () => {
+      updateTabSelections();
+      // Specifically check for Vermarktungsart change to toggle price fields
+      handleVermarktungsartChange();
+    });
+
+    // Initial UI setup
+    updateUI();
+    updateTabSelections();
+    handleVermarktungsartChange(); // Set initial price group visibility
+  });
+</script>
