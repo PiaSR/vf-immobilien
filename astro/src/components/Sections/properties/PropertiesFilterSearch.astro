@@ -51,7 +51,7 @@ try {
   console.error("Failed to fetch filter options from Sanity:", e);
 }
 
-const objektarten: string[] = filterData.propertyTypes || [
+const objektarten: string[] = filterData.propertyType || [
   "Wohnung",
   "Haus",
   "Grundstueck",
@@ -403,8 +403,8 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   .form {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
-    position: relative; /* CRITICAL: Set positioning context for absolute panels */
+    gap: var(--spacing-sm);
+    position: relative;
   }
 
   /* ==============================================================
@@ -412,6 +412,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   ============================================================== */
 
   .filter-heading-bar {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: var(--spacing-sm);
@@ -423,26 +424,17 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   .filter-heading-tab {
     cursor: pointer;
-    padding: var(--spacing-xs);
-    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+
     transition:
       background-color 0.2s,
       box-shadow 0.2s;
   }
 
-  .filter-heading-tab:hover {
-    background-color: var(--color-neutral-light);
-  }
-
   /* Active state for tab logic (requires JavaScript) */
   .filter-heading-tab.active {
-    box-shadow: inset 0 0 0 2px var(--color-brand-dark-green);
-    background-color: var(--color-neutral-light);
-  }
-
-  .filter-heading-tab-name {
-    font-size: var(--font-size-caption);
-    color: var(--color-neutral-medium);
+    background-color: var(--color-neutral-green-grey);
   }
 
   .filter-heading-tab-selection {
@@ -499,7 +491,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   /* The wrapper is now static/relative to allow panels to position relative to the form */
   .filter-panel-wrapper {
     min-height: 0;
-    position: static;
+    /* position: relative; */
     padding-top: 0;
     z-index: 10;
   }
@@ -521,7 +513,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     transition: opacity 0.3s ease;
 
     /* Fixed width and shadow for dropdown aesthetic */
-    width: 400px;
+    width: 50rem;
     max-width: calc(100% - var(--spacing-md) * 2); /* Safety max-width */
     box-shadow:
       0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -565,8 +557,9 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   .radio-classic-label {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) 0;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-neutral-green-grey);
   }
 
   .radio-classic-label input[type="radio"] {
@@ -613,6 +606,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   .text-field {
     padding: var(--spacing-sm);
+    background-color: var(--color-neutral-green-grey);
     border: 1px solid var(--color-neutral-medium);
     border-radius: var(--border-radius-sm);
     width: 100px;
@@ -770,7 +764,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   /* Ensure desktop rules are reapplied above 992px */
   @media (min-width: 992px) {
     .filter-panel-wrapper {
-      position: static; /* Ensure it stays static */
+      position: relative; /* Ensure it stays static */
       /* Reset mobile margin-bottom and padding-top */
       margin-bottom: 0;
       padding-top: 0;
@@ -789,7 +783,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
       box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      width: 400px;
+      width: 50rem;
     }
 
     /* Ensure only desktop search button is used */
@@ -839,6 +833,23 @@ document.addEventListener("DOMContentLoaded", () => {
   )
     return;
 
+  function adjustWrapperHeight(activePanel) {
+    const wrapper = document.querySelector(".filter-panel-wrapper");
+    // Check if we are in the mobile layout (panels are position: static)
+    // If panels are static, we don't need to force a height.
+    if (window.getComputedStyle(activePanel).position === "static") {
+      wrapper.style.minHeight = "auto";
+      return;
+    }
+
+    // Get the actual height of the currently active panel (offsetHeight includes padding/border)
+    const activeHeight = activePanel.offsetHeight;
+
+    // Apply this height to the wrapper, adding a small buffer for safety
+    const buffer = 24;
+    wrapper.style.minHeight = `${activeHeight + buffer}px`;
+  }
+
   // --- Utility Function: Check for Mobile/Desktop View ---
   const isDesktop = () => window.matchMedia("(min-width: 992px)").matches;
 
@@ -851,18 +862,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function positionPanel(targetTab, panelElement) {
     if (!isDesktop()) return; // Only apply dynamic positioning on desktop
 
-    const tabRect = targetTab.getBoundingClientRect();
+    const filterBarRect = filterBar.getBoundingClientRect(); // Get the position of the filter bar
     const formRect = formElement.getBoundingClientRect(); // Position relative to the parent form
 
     // Calculate the panel's left position relative to the form container.
     // This aligns the left edge of the panel with the left edge of the tab.
-    const newLeft = tabRect.left - formRect.left;
-
+    const newLeft = filterBarRect.left - formRect.left;
     // Calculate the panel's top position relative to the form container.
     // The panel must start below the entire header bar, plus a small gap.
-    const topGap = 12; // Approximation of var(--spacing-sm) in pixels
-    const barHeight = filterBar.offsetHeight;
-    const newTop = barHeight + topGap;
+    const topGap = 0; // Approximation of var(--spacing-sm) in pixels
+    // const barHeight = filterBar.offsetHeight;
+    const newTop = topGap;
 
     // Apply the new position
     panelElement.style.left = `${newLeft}px`;
@@ -1102,6 +1112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Close the panel (it was active and clicked again)
         activePanelId = null;
         activeTabElement = null;
+        adjustWrapperHeight(panelElement);
       }
 
       // --- 3. Handle Price Visibility (always needs to run as vmArt may change) ---
