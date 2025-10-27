@@ -25,6 +25,7 @@ import HeroHeader from "../../Base/HeroHeader.astro";
   .properties-hero {
     background-color: var(--color-brand-light-green);
     position: relative;
+    height: 23vh;
   }
 
   .padding-section {
@@ -35,10 +36,20 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     padding-top: 0;
     padding-bottom: 0;
   }
+
   .hero-grid-content {
     display: grid;
     grid-template-columns: 1fr 28%;
     gap: var(--spacing-2xl);
     height: 100%;
+  }
+  .angled-image-mobile {
+    display: none !important;
+  }
+
+  @media (max-width: 991px) {
+    .container-align-left {
+      margin-top: var(--spacing-2xl);
+    }
   }
 </style>

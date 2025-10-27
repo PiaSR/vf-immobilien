@@ -91,41 +91,299 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
         class="form"
       >
         <div id="filter-heading-bar" class="filter-heading-bar">
-          <div data-tab="immobilie" class="filter-heading-tab tab-container">
-            <div class="filter-heading-tab-name">Immobilie</div>
-            <div id="selection-immobilie" class="filter-heading-tab-selection">
-              Alle Kategorien
+          <div class="filter-group-mobile-wrapper">
+            <div data-tab="immobilie" class="filter-heading-tab tab-container">
+              <div class="filter-heading-tab-name">Immobilie</div>
+              <div
+                id="selection-immobilie"
+                class="filter-heading-tab-selection"
+              >
+                Alle Kategorien
+              </div>
+            </div>
+            <div id="panel-immobilie" class="filter-panel panel-immobilie">
+              <div id="filter-vermarktungsart" class="filter-form-group">
+                <h2 class="filter-form-heading heading-style-h6">
+                  Vermarktungsart
+                </h2>
+                <div class="filter-form-input-wrapper radio-input-group">
+                  <label class="radio-classic-label">
+                    <input
+                      type="radio"
+                      name="vermarktungsart"
+                      value="miete"
+                    />Miete
+                  </label>
+                  <label class="radio-classic-label">
+                    <input
+                      type="radio"
+                      name="vermarktungsart"
+                      value="kauf"
+                    />Kauf
+                  </label>
+                </div>
+              </div>
+              <div id="filter-objektart" class="filter-form-group">
+                <h2 class="filter-form-heading heading-style-h6">Objektart</h2>
+                {/* ... existing objektarten map ... */}
+                {
+                  objektarten.length > 0 ? (
+                    <div class="filter-form-input-wrapper checkbox-columns objektart-filter">
+                      {objektarten.map((type) => (
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            name="objektart"
+                            value={type}
+                            class="checkbox-input"
+                          />
+                          <span class="checkbox-text">{type}</span>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>Keine Objektarten verfügbar.</p>
+                  )
+                }
+              </div>
+              <a href="#" data-panel="immobilie" class="reset-button button"
+                >Zurücksetzen</a
+              >
             </div>
           </div>
 
-          <div data-tab="ort" class="filter-heading-tab tab-container">
-            <div class="filter-heading-tab-name">Ort</div>
-            <div id="selection-ort" class="filter-heading-tab-selection">
-              Alle Orte
+          <div class="filter-group-mobile-wrapper">
+            <div data-tab="ort" class="filter-heading-tab tab-container">
+              <div class="filter-heading-tab-name">Ort</div>
+              <div id="selection-ort" class="filter-heading-tab-selection">
+                Alle Orte
+              </div>
+            </div>
+            <div id="panel-ort" class="filter-panel panel-ort">
+              {/* ... existing ort map ... */}
+              {
+                Object.keys(districts).map((region) => (
+                  <div class="filter-form-group">
+                    <h2 class="filter-form-heading heading-style-h6">
+                      {region}
+                    </h2>
+                    <div class="filter-form-input-wrapper checkbox-columns">
+                      <div class="checkbox-column">
+                        {districts[region]
+                          .slice(0, Math.ceil(districts[region].length / 2))
+                          .map((district) => (
+                            <label class="checkbox-label">
+                              <input
+                                type="checkbox"
+                                name="lage"
+                                value={district}
+                                class="checkbox-input"
+                              />
+                              <span class="checkbox-text">{district}</span>
+                            </label>
+                          ))}
+                      </div>
+                      <div class="checkbox-column">
+                        {districts[region]
+                          .slice(Math.ceil(districts[region].length / 2))
+                          .map((district) => (
+                            <label class="checkbox-label">
+                              <input
+                                type="checkbox"
+                                name="lage"
+                                value={district}
+                                class="checkbox-input"
+                              />
+                              <span class="checkbox-text">{district}</span>
+                            </label>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
+              <a href="#" data-panel="ort" class="reset-button button"
+                >Zurücksetzen</a
+              >
             </div>
           </div>
 
-          <div data-tab="groesse" class="filter-heading-tab tab-container">
-            <div class="filter-heading-tab-name">Größe</div>
-            <div id="selection-groesse" class="filter-heading-tab-selection">
-              Jede Größe
+          <div class="filter-group-mobile-wrapper">
+            <div data-tab="groesse" class="filter-heading-tab tab-container">
+              <div class="filter-heading-tab-name">Größe</div>
+              <div id="selection-groesse" class="filter-heading-tab-selection">
+                Jede Größe
+              </div>
+            </div>
+            <div id="panel-groesse" class="filter-panel panel-groesse">
+              {/* ... existing groesse content ... */}
+              <div class="filter-form-group">
+                <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
+                <div class="number-input-wrapper">
+                  <input
+                    class="text-field"
+                    name="zimmer-min"
+                    placeholder="Min"
+                    type="number"
+                    id="filter-zimmer-min"
+                  />
+                  <div class="input-separator">bis</div>
+                  <input
+                    class="text-field"
+                    name="zimmer-max"
+                    placeholder="Max"
+                    type="number"
+                    id="filter-zimmer-max"
+                  />
+                </div>
+              </div>
+              <div class="filter-form-group">
+                <h2 class="filter-form-heading heading-style-h6">
+                  Fläche (m²)
+                </h2>
+                <div class="number-input-wrapper">
+                  <input
+                    class="text-field"
+                    name="flaeche-min"
+                    placeholder="Min"
+                    type="number"
+                    id="filter-flaeche-min"
+                  />
+                  <div class="input-separator">bis</div>
+                  <input
+                    class="text-field"
+                    name="flaeche-max"
+                    placeholder="Max"
+                    type="number"
+                    id="filter-flaeche-max"
+                  />
+                </div>
+              </div>
+              <a href="#" data-panel="groesse" class="reset-button button"
+                >Zurücksetzen</a
+              >
             </div>
           </div>
 
-          <div data-tab="preis" class="filter-heading-tab tab-container">
-            <div class="filter-heading-tab-name">Preis</div>
-            <div id="selection-preis" class="filter-heading-tab-selection">
-              Jeder Preis
+          <div class="filter-group-mobile-wrapper">
+            <div data-tab="preis" class="filter-heading-tab tab-container">
+              <div class="filter-heading-tab-name">Preis</div>
+              <div id="selection-preis" class="filter-heading-tab-selection">
+                Jeder Preis
+              </div>
+            </div>
+            <div id="panel-preis" class="filter-panel panel-preis">
+              {/* ... existing preis content ... */}
+              <div class="filter-form-group price-group price-group-kauf">
+                <h2 class="filter-form-heading heading-style-h6">
+                  Kaufpreis (€)
+                </h2>
+                <div class="number-input-wrapper">
+                  <input
+                    class="text-field"
+                    name="preis-kauf-min"
+                    placeholder="Min"
+                    type="number"
+                    id="filter-preis-kauf-min"
+                  />
+                  <div class="input-separator">bis</div>
+                  <input
+                    class="text-field"
+                    name="preis-kauf-max"
+                    placeholder="Max"
+                    type="number"
+                    id="filter-preis-kauf-max"
+                  />
+                </div>
+              </div>
+
+              <div class="filter-form-group price-group price-group-miete">
+                <h2 class="filter-form-heading heading-style-h6">Miete (€)</h2>
+                <div class="number-input-wrapper">
+                  <input
+                    class="text-field"
+                    name="preis-miete-min"
+                    placeholder="Min"
+                    type="number"
+                    id="filter-preis-miete-min"
+                  />
+                  <div class="input-separator">bis</div>
+                  <input
+                    class="text-field"
+                    name="preis-miete-max"
+                    placeholder="Max"
+                    type="number"
+                    id="filter-preis-miete-max"
+                  />
+                </div>
+              </div>
+              <a href="#" data-panel="preis" class="reset-button button"
+                >Zurücksetzen</a
+              >
             </div>
           </div>
 
-          <div data-tab="ausstattung" class="filter-heading-tab tab-container">
-            <div class="filter-heading-tab-name">Ausstattung</div>
+          <div class="filter-group-mobile-wrapper">
             <div
-              id="selection-ausstattung"
-              class="filter-heading-tab-selection"
+              data-tab="ausstattung"
+              class="filter-heading-tab tab-container"
             >
-              Details
+              <div class="filter-heading-tab-name">Ausstattung</div>
+              <div
+                id="selection-ausstattung"
+                class="filter-heading-tab-selection"
+              >
+                Details
+              </div>
+            </div>
+            <div id="panel-ausstattung" class="filter-panel panel-ausstattung">
+              {/* ... existing ausstattung content ... */}
+              <div class="filter-form-group">
+                <h2 class="filter-form-heading heading-style-h6">Details</h2>
+                <div class="filter-form-input-wrapper checkbox-columns">
+                  <div class="checkbox-column">
+                    {
+                      amenities
+                        .slice(0, Math.ceil(amenities.length / 2))
+                        .map((amenity) => (
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="ausstattung"
+                              value={amenity}
+                              class="checkbox-input"
+                            />
+                            <span class="checkbox-text">
+                              {capitalize(amenity)}
+                            </span>
+                          </label>
+                        ))
+                    }
+                  </div>
+                  <div class="checkbox-column">
+                    {
+                      amenities
+                        .slice(Math.ceil(amenities.length / 2))
+                        .map((amenity) => (
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="ausstattung"
+                              value={amenity}
+                              class="checkbox-input"
+                            />
+                            <span class="checkbox-text">
+                              {capitalize(amenity)}
+                            </span>
+                          </label>
+                        ))
+                    }
+                  </div>
+                </div>
+              </div>
+              <a href="#" data-panel="ausstattung" class="reset-button button"
+                >Zurücksetzen</a
+              >
             </div>
           </div>
 
@@ -140,243 +398,6 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
               />
                Suchen
             </button>
-          </div>
-        </div>
-
-        <div id="filter-panel-wrapper" class="filter-panel-wrapper">
-          <div id="panel-immobilie" class="filter-panel panel-immobilie">
-            <div id="filter-vermarktungsart" class="filter-form-group">
-              <h2 class="filter-form-heading heading-style-h6">
-                Vermarktungsart
-              </h2>
-              <div class="filter-form-input-wrapper radio-input-group">
-                <label class="radio-classic-label">
-                  <input
-                    type="radio"
-                    name="vermarktungsart"
-                    value="miete"
-                  />Miete
-                </label>
-                <label class="radio-classic-label">
-                  <input type="radio" name="vermarktungsart" value="kauf" />Kauf
-                </label>
-              </div>
-            </div>
-
-            <div id="filter-objektart" class="filter-form-group">
-              <h2 class="filter-form-heading heading-style-h6">Objektart</h2>
-              {
-                objektarten.length > 0 ? (
-                  <div class="filter-form-input-wrapper checkbox-columns objektart-filter">
-                    {objektarten.map((type) => (
-                      <label class="checkbox-label">
-                        <input
-                          type="checkbox"
-                          name="objektart"
-                          value={type}
-                          class="checkbox-input"
-                        />
-                        <span class="checkbox-text">{type}</span>
-                      </label>
-                    ))}
-                  </div>
-                ) : (
-                  <p>Keine Objektarten verfügbar.</p>
-                )
-              }
-            </div>
-            <a href="#" data-panel="immobilie" class="reset-button button"
-              >Zurücksetzen</a
-            >
-          </div>
-
-          <div id="panel-ort" class="filter-panel panel-ort">
-            {
-              Object.keys(districts).map((region) => (
-                <div class="filter-form-group">
-                  <h2 class="filter-form-heading heading-style-h6">{region}</h2>
-                  <div class="filter-form-input-wrapper checkbox-columns">
-                    <div class="checkbox-column">
-                      {districts[region]
-                        .slice(0, Math.ceil(districts[region].length / 2))
-                        .map((district) => (
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="lage"
-                              value={district}
-                              class="checkbox-input"
-                            />
-                            <span class="checkbox-text">{district}</span>
-                          </label>
-                        ))}
-                    </div>
-                    <div class="checkbox-column">
-                      {districts[region]
-                        .slice(Math.ceil(districts[region].length / 2))
-                        .map((district) => (
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="lage"
-                              value={district}
-                              class="checkbox-input"
-                            />
-                            <span class="checkbox-text">{district}</span>
-                          </label>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              ))
-            }
-            <a href="#" data-panel="ort" class="reset-button button"
-              >Zurücksetzen</a
-            >
-          </div>
-
-          <div id="panel-groesse" class="filter-panel panel-groesse">
-            <div class="filter-form-group">
-              <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
-              <div class="number-input-wrapper">
-                <input
-                  class="text-field"
-                  name="zimmer-min"
-                  placeholder="Min"
-                  type="number"
-                  id="filter-zimmer-min"
-                />
-                <div class="input-separator">bis</div>
-                <input
-                  class="text-field"
-                  name="zimmer-max"
-                  placeholder="Max"
-                  type="number"
-                  id="filter-zimmer-max"
-                />
-              </div>
-            </div>
-            <div class="filter-form-group">
-              <h2 class="filter-form-heading heading-style-h6">Fläche (m²)</h2>
-              <div class="number-input-wrapper">
-                <input
-                  class="text-field"
-                  name="flaeche-min"
-                  placeholder="Min"
-                  type="number"
-                  id="filter-flaeche-min"
-                />
-                <div class="input-separator">bis</div>
-                <input
-                  class="text-field"
-                  name="flaeche-max"
-                  placeholder="Max"
-                  type="number"
-                  id="filter-flaeche-max"
-                />
-              </div>
-            </div>
-            <a href="#" data-panel="groesse" class="reset-button button"
-              >Zurücksetzen</a
-            >
-          </div>
-
-          <div id="panel-preis" class="filter-panel panel-preis">
-            <div class="filter-form-group price-group price-group-kauf">
-              <h2 class="filter-form-heading heading-style-h6">
-                Kaufpreis (€)
-              </h2>
-              <div class="number-input-wrapper">
-                <input
-                  class="text-field"
-                  name="preis-kauf-min"
-                  placeholder="Min"
-                  type="number"
-                  id="filter-preis-kauf-min"
-                />
-                <div class="input-separator">bis</div>
-                <input
-                  class="text-field"
-                  name="preis-kauf-max"
-                  placeholder="Max"
-                  type="number"
-                  id="filter-preis-kauf-max"
-                />
-              </div>
-            </div>
-
-            <div class="filter-form-group price-group price-group-miete">
-              <h2 class="filter-form-heading heading-style-h6">Miete (€)</h2>
-              <div class="number-input-wrapper">
-                <input
-                  class="text-field"
-                  name="preis-miete-min"
-                  placeholder="Min"
-                  type="number"
-                  id="filter-preis-miete-min"
-                />
-                <div class="input-separator">bis</div>
-                <input
-                  class="text-field"
-                  name="preis-miete-max"
-                  placeholder="Max"
-                  type="number"
-                  id="filter-preis-miete-max"
-                />
-              </div>
-            </div>
-
-            <a href="#" data-panel="preis" class="reset-button button"
-              >Zurücksetzen</a
-            >
-          </div>
-          <div id="panel-ausstattung" class="filter-panel panel-ausstattung">
-            <div class="filter-form-group">
-              <h2 class="filter-form-heading heading-style-h6">Details</h2>
-              <div class="filter-form-input-wrapper checkbox-columns">
-                <div class="checkbox-column">
-                  {
-                    amenities
-                      .slice(0, Math.ceil(amenities.length / 2))
-                      .map((amenity) => (
-                        <label class="checkbox-label">
-                          <input
-                            type="checkbox"
-                            name="ausstattung"
-                            value={amenity}
-                            class="checkbox-input"
-                          />
-                          <span class="checkbox-text">
-                            {capitalize(amenity)}
-                          </span>
-                        </label>
-                      ))
-                  }
-                </div>
-                <div class="checkbox-column">
-                  {
-                    amenities
-                      .slice(Math.ceil(amenities.length / 2))
-                      .map((amenity) => (
-                        <label class="checkbox-label">
-                          <input
-                            type="checkbox"
-                            name="ausstattung"
-                            value={amenity}
-                            class="checkbox-input"
-                          />
-                          <span class="checkbox-text">
-                            {capitalize(amenity)}
-                          </span>
-                        </label>
-                      ))
-                  }
-                </div>
-              </div>
-            </div>
-            <a href="#" data-panel="ausstattung" class="reset-button button"
-              >Zurücksetzen</a
-            >
           </div>
         </div>
       </form>
@@ -407,6 +428,41 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     position: relative;
   }
 
+  :global(.content-to-blur) {
+    /* Smooth transition for the visual effect */
+    transition:
+      filter 0.3s ease,
+      transform 0.3s ease;
+    filter: none;
+    /* Ensure the element is positioned and has a z-index to create a stacking context */
+    position: relative;
+    z-index: 1;
+    /* Hint to the browser to optimize for filtering/blur */
+    will-change: filter;
+  }
+
+  /* * Styles applied when the 'is-filter-active' class is present on the <body>. */
+  :global(body.is-filter-active) :global(.content-to-blur) {
+    /* Apply blur and slightly darken the background */
+    filter: blur(10px) brightness(1);
+    transform: scale(1);
+
+    /* Optional: Disable pointer events on the background */
+    pointer-events: none;
+  }
+
+  :global(.section-properties-filter-form) {
+    position: relative; /* Necessary for z-index to take effect */
+    z-index: 102; /* Higher than filter bar/panel to guarantee it's on top */
+  }
+  /* Ensure the filter bar and panels remain sharp and on top */
+  :global(#filter-heading-bar) {
+    z-index: 101;
+  }
+
+  :global(.filter-panel) {
+    z-index: 100;
+  }
   /* ==============================================================
   FILTER HEADER (TABS) - DESKTOP DEFAULT
   ============================================================== */
@@ -422,6 +478,13 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   }
 
+  .filter-group-mobile-wrapper {
+    /* On desktop, this wrapper should span a single column */
+    grid-column: span 1;
+    /* Hide the wrapper on desktop. The contents (tab & panel) will be
+     absolutely positioned by JS/CSS if needed. We need to hide the panel though. */
+    /* We will rely on the .filter-panel rule to hide the panel */
+  }
   .filter-heading-tab {
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -489,12 +552,6 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   ============================================================== */
 
   /* The wrapper is now static/relative to allow panels to position relative to the form */
-  .filter-panel-wrapper {
-    min-height: 0;
-    /* position: relative; */
-    padding-top: 0;
-    z-index: 10;
-  }
 
   .filter-panel {
     display: none; /* Default state, hide all */
@@ -514,7 +571,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
     /* Fixed width and shadow for dropdown aesthetic */
     width: 50rem;
-    max-width: calc(100% - var(--spacing-md) * 2); /* Safety max-width */
+    /* max-width: calc(100% - var(--spacing-md) * 2);  */
     box-shadow:
       0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -570,20 +627,23 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   /* Checkbox Grid Layout */
   .checkbox-columns {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: var(--spacing-lg) var(--spacing-2xl); /* Vertical and horizontal gap */
+    gap: var(--spacing-md);
   }
 
   .checkbox-column {
-    flex: 1;
-    min-width: 180px;
+    flex-basis: calc(50% - var(--spacing-md));
+    flex-grow: 1; /* Allows columns to grow slightly to fill space */
+    max-width: none; /* Remove the restrictive max-width */
+
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
   }
 
   .checkbox-label {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--spacing-sm);
   }
@@ -641,12 +701,14 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   @media (max-width: 991px) {
     .properties-filter-wrapper {
+      width: 100%;
+      margin: 0;
       padding: 0;
     }
 
     .form {
       gap: 0;
-      width: 90%;
+      width: 95%;
       position: static; /* Reset desktop relative position for form */
       margin: 0 auto;
     }
@@ -655,28 +717,42 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     .filter-heading-bar {
       display: flex; /* Override grid */
       flex-direction: column;
-      gap: 0;
+      gap: var(--spacing-sm);
       padding: 0;
-      background-color: transparent;
       box-shadow: none;
+      width: 100%;
+      background-color: var(--color-neutral-transparent);
+    }
+    .filter-group-mobile-wrapper {
+      grid-column: auto; /* Reset desktop grid column */
+      width: 100%;
     }
 
     /* 2. Individual Tabs (The accordion headers) */
     .filter-heading-tab {
-      border-radius: 0;
+      display: flex;
+      justify-content: space-between;
+      border-radius: var(--border-radius);
       padding: var(--spacing-md) var(--spacing-lg);
       background-color: var(--color-neutral-lightest);
-      border: 1px solid var(--color-neutral-light);
+
       margin-top: -1px; /* Collapse borders */
     }
-
-    /* Top and bottom rounding */
-    .filter-heading-tab:first-child {
+    /* Top and bottom rounding - now apply to wrapper's content */
+    .filter-group-mobile-wrapper:first-child .filter-heading-tab {
       margin-top: 0;
       border-top-left-radius: var(--border-radius);
       border-top-right-radius: var(--border-radius);
     }
-    .filter-heading-tab:last-of-type {
+    /* The last tab in the whole list */
+    .filter-group-mobile-wrapper:last-of-type .filter-heading-tab {
+      border-bottom-left-radius: 0; /* No rounding if panel is active */
+      border-bottom-right-radius: 0;
+    }
+
+    /* Re-apply bottom rounding to the last item if its panel is hidden */
+    .filter-group-mobile-wrapper:last-of-type:not(:has(.filter-panel.active))
+      .filter-heading-tab {
       border-bottom-left-radius: var(--border-radius);
       border-bottom-right-radius: var(--border-radius);
     }
@@ -685,18 +761,9 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     .filter-heading-tab.active {
       box-shadow: none;
       border-bottom: none;
+      background-color: var(--color-neutral-lightest);
+      font-weight: var(--font-weight-bold);
       /* Re-apply top border radius if this is the first item */
-    }
-
-    /* Hide the selection text on mobile to simplify header */
-    .filter-heading-tab-selection {
-      display: none;
-    }
-
-    /* 3. Search Button (Full width at the bottom) */
-    /* Remove search button from the accordion list flow */
-    .filter-heading-bar .search-button-wrapper {
-      display: none;
     }
 
     /* Place the search button visually below the accordion structure */
@@ -710,35 +777,22 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
       height: auto;
     }
 
-    /* 4. Panel Wrapper (Static for inline flow) */
-    .filter-panel-wrapper {
-      position: static; /* CRITICAL: Reset desktop absolute position */
-      min-height: auto;
-      padding-top: 0;
-    }
-
     /* 5. Panels (Accordion content) */
     .filter-panel {
-      /* Remove absolute positioning for stacking */
       position: static; /* CRITICAL: Reset desktop absolute position */
       top: auto;
       left: auto;
       right: auto;
       width: 100%; /* Full width on mobile */
 
-      border: 1px solid var(--color-neutral-light);
-      border-top: none;
-      border-radius: 0;
       margin-top: -1px; /* Connect to header above */
-      margin-bottom: var(--spacing-md); /* Space below panel */
 
       padding: var(--spacing-xl);
       z-index: 1;
       /* Use display property for toggling */
       opacity: 1;
       transition: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-
+      box-shadow: none;
       /* Initial state: Hide all panels */
       display: none;
     }
@@ -753,11 +807,12 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
     /* Reset columns for mobile checkbox layouts */
     .checkbox-columns {
-      flex-direction: column;
-      gap: var(--spacing-sm);
+      flex-wrap: wrap;
     }
     .checkbox-column {
-      min-width: 100%;
+      flex-basis: calc(50% - var(--spacing-md));
+      flex-grow: 1; /* Allows columns to grow slightly to fill space */
+      max-width: none; /* Remove the restrictive max-width */
     }
   }
 
@@ -799,7 +854,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 <script define:vars={{ allLocations, viennaDistricts }}>
 document.addEventListener("DOMContentLoaded", () => {
   const filterBar = document.getElementById("filter-heading-bar");
-  const panelWrapper = document.getElementById("filter-panel-wrapper");
+  // REMOVED: const panelWrapper = document.getElementById("filter-panel-wrapper");
   const formElement = document.getElementById("property-filter-form-element");
 
   const priceGroupKauf = document.querySelector(".price-group-kauf");
@@ -818,10 +873,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let activePanelId = null; // Store ID of currently active panel (e.g., 'panel-immobilie')
   let activeTabElement = null; // Store reference to the currently active tab element
 
-  // Safety check
+  // Safety check (Removed panelWrapper check)
   if (
     !filterBar ||
-    !panelWrapper ||
     !formElement ||
     !priceGroupKauf ||
     !priceGroupMiete ||
@@ -833,22 +887,7 @@ document.addEventListener("DOMContentLoaded", () => {
   )
     return;
 
-  function adjustWrapperHeight(activePanel) {
-    const wrapper = document.querySelector(".filter-panel-wrapper");
-    // Check if we are in the mobile layout (panels are position: static)
-    // If panels are static, we don't need to force a height.
-    if (window.getComputedStyle(activePanel).position === "static") {
-      wrapper.style.minHeight = "auto";
-      return;
-    }
-
-    // Get the actual height of the currently active panel (offsetHeight includes padding/border)
-    const activeHeight = activePanel.offsetHeight;
-
-    // Apply this height to the wrapper, adding a small buffer for safety
-    const buffer = 24;
-    wrapper.style.minHeight = `${activeHeight + buffer}px`;
-  }
+  // REMOVED: function adjustWrapperHeight(activePanel) {...}
 
   // --- Utility Function: Check for Mobile/Desktop View ---
   const isDesktop = () => window.matchMedia("(min-width: 992px)").matches;
@@ -862,17 +901,20 @@ document.addEventListener("DOMContentLoaded", () => {
   function positionPanel(targetTab, panelElement) {
     if (!isDesktop()) return; // Only apply dynamic positioning on desktop
 
-    const filterBarRect = filterBar.getBoundingClientRect(); // Get the position of the filter bar
-    const formRect = formElement.getBoundingClientRect(); // Position relative to the parent form
+    // Get the position of the filter-heading-bar (relative to the viewport)
+    const filterBarRect = filterBar.getBoundingClientRect();
+    // Get the position of the form (relative to the viewport)
+    const formRect = formElement.getBoundingClientRect();
 
-    // Calculate the panel's left position relative to the form container.
-    // This aligns the left edge of the panel with the left edge of the tab.
+    // The newLeft is the distance from the form's left edge to the filterBar's left edge.
+    // This aligns the panel's left edge with the start of the filter bar.
     const newLeft = filterBarRect.left - formRect.left;
-    // Calculate the panel's top position relative to the form container.
-    // The panel must start below the entire header bar, plus a small gap.
-    const topGap = 0; // Approximation of var(--spacing-sm) in pixels
-    // const barHeight = filterBar.offsetHeight;
-    const newTop = topGap;
+
+    // The newTop must place the panel at the bottom of the filter bar.
+    // The filter bar is a direct child of the form, so its height and position
+    // are relative to the form's top edge (in the form's coordinate system).
+    // filterBar.offsetTop gives the position from the form top.
+    const newTop = filterBar.offsetTop + filterBar.offsetHeight + 4; // Add a small gap (4px)
 
     // Apply the new position
     panelElement.style.left = `${newLeft}px`;
@@ -892,6 +934,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return new Intl.NumberFormat("de-DE", {
       maximumFractionDigits: 0,
     }).format(Number(price));
+  };
+  const resetAllFormFields = () => {
+    formElement.querySelectorAll("input, select").forEach((input) => {
+      // @ts-ignore
+      if (input.type === "checkbox" || input.type === "radio") {
+        // Uncheck all checkboxes and radios
+        input.checked = false;
+      } else if (input.tagName === "SELECT") {
+        // Reset select to the first option (or an explicit default value if necessary)
+        // Since no <select> is visible in the provided HTML, standard reset is sufficient
+        input.selectedIndex = 0;
+      } else {
+        // Reset text and number inputs
+        input.value = "";
+      }
+    });
   };
 
   // --- CORE LOGIC: UPDATE TAB SELECTION TEXTS ---
@@ -1062,63 +1120,88 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // --- CORE LOGIC: TOGGLE PANEL VISIBILITY ---
+  /**
+   * Toggles the visibility and active state of a filter tab and its associated panel.
+   * @param {HTMLElement} targetTab The tab element that was clicked.
+   */
+  function togglePanel(targetTab) {
+    const tabName = targetTab.getAttribute("data-tab");
+    const panelId = `panel-${tabName}`;
+    const panelElement = document.getElementById(panelId);
+
+    if (!panelElement) return;
+
+    // Check if the clicked tab is already active
+    const isActive = targetTab.classList.contains("active");
+
+    // Hide all panels and remove active class from all tabs
+    document.querySelectorAll(".filter-panel").forEach((p) => {
+      p.classList.remove("active");
+      // Explicitly set display none for desktop to ensure panel disappears completely
+      if (isDesktop()) {
+        p.style.display = "none";
+      }
+    });
+    document.querySelectorAll(".filter-heading-tab").forEach((t) => {
+      t.classList.remove("active");
+    });
+
+    if (!isActive) {
+      // Open the new panel
+      targetTab.classList.add("active");
+      panelElement.classList.add("active");
+
+      // Set display to block for the active panel (needed for desktop positioning)
+      if (isDesktop()) {
+        panelElement.style.display = "block";
+        // --- 2. Positioning (Desktop Only) ---
+        positionPanel(targetTab, panelElement);
+      }
+      document.body.classList.add("is-filter-active");
+
+      activePanelId = panelId;
+      activeTabElement = targetTab;
+    } else {
+      // Panel was active and clicked again -> close it
+      activePanelId = null;
+      activeTabElement = null;
+      // No need to call adjustWrapperHeight(panelElement);
+    }
+
+    // --- Handle Price Visibility (always needs to run as vmArt may change) ---
+    handleVermarktungsartChange();
+  }
+
   // --- CORE LOGIC: SETUP EVENT LISTENERS ---
   const setupEventListeners = () => {
-    // Listen for tab clicks to toggle panels and position them
+    // Listen for tab clicks to toggle panels
     filterBar.addEventListener("click", (e) => {
+      // Since tabs are now wrapped on mobile, we need to check if we hit the tab or its container
       const targetTab = e.target.closest(".tab-container");
       if (!targetTab) return;
 
-      const tabName = targetTab.getAttribute("data-tab"); // e.g., 'immobilie'
-      const panelId = `panel-${tabName}`; // e.g., 'panel-immobilie'
-      const panelElement = document.getElementById(panelId);
-
-      if (!panelElement) return;
-
-      // --- 1. Toggle Panel and Classes ---
-
-      // Check if the clicked tab is already active
-      const isActive = targetTab.classList.contains("active");
-
-      // Hide all panels and remove active class from all tabs
-      document.querySelectorAll(".filter-panel").forEach((p) => {
-        p.classList.remove("active");
-        // Explicitly set display none for desktop to ensure panel disappears completely
-        // before coordinates are potentially recalculated on resize.
-        if (isDesktop()) {
-          p.style.display = "none";
-        }
-      });
-      document.querySelectorAll(".filter-heading-tab").forEach((t) => {
-        t.classList.remove("active");
-      });
-
-      if (!isActive) {
-        // Open the new panel
-        targetTab.classList.add("active");
-        panelElement.classList.add("active");
-
-        // Set display to block for the active panel (needed for desktop positioning)
-        if (isDesktop()) {
-          panelElement.style.display = "block";
-        }
-
-        // --- 2. Positioning (Desktop Only) ---
-        positionPanel(targetTab, panelElement);
-
-        activePanelId = panelId;
-        activeTabElement = targetTab;
-      } else {
-        // Close the panel (it was active and clicked again)
-        activePanelId = null;
-        activeTabElement = null;
-        adjustWrapperHeight(panelElement);
-      }
-
-      // --- 3. Handle Price Visibility (always needs to run as vmArt may change) ---
-      handleVermarktungsartChange();
+      togglePanel(targetTab);
     });
 
+    document.querySelectorAll(".reset-button").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault(); // Prevent default link behavior
+
+        resetAllFormFields(); // Clear all form fields
+
+        // Update UI
+        updateTabSelections();
+        handleVermarktungsartChange();
+
+        // Submit filter with empty form data (which means no criteria are applied)
+        const formData = new FormData(formElement);
+        const filterEvent = new CustomEvent("filter:submit", {
+          detail: { formData: formData },
+        });
+        document.dispatchEvent(filterEvent);
+      });
+    });
     // --- Global click listener to close panel when clicking outside (Desktop only) ---
     document.addEventListener("click", (e) => {
       if (!isDesktop() || !activePanelId) return;
@@ -1136,6 +1219,7 @@ document.addEventListener("DOMContentLoaded", () => {
         activeTabElement?.classList.remove("active");
         activePanelId = null;
         activeTabElement = null;
+        document.body.classList.remove("is-filter-active");
       }
     });
 
@@ -1153,6 +1237,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Input listeners for state management and text updates ---
     formElement.addEventListener("input", updateTabSelections);
 
+    //search button listener
+    formElement.addEventListener("submit", (e) => {
+      e.preventDefault(); // Stop the page from reloading
+      const formData = new FormData(formElement);
+
+      // Dispatch a custom event with the form data to the Property Grid component
+      const filterEvent = new CustomEvent("filter:submit", {
+        detail: { formData: formData },
+      });
+      document.dispatchEvent(filterEvent);
+
+      // Close the active panel after submitting
+      if (activePanelId) {
+        const activePanel = document.getElementById(activePanelId);
+        activePanel.classList.remove("active");
+        if (isDesktop()) {
+          activePanel.style.display = "none";
+        }
+        activeTabElement?.classList.remove("active");
+        activePanelId = null;
+        activeTabElement = null;
+      }
+    });
     // Add change listener for Vermarktungsart
     document.querySelectorAll('[name="vermarktungsart"]').forEach((input) => {
       input.addEventListener("change", () => {

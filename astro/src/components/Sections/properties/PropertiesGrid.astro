@@ -1,5 +1,4 @@
 ---
-// PropertyGrid.astromport PropertyCard from "./PropertyCard.astro";
 import { sanityClient } from "../../../lib/sanityClient"; // Ensure this path is correct
 
 // Define the structure of a simplified property object returned by GROQ
@@ -7,10 +6,12 @@ interface InitialProperty {
   slug: string;
   title: string;
   location: string; // The combined location string for display
-  area: number; // Wohnflaeche
-  rooms: number; // Zimmer
+  area: number; // Wohnflaeche (livingArea)
+  rooms: number; // Zimmer (rooms)
   price: number; // mietpreis or kaufpreis, based on marketingType
   marketingType: "Miete" | "Kauf";
+  propertyType: string; // Objektart
+  ausstattung: string[]; // CORRECTED: Array of titles fetched from the referenced 'ausstattung' documents
   imageUrl: string; // URL for the main image
 }
 // ... rest of your GROQ query and data fetching logic ...
@@ -18,16 +19,19 @@ const initialPropertiesQuery = `
     *[_type == "property"] | order(title asc) {
       "slug": slug.current,
       title,
-      // FIX 1: Use 'title' from the referenced category document
+      // CORRECTED: Dereference the category to get the Vermarktungsart title
       "marketingType": marketingType->title, 
+      propertyType, // Objektart is a direct string field
+      // CRITICAL FIX: Dereference the array of references to extract the 'title' of each amenity document
+      "ausstattung": ausstattung[]->title, 
       purchasePrice,
       rentalPrice,
       livingArea,
       rooms, 
-      // FIX 2: Use 'title' and ensure capitalization matches your Sanity data ('Miete'/'Kauf')
+      // Use 'title' from category reference for price selection
       "price": select(
-        marketingType->title == "Miete" => rentalPrice, // CAPITALIZED 'Miete'
-        marketingType->title == "Kauf" => purchasePrice, // CAPITALIZED 'Kauf'
+        marketingType->title == "Miete" => rentalPrice, 
+        marketingType->title == "Kauf" => purchasePrice, 
         true => rentalPrice // Default
       ),
       "imageUrl": mainImage.asset->url,
@@ -51,12 +55,15 @@ const formatDataForClient = (properties: InitialProperty[]) => {
     slug: p.slug,
     title: p.title,
     location: p.location || "Unbekannt",
-    // FIX 2A: Use p.livingArea (from GROQ result) -> map to area
+    // Use p.livingArea (from GROQ result) -> map to area
     area: p.livingArea || 0,
-    // FIX 2B: Use p.rooms (from GROQ result) -> map to rooms
+    // Use p.rooms (from GROQ result) -> map to rooms
     rooms: p.rooms || 0,
     price: p.price || 0,
-    marketingType: p.marketingType || "kauf",
+    // Ensure marketing type is capitalized to match filter logic
+    marketingType: p.marketingType || "Kauf",
+    propertyType: p.propertyType || "Unbekannt", // Objektart
+    ausstattung: p.ausstattung || [], // Ausstattung (array of strings)
     imageUrl: p.imageUrl || "/assets/placeholder-default.jpg",
   }));
 };
@@ -99,10 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M8 10.834a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" transform="translate(.5 -1.167)"/>
 </svg>`;
 
-	// FIX 2: Standardize width, height, and use currentColor for CSS control
+	// Standardize width, height, and use currentColor for CSS control
 	const SQM_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7.44 11.28a.48.48 0 0 1-.48.48H5.04a.48.48 0 0 1 0-.96h1.92a.48.48 0 0 1 .48.48ZM.72 7.44a.48.48 0 0 0 .48-.48V5.04a.48.48 0 1 0-.96 0v1.92c0 .265.215.48.48.48Zm1.92 3.36H1.2V9.36a.48.48 0 1 0-.96 0v1.44c0 .53.43.96.96.96h1.44a.48.48 0 1 0 0-.96Zm9.12-9.6a.96.96 0 0 0-.96-.96H1.2a.952.952 0 0 0-.713.32.952.952 0 0 0-.247.64v1.44a.48.48 0 0 0 .96 0v-.761l8.922 8.921H9.36a.48.48 0 1 0 0 .96h1.44a.955.955 0 0 0 .714-.32.952.952 0 0 0 .246-.64V1.2Z"/></svg>`;
 
-	// FIX 3: Placeholder for Room SVG - REMOVE DATA-IMAGE and use simple path/viewBox
 	const ROOM_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="currentColor"><path d="M120-120v-80h80v-560q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v560h80v80H120Zm560-80v-560H280v560h400ZM560-440q17 0 28.5-11.5T600-480q0-17-11.5-28.5T560-520q-17 0-28.5 11.5T520-480q0 17 11.5 28.5T560-440ZM280-760v560-560Z"/></svg>`;
 
 	let initialPropertiesData = [];
@@ -115,9 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Fallback to empty array
 	}
 
-	// Simple function to format currency (must match the Astro component logic)
+	// Simple function to format currency
 	const formatPrice = (price) => {
-		// ... formatPrice function code ...
 		return new Intl.NumberFormat("de-DE", {
 			style: "currency",
 			currency: "EUR",
@@ -135,56 +140,55 @@ document.addEventListener("DOMContentLoaded", () => {
 		const propertyPath = "/properties/" + property.slug;
 		return `
         <a  href=${propertyPath}  class="property-card">
-						<div class="property-card-wrapper">
-							<div class="property-card-image-box">
+                        <div class="property-card-wrapper">
+                            <div class="property-card-image-box">
 
-								<img
+                                <img
 
-								src="${property.imageUrl}"
+                                src="${property.imageUrl}"
 
-								loading="lazy"
+                                loading="lazy"
 
-								alt="${property.title}"
+                                alt="${property.title}"
 
-								class="property-card-image"
+                                class="property-card-image"
 
-								/>
+                                />
 
-							</div>
-							<div class="property-card-info-wrapper">
-								<div class="property-card-location-wrapper">
-								   <div class="location-icon-wrapper">${LOCATION_SVG} </div>
-									<div class="property-card-address ">${property.location}</div>
-								</div>
-								
-								<h3 class="heading-style-h5 property-card-heading">${property.title}</h3>
-					
-								<div class="property-card-icons-wrapper">
-									<div class="property-card-icon-text">
-										<div class="detail-icon-wrapper">${SQM_SVG} </div>
-										<div class="icon-p">${property.area} qm</div>
-									</div>
-									
-									<div class="property-card-icon-text">
-										<div class="detail-icon-wrapper">${ROOM_SVG} </div>
-										<div class="icon-p">${property.rooms} Zimmer</div>
-									</div>
-								</div>
-								
-					
-								<div class="property-icon-price-wrapper">
-									<div class="price-value">€ ${formattedPrice}</div>
-									<div class="price-suffix ">${priceSuffix}</div>
-								</div>
-							</div>
-						</div>
-					</a>
-				`;
+                            </div>
+                            <div class="property-card-info-wrapper">
+                                <div class="property-card-location-wrapper">
+                                   <div class="location-icon-wrapper">${LOCATION_SVG} </div>
+                                    <div class="property-card-address ">${property.location}</div>
+                                </div>
+                                
+                                <h3 class="heading-style-h5 property-card-heading">${property.title}</h3>
+                    
+                                <div class="property-card-icons-wrapper">
+                                    <div class="property-card-icon-text">
+                                        <div class="detail-icon-wrapper">${SQM_SVG} </div>
+                                        <div class="icon-p">${property.area} qm</div>
+                                    </div>
+                                    
+                                    <div class="property-card-icon-text">
+                                        <div class="detail-icon-wrapper">${ROOM_SVG} </div>
+                                        <div class="icon-p">${property.rooms} Zimmer</div>
+                                    </div>
+                                </div>
+                                
+                    
+                                <div class="property-icon-price-wrapper">
+                                    <div class="price-value">€ ${formattedPrice}</div>
+                                    <div class="price-suffix ">${priceSuffix}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
 	};
 
 	// --- Initial Render ---
 	const initialRender = () => {
-		// ... initialRender function code ...
 		container.innerHTML = ""; // Clear the "Lade Immobilien..." message
 
 		if (initialPropertiesData && initialPropertiesData.length > 0) {
@@ -204,11 +208,148 @@ document.addEventListener("DOMContentLoaded", () => {
 	initialRender();
 	console.log("initial render executed");
 
+	// --- NEW: Central Filtering Function ---
+	const filterProperties = (formData) => {
+		let filtered = initialPropertiesData;
+
+		// Helper to check if a value is set and not empty
+		const isSet = (value) =>
+			value !== null && value !== undefined && value !== "";
+
+		// --- 1. Vermarktungsart & Objektart (IMMO) ---
+		// 'vermarktungsart' maps to p.marketingType
+		const vmArt = formData.get("vermarktungsart");
+		// 'objektart' maps to p.propertyType
+		const objArts = formData.getAll("objektart").filter(isSet);
+
+		filtered = filtered.filter((p) => {
+			// Filter by Vermarktungsart (Miete/Kauf)
+			if (isSet(vmArt)) {
+				// Convert form value ('miete'/'kauf') to data value ('Miete'/'Kauf')
+				const requiredType = vmArt.charAt(0).toUpperCase() + vmArt.slice(1);
+				if (p.marketingType !== requiredType) {
+					return false;
+				}
+			}
+
+			// Filter by Objektart (propertyType)
+			if (objArts.length > 0) {
+				// Property type must be case-insensitive matched against selected types
+				const propertyTypeLower = (p.propertyType || "").toLowerCase();
+				const requiredTypesLower = objArts.map((t) => t.toLowerCase());
+
+				// Property must match at least one selected type
+				if (!requiredTypesLower.includes(propertyTypeLower)) {
+					return false;
+				}
+			}
+
+			return true;
+		});
+
+		// --- 2. Ort (lage) ---
+		const selectedLages = formData
+			.getAll("lage")
+			.filter(isSet)
+			.map((l) => l.toLowerCase());
+		if (selectedLages.length > 0) {
+			filtered = filtered.filter((p) => {
+				const propertyLocationLower = (p.location || "").toLowerCase();
+				return selectedLages.some((lage) =>
+					propertyLocationLower.includes(lage)
+				);
+			});
+		}
+
+		// --- 3. Größe (zimmer, flaeche) ---
+		const zimmerMin = parseInt(formData.get("zimmer-min")) || 0;
+		const zimmerMax = parseInt(formData.get("zimmer-max")) || Infinity;
+		const flaecheMin = parseInt(formData.get("flaeche-min")) || 0;
+		const flaecheMax = parseInt(formData.get("flaeche-max")) || Infinity;
+
+		const isZimmerFilterActive = zimmerMin > 0 || zimmerMax !== Infinity;
+		const isFlaecheFilterActive = flaecheMin > 0 || flaecheMax !== Infinity;
+
+		filtered = filtered.filter((p) => {
+			let matchesZimmer = true;
+			if (isZimmerFilterActive) {
+				matchesZimmer = p.rooms >= zimmerMin && p.rooms <= zimmerMax;
+			}
+
+			let matchesFlaeche = true;
+			if (isFlaecheFilterActive) {
+				matchesFlaeche = p.area >= flaecheMin && p.area <= flaecheMax;
+			}
+			return matchesZimmer && matchesFlaeche;
+		});
+
+		// --- 4. Preis (kauf/miete) ---
+		const kaufMin = parseFloat(formData.get("preis-kauf-min")) || 0;
+		const kaufMax = parseFloat(formData.get("preis-kauf-max")) || Infinity;
+		const mieteMin = parseFloat(formData.get("preis-miete-min")) || 0;
+		const mieteMax = parseFloat(formData.get("preis-miete-max")) || Infinity;
+
+		const isKaufFilterActive = kaufMin > 0 || kaufMax !== Infinity;
+		const isMieteFilterActive = mieteMin > 0 || mieteMax !== Infinity;
+
+		if (isKaufFilterActive || isMieteFilterActive) {
+			filtered = filtered.filter((p) => {
+				const price = p.price || 0;
+
+				if (p.marketingType === "Kauf") {
+					if (isKaufFilterActive) {
+						return price >= kaufMin && price <= kaufMax;
+					}
+					return true;
+				} else if (p.marketingType === "Miete") {
+					if (isMieteFilterActive) {
+						return price >= mieteMin && price <= mieteMax;
+					}
+					return true;
+				}
+				return true;
+			});
+		}
+
+		// --- 5. Ausstattung (Amenities) ---
+		// 'ausstattung' form inputs map to p.ausstattung data field
+		const selectedAmenities = formData
+			.getAll("ausstattung")
+			.filter(isSet)
+			.map((a) => a.toLowerCase());
+
+		if (selectedAmenities.length > 0) {
+			filtered = filtered.filter((p) => {
+				// p.ausstattung is now an array of strings (the amenity titles)
+				const propertyFeaturesLower = (p.ausstattung || []).map((f) =>
+					f.toLowerCase()
+				);
+
+				// Property must contain ALL selected amenities (AND logic)
+				return selectedAmenities.every((requiredFeature) =>
+					propertyFeaturesLower.includes(requiredFeature)
+				);
+			});
+			console.log(
+				`After Ausstattung filter: ${filtered.length} properties remaining.`
+			);
+		}
+
+		console.log("Filter Result Count:", filtered.length);
+		return filtered;
+	};
+
+	// --- NEW: Event Listener for Filter Submission from the other component ---
+	document.addEventListener("filter:submit", (event) => {
+		const formData = event.detail.formData;
+		if (formData) {
+			const filteredProperties = filterProperties(formData);
+			window.renderPropertyCards(filteredProperties);
+		}
+	});
+
 	// --- Global function for Filter Form to call after AJAX search ---
 	window.renderPropertyCards = (properties) => {
-		console.log("--- RENDER CARDS START ---");
-		console.log("Filtered properties received:", properties); // Check the data count
-		// debugger; // This will pause execution when the filter button is pressed.
 		container.innerHTML = "";
 		if (properties.length > 0) {
 			properties.forEach((property) => {
