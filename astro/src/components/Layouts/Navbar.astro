@@ -16,7 +16,7 @@ const pathname = new URL(Astro.request.url).pathname;
 
 <header id="cs-navigation">
   <div class="cs-container site-container">
-    <a href="#" class="cs-logo" aria-label="back to home">
+    <a href="/" class="cs-logo" aria-label="back to home">
       <Image
         src={logo}
         alt="logo"
@@ -24,12 +24,13 @@ const pathname = new URL(Astro.request.url).pathname;
         height="75"
         aria-hidden="true"
         decoding="async"
+        loading="eager"
       />
     </a>
     <nav class="cs-nav" role="navigation">
       <MobileNavToggle client:load />
       <div class="cs-ul-wrapper">
-        <ul id="cs-expanded" class="cs-ul" aria-expanded="false">
+        <ul id="cs-expanded" class="cs-ul">
           {
             navItems.map((item) => (
               <li class="cs-li">

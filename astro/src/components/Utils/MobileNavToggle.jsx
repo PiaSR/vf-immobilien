@@ -9,11 +9,11 @@ export default function MobileNavToggle() {
     const nav = document.getElementById("cs-navigation");
     const toggleButton = document.querySelector(".cs-toggle");
 
-    if (toggleButton) {
+    if (toggleButton && nav) {
       const handleClick = () => {
         nav.classList.toggle("cs-active");
         const expanded = nav.classList.contains("cs-active");
-        document.getElementById("cs-expanded").setAttribute("aria-expanded", expanded);
+        toggleButton.setAttribute("aria-expanded", expanded);
       };
       
       toggleButton.addEventListener("click", handleClick);
@@ -24,7 +24,8 @@ export default function MobileNavToggle() {
   }, []);
 
   return (
-    <button className="cs-toggle" aria-label="mobile menu toggle">
+    <button className="cs-toggle" aria-label="mobile menu toggle" aria-expanded="false"
+    aria-controls="cs-expanded">
       <div className="cs-box" aria-hidden="true">
         <span className="cs-line cs-line1" aria-hidden="true"></span>
         <span className="cs-line cs-line2" aria-hidden="true"></span>

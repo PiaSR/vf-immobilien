@@ -38,22 +38,22 @@ import ServiceCard from "../../Cards/ServiceCard.astro";
     background-color: var(--color-neutral-lightest);
     position: relative;
     /* padding-bottom: calc(var(--spacing-4xl) + 15vw); */
-    margin-bottom: calc(var(--spacing-4xl) + 15vw);
+    /* margin-bottom: calc(var(--spacing-4xl) + 15vw); editing out until Team section is added, and diagonal after can be readded */
   }
-  .history-section::after {
+  /* .history-section::after {
     content: "";
     position: absolute;
     bottom: 0rem;
     left: 0;
     width: 100%;
-    height: 35rem; /* Adjust this to control the height of the diagonal */
+    height: 35rem; 
     background-color: var(
       --color-neutral-lightest
-    ); /* Color of the section BELOW it */
-    transform: skewY(-11deg); /* Adjust this value for the angle */
+    ); 
+    transform: skewY(-11deg); 
     transform-origin: bottom right;
-    z-index: 5; /* Ensures the bottom wedge is on top */
-  }
+    z-index: 5; 
+  } */
 
   .card-wrapper {
     position: relative;

@@ -12,11 +12,17 @@ import HeroHeader from "../../Base/HeroHeader.astro";
         headerColor="var(--color-brand-dark-green)"
       />
     </div>
-    <Image src={propertiesHero} alt="brown wooden door" class="angled-image" />
+    <Image
+      src={propertiesHero}
+      alt="brown wooden door"
+      class="angled-image"
+      loading="eager"
+    />
     <Image
       src={propertiesHero}
       alt="brown wooden door"
       class="angled-image-mobile"
+      loading="eager"
     />
   </div>
 </section>
@@ -48,6 +54,9 @@ import HeroHeader from "../../Base/HeroHeader.astro";
   }
 
   @media (max-width: 991px) {
+    .hero-grid-content {
+      grid-template-columns: 1fr;
+    }
     .container-align-left {
       margin-top: var(--spacing-2xl);
     }

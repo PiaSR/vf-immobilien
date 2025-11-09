@@ -90,321 +90,360 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
         name="property-filter-form"
         class="form"
       >
-        <div id="filter-heading-bar" class="filter-heading-bar">
-          <div class="filter-group-mobile-wrapper">
-            <div data-tab="immobilie" class="filter-heading-tab tab-container">
-              <div class="filter-heading-tab-name">Immobilie</div>
-              <div
-                id="selection-immobilie"
-                class="filter-heading-tab-selection"
+        <div id="mobile-summary-bar" class="filter-heading-tab">
+          <div id="mobile-summary-text" class="filter-heading-tab-selection">
+            Alle Filter Optionen
+          </div>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="currentColor"
+            ><path
+              d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"
+            ></path></svg
+          >
+          <!-- Add an icon here if desired, like an arrow down -->
+        </div>
+        <div id="mobile-expanded-content">
+          <div id="filter-heading-bar" class="filter-heading-bar">
+            <div class="mobile-close-button-wrapper">
+              <button
+                id="mobile-close-button"
+                type="button"
+                aria-label="Filter schließen"
               >
-                Alle Kategorien
-              </div>
+                &times;
+              </button>
             </div>
-            <div id="panel-immobilie" class="filter-panel panel-immobilie">
-              <div id="filter-vermarktungsart" class="filter-form-group">
-                <h2 class="filter-form-heading heading-style-h6">
-                  Vermarktungsart
-                </h2>
-                <div class="filter-form-input-wrapper radio-input-group">
-                  <label class="radio-classic-label">
-                    <input
-                      type="radio"
-                      name="vermarktungsart"
-                      value="miete"
-                    />Miete
-                  </label>
-                  <label class="radio-classic-label">
-                    <input
-                      type="radio"
-                      name="vermarktungsart"
-                      value="kauf"
-                    />Kauf
-                  </label>
+            <div class="filter-group-mobile-wrapper">
+              <div
+                data-tab="immobilie"
+                class="filter-heading-tab tab-container"
+              >
+                <div class="filter-heading-tab-name">Immobilie</div>
+                <div
+                  id="selection-immobilie"
+                  class="filter-heading-tab-selection"
+                >
+                  Alle Kategorien
                 </div>
               </div>
-              <div id="filter-objektart" class="filter-form-group">
-                <h2 class="filter-form-heading heading-style-h6">Objektart</h2>
-                {/* ... existing objektarten map ... */}
+              <div id="panel-immobilie" class="filter-panel panel-immobilie">
+                <div id="filter-vermarktungsart" class="filter-form-group">
+                  <h2 class="filter-form-heading heading-style-h6">
+                    Vermarktungsart
+                  </h2>
+                  <div class="filter-form-input-wrapper radio-input-group">
+                    <label class="radio-classic-label">
+                      <input
+                        type="radio"
+                        name="vermarktungsart"
+                        value="miete"
+                      />Miete
+                    </label>
+                    <label class="radio-classic-label">
+                      <input
+                        type="radio"
+                        name="vermarktungsart"
+                        value="kauf"
+                      />Kauf
+                    </label>
+                  </div>
+                </div>
+                <div id="filter-objektart" class="filter-form-group">
+                  <h2 class="filter-form-heading heading-style-h6">
+                    Objektart
+                  </h2>
+                  {/* ... existing objektarten map ... */}
+                  {
+                    objektarten.length > 0 ? (
+                      <div class="filter-form-input-wrapper checkbox-columns objektart-filter">
+                        {objektarten.map((type) => (
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="objektart"
+                              value={type}
+                              class="checkbox-input"
+                            />
+                            <span class="checkbox-text">{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>Keine Objektarten verfügbar.</p>
+                    )
+                  }
+                </div>
+                <a href="#" data-panel="immobilie" class="reset-button button"
+                  >Zurücksetzen</a
+                >
+              </div>
+            </div>
+
+            <div class="filter-group-mobile-wrapper">
+              <div data-tab="ort" class="filter-heading-tab tab-container">
+                <div class="filter-heading-tab-name">Ort</div>
+                <div id="selection-ort" class="filter-heading-tab-selection">
+                  Alle Orte
+                </div>
+              </div>
+              <div id="panel-ort" class="filter-panel panel-ort">
+                {/* ... existing ort map ... */}
                 {
-                  objektarten.length > 0 ? (
-                    <div class="filter-form-input-wrapper checkbox-columns objektart-filter">
-                      {objektarten.map((type) => (
-                        <label class="checkbox-label">
-                          <input
-                            type="checkbox"
-                            name="objektart"
-                            value={type}
-                            class="checkbox-input"
-                          />
-                          <span class="checkbox-text">{type}</span>
-                        </label>
-                      ))}
+                  Object.keys(districts).map((region) => (
+                    <div class="filter-form-group">
+                      <h2 class="filter-form-heading heading-style-h6">
+                        {region}
+                      </h2>
+                      <div class="filter-form-input-wrapper checkbox-columns">
+                        <div class="checkbox-column">
+                          {districts[region]
+                            .slice(0, Math.ceil(districts[region].length / 2))
+                            .map((district) => (
+                              <label class="checkbox-label">
+                                <input
+                                  type="checkbox"
+                                  name="lage"
+                                  value={district}
+                                  class="checkbox-input"
+                                />
+                                <span class="checkbox-text">{district}</span>
+                              </label>
+                            ))}
+                        </div>
+                        <div class="checkbox-column">
+                          {districts[region]
+                            .slice(Math.ceil(districts[region].length / 2))
+                            .map((district) => (
+                              <label class="checkbox-label">
+                                <input
+                                  type="checkbox"
+                                  name="lage"
+                                  value={district}
+                                  class="checkbox-input"
+                                />
+                                <span class="checkbox-text">{district}</span>
+                              </label>
+                            ))}
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <p>Keine Objektarten verfügbar.</p>
-                  )
+                  ))
                 }
+                <a href="#" data-panel="ort" class="reset-button button"
+                  >Zurücksetzen</a
+                >
               </div>
-              <a href="#" data-panel="immobilie" class="reset-button button"
-                >Zurücksetzen</a
-              >
             </div>
-          </div>
 
-          <div class="filter-group-mobile-wrapper">
-            <div data-tab="ort" class="filter-heading-tab tab-container">
-              <div class="filter-heading-tab-name">Ort</div>
-              <div id="selection-ort" class="filter-heading-tab-selection">
-                Alle Orte
+            <div class="filter-group-mobile-wrapper">
+              <div data-tab="groesse" class="filter-heading-tab tab-container">
+                <div class="filter-heading-tab-name">Größe</div>
+                <div
+                  id="selection-groesse"
+                  class="filter-heading-tab-selection"
+                >
+                  Jede Größe
+                </div>
+              </div>
+              <div id="panel-groesse" class="filter-panel panel-groesse">
+                {/* ... existing groesse content ... */}
+                <div class="filter-form-group">
+                  <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
+                  <div class="number-input-wrapper">
+                    <input
+                      class="text-field"
+                      name="zimmer-min"
+                      placeholder="Min"
+                      type="number"
+                      id="filter-zimmer-min"
+                    />
+                    <div class="input-separator">bis</div>
+                    <input
+                      class="text-field"
+                      name="zimmer-max"
+                      placeholder="Max"
+                      type="number"
+                      id="filter-zimmer-max"
+                    />
+                  </div>
+                </div>
+                <div class="filter-form-group">
+                  <h2 class="filter-form-heading heading-style-h6">
+                    Fläche (m²)
+                  </h2>
+                  <div class="number-input-wrapper">
+                    <input
+                      class="text-field"
+                      name="flaeche-min"
+                      placeholder="Min"
+                      type="number"
+                      id="filter-flaeche-min"
+                    />
+                    <div class="input-separator">bis</div>
+                    <input
+                      class="text-field"
+                      name="flaeche-max"
+                      placeholder="Max"
+                      type="number"
+                      id="filter-flaeche-max"
+                    />
+                  </div>
+                </div>
+                <a href="#" data-panel="groesse" class="reset-button button"
+                  >Zurücksetzen</a
+                >
               </div>
             </div>
-            <div id="panel-ort" class="filter-panel panel-ort">
-              {/* ... existing ort map ... */}
-              {
-                Object.keys(districts).map((region) => (
-                  <div class="filter-form-group">
-                    <h2 class="filter-form-heading heading-style-h6">
-                      {region}
-                    </h2>
-                    <div class="filter-form-input-wrapper checkbox-columns">
-                      <div class="checkbox-column">
-                        {districts[region]
-                          .slice(0, Math.ceil(districts[region].length / 2))
-                          .map((district) => (
+
+            <div class="filter-group-mobile-wrapper">
+              <div data-tab="preis" class="filter-heading-tab tab-container">
+                <div class="filter-heading-tab-name">Preis</div>
+                <div id="selection-preis" class="filter-heading-tab-selection">
+                  Jeder Preis
+                </div>
+              </div>
+              <div id="panel-preis" class="filter-panel panel-preis">
+                {/* ... existing preis content ... */}
+                <div class="filter-form-group price-group price-group-kauf">
+                  <h2 class="filter-form-heading heading-style-h6">
+                    Kaufpreis (€)
+                  </h2>
+                  <div class="number-input-wrapper">
+                    <input
+                      class="text-field"
+                      name="preis-kauf-min"
+                      placeholder="Min"
+                      type="number"
+                      id="filter-preis-kauf-min"
+                    />
+                    <div class="input-separator">bis</div>
+                    <input
+                      class="text-field"
+                      name="preis-kauf-max"
+                      placeholder="Max"
+                      type="number"
+                      id="filter-preis-kauf-max"
+                    />
+                  </div>
+                </div>
+
+                <div class="filter-form-group price-group price-group-miete">
+                  <h2 class="filter-form-heading heading-style-h6">
+                    Miete (€)
+                  </h2>
+                  <div class="number-input-wrapper">
+                    <input
+                      class="text-field"
+                      name="preis-miete-min"
+                      placeholder="Min"
+                      type="number"
+                      id="filter-preis-miete-min"
+                    />
+                    <div class="input-separator">bis</div>
+                    <input
+                      class="text-field"
+                      name="preis-miete-max"
+                      placeholder="Max"
+                      type="number"
+                      id="filter-preis-miete-max"
+                    />
+                  </div>
+                </div>
+                <a href="#" data-panel="preis" class="reset-button button"
+                  >Zurücksetzen</a
+                >
+              </div>
+            </div>
+
+            <div class="filter-group-mobile-wrapper">
+              <div
+                data-tab="ausstattung"
+                class="filter-heading-tab tab-container"
+              >
+                <div class="filter-heading-tab-name">Ausstattung</div>
+                <div
+                  id="selection-ausstattung"
+                  class="filter-heading-tab-selection"
+                >
+                  Details
+                </div>
+              </div>
+              <div
+                id="panel-ausstattung"
+                class="filter-panel panel-ausstattung"
+              >
+                <div class="filter-form-group">
+                  <h2 class="filter-form-heading heading-style-h6">Details</h2>
+                  <div class="filter-form-input-wrapper checkbox-columns">
+                    <div class="checkbox-column">
+                      {
+                        amenities
+                          .slice(0, Math.ceil(amenities.length / 2))
+                          .map((amenity) => (
                             <label class="checkbox-label">
                               <input
                                 type="checkbox"
-                                name="lage"
-                                value={district}
+                                name="ausstattung"
+                                value={amenity}
                                 class="checkbox-input"
                               />
-                              <span class="checkbox-text">{district}</span>
+                              <span class="checkbox-text">
+                                {capitalize(amenity)}
+                              </span>
                             </label>
-                          ))}
-                      </div>
-                      <div class="checkbox-column">
-                        {districts[region]
-                          .slice(Math.ceil(districts[region].length / 2))
-                          .map((district) => (
+                          ))
+                      }
+                    </div>
+                    <div class="checkbox-column">
+                      {
+                        amenities
+                          .slice(Math.ceil(amenities.length / 2))
+                          .map((amenity) => (
                             <label class="checkbox-label">
                               <input
                                 type="checkbox"
-                                name="lage"
-                                value={district}
+                                name="ausstattung"
+                                value={amenity}
                                 class="checkbox-input"
                               />
-                              <span class="checkbox-text">{district}</span>
+                              <span class="checkbox-text">
+                                {capitalize(amenity)}
+                              </span>
                             </label>
-                          ))}
-                      </div>
+                          ))
+                      }
                     </div>
                   </div>
-                ))
-              }
-              <a href="#" data-panel="ort" class="reset-button button"
-                >Zurücksetzen</a
-              >
-            </div>
-          </div>
-
-          <div class="filter-group-mobile-wrapper">
-            <div data-tab="groesse" class="filter-heading-tab tab-container">
-              <div class="filter-heading-tab-name">Größe</div>
-              <div id="selection-groesse" class="filter-heading-tab-selection">
-                Jede Größe
-              </div>
-            </div>
-            <div id="panel-groesse" class="filter-panel panel-groesse">
-              {/* ... existing groesse content ... */}
-              <div class="filter-form-group">
-                <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
-                <div class="number-input-wrapper">
-                  <input
-                    class="text-field"
-                    name="zimmer-min"
-                    placeholder="Min"
-                    type="number"
-                    id="filter-zimmer-min"
-                  />
-                  <div class="input-separator">bis</div>
-                  <input
-                    class="text-field"
-                    name="zimmer-max"
-                    placeholder="Max"
-                    type="number"
-                    id="filter-zimmer-max"
-                  />
                 </div>
+                <a href="#" data-panel="ausstattung" class="reset-button button"
+                  >Zurücksetzen</a
+                >
               </div>
-              <div class="filter-form-group">
-                <h2 class="filter-form-heading heading-style-h6">
-                  Fläche (m²)
-                </h2>
-                <div class="number-input-wrapper">
-                  <input
-                    class="text-field"
-                    name="flaeche-min"
-                    placeholder="Min"
-                    type="number"
-                    id="filter-flaeche-min"
-                  />
-                  <div class="input-separator">bis</div>
-                  <input
-                    class="text-field"
-                    name="flaeche-max"
-                    placeholder="Max"
-                    type="number"
-                    id="filter-flaeche-max"
-                  />
-                </div>
-              </div>
-              <a href="#" data-panel="groesse" class="reset-button button"
-                >Zurücksetzen</a
-              >
             </div>
+            <!-- <div class="mobile-blur-div"></div> -->
           </div>
-
-          <div class="filter-group-mobile-wrapper">
-            <div data-tab="preis" class="filter-heading-tab tab-container">
-              <div class="filter-heading-tab-name">Preis</div>
-              <div id="selection-preis" class="filter-heading-tab-selection">
-                Jeder Preis
-              </div>
-            </div>
-            <div id="panel-preis" class="filter-panel panel-preis">
-              {/* ... existing preis content ... */}
-              <div class="filter-form-group price-group price-group-kauf">
-                <h2 class="filter-form-heading heading-style-h6">
-                  Kaufpreis (€)
-                </h2>
-                <div class="number-input-wrapper">
-                  <input
-                    class="text-field"
-                    name="preis-kauf-min"
-                    placeholder="Min"
-                    type="number"
-                    id="filter-preis-kauf-min"
-                  />
-                  <div class="input-separator">bis</div>
-                  <input
-                    class="text-field"
-                    name="preis-kauf-max"
-                    placeholder="Max"
-                    type="number"
-                    id="filter-preis-kauf-max"
-                  />
-                </div>
-              </div>
-
-              <div class="filter-form-group price-group price-group-miete">
-                <h2 class="filter-form-heading heading-style-h6">Miete (€)</h2>
-                <div class="number-input-wrapper">
-                  <input
-                    class="text-field"
-                    name="preis-miete-min"
-                    placeholder="Min"
-                    type="number"
-                    id="filter-preis-miete-min"
-                  />
-                  <div class="input-separator">bis</div>
-                  <input
-                    class="text-field"
-                    name="preis-miete-max"
-                    placeholder="Max"
-                    type="number"
-                    id="filter-preis-miete-max"
-                  />
-                </div>
-              </div>
-              <a href="#" data-panel="preis" class="reset-button button"
-                >Zurücksetzen</a
-              >
-            </div>
-          </div>
-
-          <div class="filter-group-mobile-wrapper">
-            <div
-              data-tab="ausstattung"
-              class="filter-heading-tab tab-container"
-            >
-              <div class="filter-heading-tab-name">Ausstattung</div>
-              <div
-                id="selection-ausstattung"
-                class="filter-heading-tab-selection"
-              >
-                Details
-              </div>
-            </div>
-            <div id="panel-ausstattung" class="filter-panel panel-ausstattung">
-              {/* ... existing ausstattung content ... */}
-              <div class="filter-form-group">
-                <h2 class="filter-form-heading heading-style-h6">Details</h2>
-                <div class="filter-form-input-wrapper checkbox-columns">
-                  <div class="checkbox-column">
-                    {
-                      amenities
-                        .slice(0, Math.ceil(amenities.length / 2))
-                        .map((amenity) => (
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="ausstattung"
-                              value={amenity}
-                              class="checkbox-input"
-                            />
-                            <span class="checkbox-text">
-                              {capitalize(amenity)}
-                            </span>
-                          </label>
-                        ))
-                    }
-                  </div>
-                  <div class="checkbox-column">
-                    {
-                      amenities
-                        .slice(Math.ceil(amenities.length / 2))
-                        .map((amenity) => (
-                          <label class="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="ausstattung"
-                              value={amenity}
-                              class="checkbox-input"
-                            />
-                            <span class="checkbox-text">
-                              {capitalize(amenity)}
-                            </span>
-                          </label>
-                        ))
-                    }
-                  </div>
-                </div>
-              </div>
-              <a href="#" data-panel="ausstattung" class="reset-button button"
-                >Zurücksetzen</a
-              >
-            </div>
-          </div>
-
-          <div id="search-button" class="search-button-wrapper">
-            <button type="submit" class="custom-submit-button">
-              <Image
-                src={SearchIcon}
-                alt="Suchen"
-                width={24}
-                height={24}
-                class="search-icon"
-              />
-               Suchen
-            </button>
-          </div>
+        </div>
+        <div id="search-button" class="search-button-wrapper">
+          <button type="submit" class="custom-submit-button">
+            <Image
+              src={SearchIcon}
+              alt="Suchen"
+              width={24}
+              height={24}
+              class="search-icon"
+            />
+             Suchen
+          </button>
         </div>
       </form>
     </div>
   </div>
 </section>
-
 <style>
   /* ==============================================================
   BASE STRUCTURE & LAYOUT
@@ -426,47 +465,57 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     flex-direction: column;
     gap: var(--spacing-sm);
     position: relative;
+    /* Reset z-index for mobile overlay */
+    z-index: 10;
+    transition: all 0.3s ease-in-out;
   }
 
   :global(.content-to-blur) {
-    /* Smooth transition for the visual effect */
     transition:
       filter 0.3s ease,
       transform 0.3s ease;
     filter: none;
-    /* Ensure the element is positioned and has a z-index to create a stacking context */
     position: relative;
     z-index: 1;
-    /* Hint to the browser to optimize for filtering/blur */
     will-change: filter;
   }
 
-  /* * Styles applied when the 'is-filter-active' class is present on the <body>. */
   :global(body.is-filter-active) :global(.content-to-blur) {
-    /* Apply blur and slightly darken the background */
     filter: blur(10px) brightness(1);
     transform: scale(1);
-
-    /* Optional: Disable pointer events on the background */
     pointer-events: none;
   }
 
   :global(.section-properties-filter-form) {
-    position: relative; /* Necessary for z-index to take effect */
-    z-index: 102; /* Higher than filter bar/panel to guarantee it's on top */
+    position: relative;
   }
-  /* Ensure the filter bar and panels remain sharp and on top */
   :global(#filter-heading-bar) {
     z-index: 101;
   }
-
   :global(.filter-panel) {
     z-index: 100;
   }
-  /* ==============================================================
-  FILTER HEADER (TABS) - DESKTOP DEFAULT
-  ============================================================== */
 
+  /* ==============================================================
+  MOBILE SUMMARY BAR (Hidden by default, shown by media query)
+  ============================================================== */
+  #mobile-summary-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-xl);
+    cursor: pointer;
+    background-color: var(--color-neutral-lightest);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  #mobile-expanded-content {
+    display: none;
+  }
+
+  /* ==============================================================
+  FILTER HEADER (TABS)
+  ============================================================== */
   .filter-heading-bar {
     position: relative;
     display: grid;
@@ -479,23 +528,21 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   }
 
   .filter-group-mobile-wrapper {
-    /* On desktop, this wrapper should span a single column */
     grid-column: span 1;
-    /* Hide the wrapper on desktop. The contents (tab & panel) will be
-     absolutely positioned by JS/CSS if needed. We need to hide the panel though. */
-    /* We will rely on the .filter-panel rule to hide the panel */
   }
+
+  /* Global tab styles. Note: display is overridden for mobile collapsed state */
   .filter-heading-tab {
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius);
-
     transition:
       background-color 0.2s,
       box-shadow 0.2s;
   }
 
-  /* Active state for tab logic (requires JavaScript) */
   .filter-heading-tab.active {
     background-color: var(--color-neutral-green-grey);
   }
@@ -504,7 +551,6 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     font-size: var(--font-size-body-small);
     font-weight: var(--font-weight-bold);
     color: var(--color-neutral-dark);
-    /* Ensure selection text doesn't overflow */
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -538,7 +584,6 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   }
 
   .custom-submit-button:hover {
-    /* Using a placeholder variable for hover color */
     background-color: #047857;
   }
 
@@ -548,40 +593,38 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   }
 
   /* ==============================================================
-  FILTER PANELS (The drop-downs) - DESKTOP DEFAULT
+  FILTER PANELS (Desktop Dropdown & Mobile Accordion)
   ============================================================== */
 
-  /* The wrapper is now static/relative to allow panels to position relative to the form */
-
   .filter-panel {
-    display: none; /* Default state, hide all */
-    position: absolute; /* Panels are absolute relative to the FORM */
-    /* top and left will be set by JavaScript for desktop */
-
+    /* --- DESKTOP DEFAULT / MOBILE ACCORDION BASE --- */
     background-color: var(--color-neutral-lightest);
     border: 1px solid var(--color-neutral-light);
     border-radius: var(--border-radius);
-    padding: var(--spacing-xl);
-    z-index: 1; /* Relative z-index inside the wrapper */
-
-    /* Transition for smoother display */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-
-    /* Fixed width and shadow for dropdown aesthetic */
+    z-index: 1;
     width: 50rem;
-    /* max-width: calc(100% - var(--spacing-md) * 2);  */
-    box-shadow:
-      0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* MOBILE ACCORDION COLLAPSE STATE */
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    /* Transitions for both mobile (max-height) and desktop (opacity) */
+    transition:
+      max-height 0.4s ease-in-out,
+      opacity 0.3s ease,
+      padding 0.4s ease-in-out;
   }
 
-  /* Active state for panel (requires JavaScript) */
+  /* Active state for panel (used for both desktop and mobile) */
   .filter-panel.active {
-    display: block;
     opacity: 1;
     pointer-events: auto;
+
+    /* MOBILE ACCORDION EXPAND STATE */
+    max-height: 2000px; /* Large enough to show all content */
+    padding: var(--spacing-xl); /* Restore full padding for content */
   }
 
   .filter-form-group {
@@ -593,14 +636,17 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     margin-bottom: var(--spacing-md);
     color: var(--color-neutral-dark);
   }
+  .mobile-close-button-wrapper {
+    display: none;
+  }
 
   /* ==============================================================
-  INPUT STYLES: RADIO/CHECKBOX (Updated radio buttons)
+  INPUT STYLES: RADIO/CHECKBOX
   ============================================================== */
 
   .radio-input-group {
     display: flex;
-    gap: var(--spacing-xl); /* Increased gap for visual clarity */
+    gap: var(--spacing-xl);
   }
 
   .radio-classic-label,
@@ -621,10 +667,8 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   .radio-classic-label input[type="radio"] {
     margin: 0;
-    /* You could customize the look here if needed, but native is used */
   }
 
-  /* Checkbox Grid Layout */
   .checkbox-columns {
     display: flex;
     flex-direction: row;
@@ -634,8 +678,8 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   .checkbox-column {
     flex-basis: calc(50% - var(--spacing-md));
-    flex-grow: 1; /* Allows columns to grow slightly to fill space */
-    max-width: none; /* Remove the restrictive max-width */
+    flex-grow: 1;
+    max-width: none;
 
     display: flex;
     flex-direction: column;
@@ -648,7 +692,6 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     gap: var(--spacing-sm);
   }
 
-  /* Hide native checkbox input */
   .checkbox-input {
     margin: 0;
   }
@@ -661,7 +704,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    max-width: 300px; /* Constrain width for number inputs */
+    max-width: 300px;
   }
 
   .text-field {
@@ -670,7 +713,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     border: 1px solid var(--color-neutral-medium);
     border-radius: var(--border-radius-sm);
     width: 100px;
-    flex-grow: 1; /* Allow fields to fill space up to max-width */
+    flex-grow: 1;
     font-size: var(--font-size-body-small);
   }
 
@@ -696,10 +739,49 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   }
 
   /* ==============================================================
+  MOBILE EXPANDED OVERLAY & ACCORDION STATE
+  ============================================================== */
+
+  /* Full-screen overlay state */
+  #property-filter-form-element.is-expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    overflow-y: hidden;
+    background-color: var(--color-brand-light-green);
+    z-index: 10001;
+  }
+
+  /* When expanded, show all tabs/accordion headers */
+  #property-filter-form-element.is-expanded .filter-heading-tab {
+    display: flex !important; /* Force show individual tabs */
+    flex-direction: row;
+    width: 100%;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    border-bottom: 1px solid var(--color-neutral-light);
+    cursor: pointer;
+    background-color: var(--color-neutral-lightest);
+  }
+
+  /* Ensure the wrapper displays tabs as vertical blocks when expanded */
+  #property-filter-form-element.is-expanded #filter-heading-bar {
+    display: block;
+    padding: 0;
+  }
+
+  /* Sticky summary bar when expanded */
+
+  /* ==============================================================
   MOBILE STACKED ACCORDION LAYOUT (max-width: 991px)
   ============================================================== */
 
   @media (max-width: 991px) {
+    .filter-form-heading {
+      font-size: var(--font-size-h5);
+    }
     .properties-filter-wrapper {
       width: 100%;
       margin: 0;
@@ -709,136 +791,240 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     .form {
       gap: 0;
       width: 95%;
-      position: static; /* Reset desktop relative position for form */
+      position: relative;
       margin: 0 auto;
+      transition: all 0s ease-in-out;
     }
 
-    /* 1. Header (filter-heading-bar) becomes vertical accordion headers */
-    .filter-heading-bar {
-      display: flex; /* Override grid */
-      flex-direction: column;
-      gap: var(--spacing-sm);
-      padding: 0;
-      box-shadow: none;
-      width: 100%;
+    /* Show the mobile summary bar and hide individual tabs in collapsed state */
+    #mobile-summary-bar {
+      display: inline-flex;
+      flex-direction: row;
+      /* padding: 0 var(--spacing-md) */
+    }
+    #property-filter-form-element.is-expanded {
+      height: 100vh;
+      display: flex; /* NEW */
+      flex-direction: column; /* NEW */
+      justify-content: stretch;
+      overflow-y: auto;
+      padding: var(--spacing-sm) var(--spacing-sm);
       background-color: var(--color-neutral-transparent);
-    }
-    .filter-group-mobile-wrapper {
-      grid-column: auto; /* Reset desktop grid column */
-      width: 100%;
-    }
-
-    /* 2. Individual Tabs (The accordion headers) */
-    .filter-heading-tab {
-      display: flex;
-      justify-content: space-between;
-      border-radius: var(--border-radius);
-      padding: var(--spacing-md) var(--spacing-lg);
-      background-color: var(--color-neutral-lightest);
-
-      margin-top: -1px; /* Collapse borders */
-    }
-    /* Top and bottom rounding - now apply to wrapper's content */
-    .filter-group-mobile-wrapper:first-child .filter-heading-tab {
-      margin-top: 0;
-      border-top-left-radius: var(--border-radius);
-      border-top-right-radius: var(--border-radius);
-    }
-    /* The last tab in the whole list */
-    .filter-group-mobile-wrapper:last-of-type .filter-heading-tab {
-      border-bottom-left-radius: 0; /* No rounding if panel is active */
-      border-bottom-right-radius: 0;
-    }
-
-    /* Re-apply bottom rounding to the last item if its panel is hidden */
-    .filter-group-mobile-wrapper:last-of-type:not(:has(.filter-panel.active))
-      .filter-heading-tab {
-      border-bottom-left-radius: var(--border-radius);
-      border-bottom-right-radius: var(--border-radius);
-    }
-
-    /* Active tab styling: remove bottom border so panel border aligns */
-    .filter-heading-tab.active {
-      box-shadow: none;
-      border-bottom: none;
-      background-color: var(--color-neutral-lightest);
-      font-weight: var(--font-weight-bold);
-      /* Re-apply top border radius if this is the first item */
-    }
-
-    /* Place the search button visually below the accordion structure */
-    #property-filter-form-element > .search-button-wrapper {
-      display: block;
-      padding: var(--spacing-md);
-    }
-
-    .search-button-wrapper .custom-submit-button {
-      width: 100%;
-      height: auto;
-    }
-
-    /* 5. Panels (Accordion content) */
-    .filter-panel {
-      position: static; /* CRITICAL: Reset desktop absolute position */
-      top: auto;
-      left: auto;
-      right: auto;
-      width: 100%; /* Full width on mobile */
-
-      margin-top: -1px; /* Connect to header above */
-
-      padding: var(--spacing-xl);
-      z-index: 1;
-      /* Use display property for toggling */
-      opacity: 1;
-      transition: none;
-      box-shadow: none;
-      /* Initial state: Hide all panels */
-      display: none;
-    }
-
-    /* Active panel state: Show inline */
-    .filter-panel.active {
-      display: block;
-      /* If it's the last panel, give it a rounded bottom */
-      border-bottom-left-radius: var(--border-radius);
-      border-bottom-right-radius: var(--border-radius);
-    }
-
-    /* Reset columns for mobile checkbox layouts */
-    .checkbox-columns {
-      flex-wrap: wrap;
-    }
-    .checkbox-column {
-      flex-basis: calc(50% - var(--spacing-md));
-      flex-grow: 1; /* Allows columns to grow slightly to fill space */
-      max-width: none; /* Remove the restrictive max-width */
+      backdrop-filter: blur(50px);
     }
   }
+  #property-filter-form-element.is-expanded #mobile-summary-bar {
+    display: none !important;
+  }
+  #property-filter-form-element.is-expanded #mobile-expanded-content {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1 !important; /* Takes up all vertical space */
+    overflow: hidden;
+    z-index: 60;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-neutral-transparent);
+    font-size: var(--font-size-body-large: );
+  }
+  #property-filter-form-element.is-expanded #mobile-close-button {
+    font-size: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    z-index: 100;
+    color: var(--color-neutral-dark-grey);
+  }
+  #property-filter-form-element.is-expanded .mobile-close-button-wrapper {
+    display: flex;
+    justify-content: end;
+    height: 60px;
+    background-color: var(--color-neutral-transparent);
+    padding-right: var(--spacing-lg);
+  }
+  .filter-heading-tab {
+    display: none; /* Hidden by default, shown by .is-expanded */
+    transition:
+      background-color 00s,
+      box-shadow 0s;
+  }
+  .filter-heading-tab {
+    font-size: var(--font-size-body-large);
+  }
+  .filter-heading-bar {
+    display: flex;
+    flex-direction: column;
+  }
+  .filter-heading-tab-selection {
+    font-size: var(--font-size-body-large);
+  }
 
-  /* Ensure desktop rules are reapplied above 992px */
+  /* 1. Header (filter-heading-bar) becomes vertical accordion headers */
+  #property-filter-form-element.is-expanded #filter-heading-bar {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: var(--spacing-md);
+    padding: 0;
+    box-shadow: none;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-neutral-transparent);
+  }
+  .filter-group-mobile-wrapper {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  /* 2. Individual Tabs (The accordion headers) - using is-expanded styles */
+  .filter-heading-tab {
+    justify-content: space-between;
+    border-radius: var(--border-radius);
+    margin-top: -1px;
+    /* Other styles are inherited from .is-expanded specific rules */
+  }
+
+  /* Border/Rounding Logic (Kept from original mobile CSS) */
+  .filter-group-mobile-wrapper:first-child .filter-heading-tab {
+    margin-top: 0;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+  }
+  .filter-group-mobile-wrapper:last-of-type .filter-heading-tab {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .filter-group-mobile-wrapper:last-of-type:not(:has(.filter-panel.active))
+    .filter-heading-tab {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
+  .filter-heading-tab.active {
+    box-shadow: none;
+    border-bottom: none;
+    background-color: var(--color-neutral-lightest);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .number-input-wrapper {
+    max-width: 100%;
+  }
+  /* Place the search button visually below the accordion structure */
+  #property-filter-form-element > .search-button-wrapper {
+    display: block;
+    flex-shrink: 0;
+    padding-bottom: var(--spacing-md);
+    background-color: var(--color-neutral-transparent);
+  }
+  .search-button-wrapper .custom-submit-button {
+    width: 100%;
+    height: auto;
+    padding: var(--spacing-lg);
+    font-size: var(--font-size-body-large);
+  }
+
+  /* 5. Panels (Accordion content) */
+  .filter-panel {
+    position: static; /* CRITICAL: Reset desktop absolute position */
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    margin-top: -1px;
+    /* Set mobile-specific visibility/interaction properties for max-height transition */
+    opacity: 1;
+    pointer-events: auto;
+    box-shadow: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid var(--color-neutral-light); /* Override desktop border */
+    border-top: none; /* Connected to tab header */
+
+    transition:
+      max-height 0.1s ease-in-out,
+      opacity 0.1s ease,
+      padding 0.1s ease-in-out;
+  }
+
+  .filter-panel.active {
+    /* If it's the last panel, give it a rounded bottom */
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    border-bottom: 1px solid var(--color-neutral-light);
+  }
+
+  /* Reset columns for mobile checkbox layouts */
+  .checkbox-columns {
+    flex-wrap: wrap;
+  }
+  .checkbox-column {
+    flex-basis: calc(50% - var(--spacing-md));
+    flex-grow: 1;
+    max-width: none;
+  }
+
+  .mobile-blur-div {
+    backdrop-filter: blur(20px);
+    opacity: 20%;
+    background-color: white;
+    flex: 1;
+    height: 600px;
+  }
+  /* ==============================================================
+  DESKTOP OVERRIDES (min-width: 992px)
+  ============================================================== */
+
   @media (min-width: 992px) {
-    .filter-panel-wrapper {
+    .properties-filter-wrapper {
       position: relative; /* Ensure it stays static */
-      /* Reset mobile margin-bottom and padding-top */
-      margin-bottom: 0;
-      padding-top: 0;
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
+    }
+
+    /* Hide the mobile summary bar and ensure individual tabs are shown */
+    #mobile-summary-bar {
+      display: none !important;
+    }
+    .filter-heading-tab {
+      display: flex !important;
+    }
+
+    /* Reset form positioning and overflow from mobile overlay */
+    #property-filter-form-element {
+      position: relative;
+      height: auto;
+      overflow-y: visible;
     }
 
     .filter-panel {
-      position: absolute; /* Re-apply absolute position for overlapping desktop panels */
-      /* No left/top set here; JS handles positioning */
+      /* Re-apply desktop dropdown settings */
+      display: none; /* Default state, hide all */
+      position: absolute; /* Panels are absolute relative to the FORM */
 
-      /* Reset mobile styles */
+      /* Reset mobile accordion logic */
+      max-height: none;
+      overflow: visible;
+      padding: var(--spacing-xl); /* Restore desktop padding */
+
       margin-top: 0;
       margin-bottom: 0;
       border-radius: var(--border-radius);
       border: 1px solid var(--color-neutral-light);
+
       /* Re-apply desktop shadow for the dropdown */
       box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
       width: 50rem;
+    }
+
+    /* Active state for panel (Desktop) */
+    .filter-panel.active {
+      display: block; /* Show via JS setting .active class */
+      opacity: 1;
     }
 
     /* Ensure only desktop search button is used */
@@ -854,11 +1040,20 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 <script define:vars={{ allLocations, viennaDistricts }}>
 document.addEventListener("DOMContentLoaded", () => {
   const filterBar = document.getElementById("filter-heading-bar");
-  // REMOVED: const panelWrapper = document.getElementById("filter-panel-wrapper");
   const formElement = document.getElementById("property-filter-form-element");
-
+  const mobileSummaryBar = document.getElementById("mobile-summary-bar");
+  const mobileSummaryText = document.getElementById("mobile-summary-text");
+  const mobileCloseButton = document.getElementById("mobile-close-button"); // NEW
   const priceGroupKauf = document.querySelector(".price-group-kauf");
   const priceGroupMiete = document.querySelector(".price-group-miete");
+
+  // Define allTabs here for use in updateMobileSummaryText and listeners
+  const tabsContainer = document.getElementById("filter-heading-bar");
+  const allTabs = tabsContainer
+    ? tabsContainer.querySelectorAll(
+      ".filter-heading-tab:not(#mobile-summary-bar)"
+    )
+    : [];
 
   // Get references to the selection text elements
   const selectionImmobilie = document.getElementById("selection-immobilie");
@@ -873,7 +1068,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activePanelId = null; // Store ID of currently active panel (e.g., 'panel-immobilie')
   let activeTabElement = null; // Store reference to the currently active tab element
 
-  // Safety check (Removed panelWrapper check)
+  // Safety check
   if (
     !filterBar ||
     !formElement ||
@@ -887,8 +1082,6 @@ document.addEventListener("DOMContentLoaded", () => {
   )
     return;
 
-  // REMOVED: function adjustWrapperHeight(activePanel) {...}
-
   // --- Utility Function: Check for Mobile/Desktop View ---
   const isDesktop = () => window.matchMedia("(min-width: 992px)").matches;
 
@@ -901,19 +1094,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function positionPanel(targetTab, panelElement) {
     if (!isDesktop()) return; // Only apply dynamic positioning on desktop
 
-    // Get the position of the filter-heading-bar (relative to the viewport)
     const filterBarRect = filterBar.getBoundingClientRect();
-    // Get the position of the form (relative to the viewport)
     const formRect = formElement.getBoundingClientRect();
 
     // The newLeft is the distance from the form's left edge to the filterBar's left edge.
-    // This aligns the panel's left edge with the start of the filter bar.
     const newLeft = filterBarRect.left - formRect.left;
 
     // The newTop must place the panel at the bottom of the filter bar.
-    // The filter bar is a direct child of the form, so its height and position
-    // are relative to the form's top edge (in the form's coordinate system).
-    // filterBar.offsetTop gives the position from the form top.
     const newTop = filterBar.offsetTop + filterBar.offsetHeight + 4; // Add a small gap (4px)
 
     // Apply the new position
@@ -935,6 +1122,8 @@ document.addEventListener("DOMContentLoaded", () => {
       maximumFractionDigits: 0,
     }).format(Number(price));
   };
+
+  // --- Utility Function: Reset Form Fields ---
   const resetAllFormFields = () => {
     formElement.querySelectorAll("input, select").forEach((input) => {
       // @ts-ignore
@@ -942,8 +1131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Uncheck all checkboxes and radios
         input.checked = false;
       } else if (input.tagName === "SELECT") {
-        // Reset select to the first option (or an explicit default value if necessary)
-        // Since no <select> is visible in the provided HTML, standard reset is sufficient
         input.selectedIndex = 0;
       } else {
         // Reset text and number inputs
@@ -951,6 +1138,90 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   };
+
+  // --- MOBILE LOGIC: Update the collapsed summary bar text (MODIFIED) ---
+  function updateMobileSummaryText() {
+    // Check if we are on mobile view
+    if (!mobileSummaryText || isDesktop()) return;
+
+    const selections = Array.from(allTabs)
+      .map((tab) => {
+        const selectionElement = tab.querySelector(
+          ".filter-heading-tab-selection"
+        );
+        return selectionElement ? selectionElement.textContent : "";
+      })
+      .filter(
+        (text) =>
+          text &&
+          text.trim() !== "Alle Kategorien" &&
+          text.trim() !== "Alle Orte" &&
+          text.trim() !== "Jede Größe" &&
+          text.trim() !== "Jeder Preis" &&
+          text.trim() !== "Details"
+      );
+
+    if (selections.length > 0) {
+      mobileSummaryText.textContent = selections.join(", ");
+    } else {
+      mobileSummaryText.textContent = "Alle Filter Optionen";
+    }
+  }
+
+  function closeMobileModal() {
+    if (isDesktop()) return;
+
+    // 1. Collapse the entire menu (modal)
+    formElement.classList.remove("is-expanded");
+    document.body.classList.remove("is-filter-active");
+
+    // 2. Ensure all panels and active states are closed
+    document
+      .querySelectorAll(".filter-panel")
+      .forEach((p) => p.classList.remove("active"));
+    document
+      .querySelectorAll(".filter-heading-tab")
+      .forEach((t) => t.classList.remove("active"));
+
+    activePanelId = null;
+    activeTabElement = null;
+  }
+
+  function handleMobileSummaryClick() {
+    const isExpanded = formElement.classList.contains("is-expanded");
+
+    if (isDesktop()) return;
+
+    if (!isExpanded) {
+      // Step 1: Expand the entire menu
+      formElement.classList.add("is-expanded");
+
+      // Step 2: Automatically open the first panel ('immobilie')
+      const firstTab = document.querySelector('[data-tab="immobilie"]');
+      if (firstTab) {
+        // Use a short delay to ensure expansion transition starts before panel opens
+        setTimeout(() => {
+          // Pass true to force the panel to open
+          togglePanel(firstTab, true);
+        }, 50);
+      }
+    } else {
+      // If expanded, clicking the summary bar collapses the filter entirely
+      formElement.classList.remove("is-expanded");
+
+      // Ensure all panels and active states are closed
+      document
+        .querySelectorAll(".filter-panel")
+        .forEach((p) => p.classList.remove("active"));
+      document
+        .querySelectorAll(".filter-heading-tab")
+        .forEach((t) => t.classList.remove("active"));
+
+      activePanelId = null;
+      activeTabElement = null;
+      document.body.classList.remove("is-filter-active");
+    }
+  }
 
   // --- CORE LOGIC: UPDATE TAB SELECTION TEXTS ---
   const updateTabSelections = () => {
@@ -965,19 +1236,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const vmType = vmArt === "miete" ? "Mieten" : "Kaufen";
 
     if (vmArt && objArts.length === 0) {
-      // Only Vermarktungsart selected
       immobilietext = vmType;
     } else if (vmArt && objArts.length === 1) {
-      // One Objektart + Vermarktungsart
       immobilietext = `${objArts[0]} ${vmAction}`;
     } else if (vmArt && objArts.length > 1) {
-      // Multiple Objektarten + Vermarktungsart
       immobilietext = `${objArts.length} Objektarten ${vmAction}`;
     } else if (!vmArt && objArts.length === 1) {
-      // Only one Objektart selected
       immobilietext = objArts[0];
     } else if (!vmArt && objArts.length > 1) {
-      // Only multiple Objektarten selected
       immobilietext = `${objArts.length} Objektarten`;
     }
 
@@ -989,12 +1255,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (selectedLages.length === 1) {
       const selectedLage = selectedLages[0];
-      // The `viennaDistricts` array is available from the Astro component's imports
-      if (viennaDistricts.includes(selectedLage)) {
-        // Wien District
+      // Note: viennaDistricts is expected to be available in this scope via define:vars
+      // Assuming capitalization is handled externally or not critical here
+      if (
+        Array.isArray(viennaDistricts) &&
+        viennaDistricts.includes(selectedLage)
+      ) {
         ortText = selectedLage;
       } else {
-        // Wien Umgebung
         ortText = selectedLage;
       }
     } else if (selectedLages.length > 1) {
@@ -1031,7 +1299,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (zimmerText && flaecheText) {
       groesseText = `${zimmerText}, ${flaecheText}`;
     } else if (zimmerText) {
-      groesseText = zimmerText; // Corrected: was `groesseText` which is "Jede Größe"
+      groesseText = zimmerText;
     } else if (flaecheText) {
       groesseText = flaecheText;
     }
@@ -1069,14 +1337,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let preisText = "Jeder Preis";
 
-    // If Vermarktungsart is selected, only display the corresponding price
     if (vmArt === "kauf") {
       preisText = kaufRange || "Jeder Preis";
     } else if (vmArt === "miete") {
-      // Remove /Monat for cleaner display in the header
       preisText = mieteRange.replace("/Monat", "") || "Jeder Preis";
     } else {
-      // If neither is selected, display a combined text if possible
       if (kaufRange && mieteRange) {
         preisText = "Kauf & Miete";
       } else if (kaufRange) {
@@ -1094,11 +1359,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let ausstattungText = "Details";
 
     if (selectedAmenities.length === 1) {
-      ausstattungText = capitalize(selectedAmenities[0]);
+      // Assuming a capitalize function exists or just use the raw value
+      ausstattungText = selectedAmenities[0]; // Removed capitalize() for safety
     } else if (selectedAmenities.length > 1) {
       ausstattungText = `${selectedAmenities.length} Details`;
     }
     selectionAusstattung.textContent = ausstattungText;
+
+    // Always update the mobile summary bar after updating individual selections
+    updateMobileSummaryText();
   };
 
   // --- Price Group Visibility Logic (Used on init and on 'immobilie' change) ---
@@ -1120,26 +1389,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- CORE LOGIC: TOGGLE PANEL VISIBILITY ---
+  // --- CORE LOGIC: TOGGLE PANEL VISIBILITY (MODIFIED) ---
   /**
    * Toggles the visibility and active state of a filter tab and its associated panel.
    * @param {HTMLElement} targetTab The tab element that was clicked.
+   * @param {boolean} [forceOpen=false] If true, forces the panel to open even if it's currently inactive.
    */
-  function togglePanel(targetTab) {
+  function togglePanel(targetTab, forceOpen = false) {
     const tabName = targetTab.getAttribute("data-tab");
     const panelId = `panel-${tabName}`;
     const panelElement = document.getElementById(panelId);
 
     if (!panelElement) return;
 
-    // Check if the clicked tab is already active
     const isActive = targetTab.classList.contains("active");
+    const isMobileView = !isDesktop();
 
-    // Hide all panels and remove active class from all tabs
+    // 1. Determine if we should OPEN or CLOSE
+    const shouldOpen = forceOpen || !isActive;
+
+    // 2. Close All First
     document.querySelectorAll(".filter-panel").forEach((p) => {
       p.classList.remove("active");
-      // Explicitly set display none for desktop to ensure panel disappears completely
-      if (isDesktop()) {
+      if (!isMobileView) {
+        // Only manipulate display property on Desktop
         p.style.display = "none";
       }
     });
@@ -1147,18 +1420,18 @@ document.addEventListener("DOMContentLoaded", () => {
       t.classList.remove("active");
     });
 
-    if (!isActive) {
+    // 3. Open or Remain Closed
+    if (shouldOpen) {
       // Open the new panel
       targetTab.classList.add("active");
       panelElement.classList.add("active");
 
-      // Set display to block for the active panel (needed for desktop positioning)
-      if (isDesktop()) {
+      if (!isMobileView) {
+        // Desktop logic: Show and Position
         panelElement.style.display = "block";
-        // --- 2. Positioning (Desktop Only) ---
         positionPanel(targetTab, panelElement);
+        document.body.classList.add("is-filter-active");
       }
-      document.body.classList.add("is-filter-active");
 
       activePanelId = panelId;
       activeTabElement = targetTab;
@@ -1166,35 +1439,64 @@ document.addEventListener("DOMContentLoaded", () => {
       // Panel was active and clicked again -> close it
       activePanelId = null;
       activeTabElement = null;
-      // No need to call adjustWrapperHeight(panelElement);
+      document.body.classList.remove("is-filter-active");
     }
 
-    // --- Handle Price Visibility (always needs to run as vmArt may change) ---
     handleVermarktungsartChange();
   }
 
   // --- CORE LOGIC: SETUP EVENT LISTENERS ---
   const setupEventListeners = () => {
-    // Listen for tab clicks to toggle panels
+    // NEW: Attach listener to the mobile summary bar
+    if (mobileSummaryBar) {
+      mobileSummaryBar.addEventListener("click", handleMobileSummaryClick);
+    }
+    if (mobileCloseButton) {
+      mobileCloseButton.addEventListener("click", closeMobileModal);
+    }
+
+    // Listen for tab clicks to toggle panels (MODIFIED)
     filterBar.addEventListener("click", (e) => {
-      // Since tabs are now wrapped on mobile, we need to check if we hit the tab or its container
       const targetTab = e.target.closest(".tab-container");
       if (!targetTab) return;
 
-      togglePanel(targetTab);
+      const isMobileExpanded = formElement.classList.contains("is-expanded");
+
+      if (!isDesktop()) {
+        // On mobile, only allow tab clicks if the menu is expanded
+        if (isMobileExpanded) {
+          togglePanel(targetTab);
+        }
+      } else {
+        // Desktop behavior
+        togglePanel(targetTab);
+      }
     });
 
     document.querySelectorAll(".reset-button").forEach((button) => {
       button.addEventListener("click", (e) => {
-        e.preventDefault(); // Prevent default link behavior
+        e.preventDefault();
 
-        resetAllFormFields(); // Clear all form fields
+        resetAllFormFields();
 
         // Update UI
         updateTabSelections();
         handleVermarktungsartChange();
 
-        // Submit filter with empty form data (which means no criteria are applied)
+        // Close the panel after reset
+        if (activePanelId) {
+          const activePanel = document.getElementById(activePanelId);
+          activePanel.classList.remove("active");
+          if (isDesktop()) {
+            activePanel.style.display = "none";
+          }
+          activeTabElement?.classList.remove("active");
+          activePanelId = null;
+          activeTabElement = null;
+          document.body.classList.remove("is-filter-active");
+        }
+
+        // Dispatch filter event
         const formData = new FormData(formElement);
         const filterEvent = new CustomEvent("filter:submit", {
           detail: { formData: formData },
@@ -1202,8 +1504,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.dispatchEvent(filterEvent);
       });
     });
+
     // --- Global click listener to close panel when clicking outside (Desktop only) ---
     document.addEventListener("click", (e) => {
+      // Only run on desktop, and only if a panel is active
       if (!isDesktop() || !activePanelId) return;
 
       const activePanel = document.getElementById(activePanelId);
@@ -1223,7 +1527,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // --- Reposition panel on window resize (Desktop only) ---
+    // --- Reposition panel on window resize & Mobile cleanup (MODIFIED) ---
     window.addEventListener("resize", () => {
       // Only run if a panel is currently open and we are on desktop
       if (activePanelId && activeTabElement && isDesktop()) {
@@ -1232,6 +1536,20 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById(activePanelId)
         );
       }
+
+      // NEW: If resizing to desktop, close the mobile expanded state
+      if (isDesktop()) {
+        formElement.classList.remove("is-expanded");
+        // Ensure mobile-specific active states are also cleared
+        document.body.classList.remove("is-filter-active");
+      } else {
+        // If resizing to mobile, ensure desktop display none is removed if expanded
+        if (formElement.classList.contains("is-expanded")) {
+          document.querySelectorAll(".filter-panel").forEach((p) => {
+            p.style.display = "";
+          });
+        }
+      }
     });
 
     // --- Input listeners for state management and text updates ---
@@ -1239,7 +1557,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //search button listener
     formElement.addEventListener("submit", (e) => {
-      e.preventDefault(); // Stop the page from reloading
+      e.preventDefault();
       const formData = new FormData(formElement);
 
       // Dispatch a custom event with the form data to the Property Grid component
@@ -1258,8 +1576,13 @@ document.addEventListener("DOMContentLoaded", () => {
         activeTabElement?.classList.remove("active");
         activePanelId = null;
         activeTabElement = null;
+        document.body.classList.remove("is-filter-active");
       }
+
+      // NEW: Also close mobile expanded state on submit
+      formElement.classList.remove("is-expanded");
     });
+
     // Add change listener for Vermarktungsart
     document.querySelectorAll('[name="vermarktungsart"]').forEach((input) => {
       input.addEventListener("change", () => {

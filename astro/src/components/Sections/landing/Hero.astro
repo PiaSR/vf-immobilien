@@ -32,11 +32,17 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 
       <Button class="button-orange">Kontaktieren Sie uns</Button>
     </div>
-    <Image src={heroImage} alt="White building facade" class="angled-image" />
+    <Image
+      src={heroImage}
+      alt="White building facade"
+      class="angled-image"
+      loading="eager"
+    />
     <Image
       src={heroImage}
       alt="White building facade"
       class="angled-image-mobile"
+      loading="eager"
     />
   </div>
 </section>

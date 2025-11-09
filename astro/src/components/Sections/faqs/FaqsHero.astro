@@ -16,11 +16,17 @@ import HeroHeader from "../../Base/HeroHeader.astro";
         textColor="var(--color-neutral-white)"
       />
     </div>
-    <Image src={heroImage} alt="brown wooden door" class="angled-image" />
+    <Image
+      src={heroImage}
+      alt="brown wooden door"
+      class="angled-image"
+      loading="eager"
+    />
     <Image
       src={heroImage}
       alt="brown wooden door"
       class="angled-image-mobile"
+      loading="eager"
     />
   </div>
 </section>
