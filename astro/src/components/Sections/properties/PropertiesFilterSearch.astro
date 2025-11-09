@@ -425,20 +425,19 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 >
               </div>
             </div>
-            <!-- <div class="mobile-blur-div"></div> -->
+            <div id="search-button" class="search-button-wrapper">
+              <button type="submit" class="custom-submit-button">
+                <Image
+                  src={SearchIcon}
+                  alt="Suchen"
+                  width={24}
+                  height={24}
+                  class="search-icon"
+                />
+                 Suchen
+              </button>
+            </div>
           </div>
-        </div>
-        <div id="search-button" class="search-button-wrapper">
-          <button type="submit" class="custom-submit-button">
-            <Image
-              src={SearchIcon}
-              alt="Suchen"
-              width={24}
-              height={24}
-              class="search-icon"
-            />
-             Suchen
-          </button>
         </div>
       </form>
     </div>
@@ -713,6 +712,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     border: 1px solid var(--color-neutral-medium);
     border-radius: var(--border-radius-sm);
     width: 100px;
+    height: 100%;
     flex-grow: 1;
     font-size: var(--font-size-body-small);
   }
@@ -911,6 +911,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   .number-input-wrapper {
     max-width: 100%;
+    height: 3rem;
   }
   /* Place the search button visually below the accordion structure */
   #property-filter-form-element > .search-button-wrapper {
@@ -980,10 +981,27 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   @media (min-width: 992px) {
     .properties-filter-wrapper {
       position: relative; /* Ensure it stays static */
+
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 var(--spacing-md);
     }
+    #mobile-expanded-content {
+      display: flex !important; /* or flex, depending on content layout */
+      position: static !important;
+      height: auto !important;
+      overflow: visible !important;
+      flex-direction: row;
+      /* Reset any mobile-specific layout properties */
+    }
 
+    /* Ensure the tab container inside also displays correctly */
+    #filter-heading-bar {
+      display: grid; /* Re-apply your desktop grid layout */
+      grid-template-columns: repeat(6, 1fr);
+      padding: var(--spacing-sm);
+      /* Ensure no mobile styles like flex-direction: column are applied */
+    }
     /* Hide the mobile summary bar and ensure individual tabs are shown */
     #mobile-summary-bar {
       display: none !important;

@@ -201,6 +201,8 @@ const pathname = new URL(Astro.request.url).pathname;
         font-size: clamp(1.25rem, 5vw, 1.75rem);
         display: block;
         width: 100%;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: var(--border-radius);
       }
     }
 
@@ -305,6 +307,7 @@ const pathname = new URL(Astro.request.url).pathname;
         font-size: clamp(0.875rem, 1vw, 1rem);
         padding: var(--spacing-sm) var(--spacing-lg);
       }
+
       .button {
         display: flex;
         align-items: center;
@@ -323,7 +326,6 @@ const pathname = new URL(Astro.request.url).pathname;
           background-color 0.3s ease,
           color 0.3s ease;
       }
-
       .button:not([class]) {
         border: solid 1px var(--color-neutral-font-dark);
         background-color: var(--color-neutral-lightest);

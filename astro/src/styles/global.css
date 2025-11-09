@@ -238,12 +238,6 @@ section {
   padding: var(--spacing-4xl) var(--spacing-2xl);
 }
 
-.padding-section-diagonal {
-  padding: var(--spacing-6xl) var(--spacing-2xl);
-}
-.padding-bottom-pre-diagonal {
-  padding-bottom: 15rem;
-}
 .container-align-left {
   display: flex;
   flex-direction: column;

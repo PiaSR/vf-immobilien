@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
 import ButtonArrow from "../../Base/ButtonArrow.astro";
 import HeroHeader from "../../Base/HeroHeader.astro";
+import aboutHeroImgCut from "../../../assets/images/aboutHeroImgCut.jpg";
 ---
 
 <section id="about-hero" class="about-hero">
@@ -18,16 +20,16 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 </section>
 
 <style>
-  .hero {
+  .about-hero {
     position: relative;
     background:
       linear-gradient(rgba(47, 60, 53, 0.4), rgba(47, 60, 53, 0.4)),
-      /* The overlay */ url("../../../assets/images/aboutHeroImgCut.png")
+      /* The overlay */ url("../../../assets/images/aboutHeroImgCut.jpg")
         no-repeat center / cover;
     padding-bottom: calc(var(--spacing-4xl) + 15vw);
   }
 
-  .hero::after {
+  .about-hero::after {
     content: "";
     position: absolute;
     bottom: -40rem;
