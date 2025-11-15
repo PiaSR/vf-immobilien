@@ -4,6 +4,13 @@ import Navbar from "../components/Layouts/Navbar.astro";
 import Footer from "../components/Layouts/Footer.astro";
 import "../styles/global.css";
 import "../styles/fonts.css";
+
+const {
+  title,
+  description = "Default site description...", // Add a default for non-property pages
+  ogImage = "/default-share-image.jpg", // Add a fallback image
+  ogTitle = title,
+} = Astro.props;
 ---
 
 <html lang="de">
@@ -13,11 +20,23 @@ import "../styles/fonts.css";
     <link rel="stylesheet" href="/src/styles/global.css" />
     <link
       rel="preload"
-      href="/assets/logos/vf-immobilien-logo.svg"
+      href="/astro/public/logos/Viki-new-logo-only-green-1.svg"
       as="image"
     />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/astro/public/logos/Viki-new-logo-only-green-1.svg"
+    />
 
-    <title>VF Immobilien</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={Astro.url.href} />
   </head>
 
   <body>

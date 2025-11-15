@@ -3,6 +3,8 @@ import { sanityClient } from "../../lib/sanityClient";
 import MainLayout from "../../layouts/MainLayout.astro";
 import PropertyListingDetails from "../../components/Sections/properties/propertyListingDetails.astro";
 
+export const prerender = true;
+
 //  REQUIRED FUNCTION: getStaticPaths
 export async function getStaticPaths() {
   // GROQ query to fetch all property slugs
@@ -71,15 +73,111 @@ if (!propertyData) {
   // In SSG mode (default), Astro will usually show a static 404 if the path wasn't generated.
   return Astro.redirect("/404");
 }
+// ----------------------------------------------------
+// ✨ MAP LOGIC START (NEW/MODIFIED)
+// ----------------------------------------------------
+
+// 1. Helper map for Vienna District to Postal Code (since your CMS stores "6. Mariahilf")
+// We can't map all, but the district number is enough for Google Maps to center the district.
+const viennaDistrictMap = {
+  // Use the district number as the key
+  "1.": "1010 Wien",
+  "2.": "1020 Wien",
+  "3.": "1030 Wien",
+  "4.": "1040 Wien",
+  "5.": "1050 Wien",
+  "6.": "1060 Wien",
+  "7.": "1070 Wien",
+  "8.": "1080 Wien",
+  "9.": "1090 Wien",
+  "10.": "1100 Wien",
+  "11.": "1110 Wien",
+  "12.": "1120 Wien",
+  "13.": "1130 Wien",
+  "14.": "1140 Wien",
+  "15.": "1150 Wien",
+  "16.": "1160 Wien",
+  "17.": "1170 Wien",
+  "18.": "1180 Wien",
+  "19.": "1190 Wien",
+  "20.": "1200 Wien",
+  "21.": "1210 Wien",
+  "22.": "1220 Wien",
+  "23.": "1230 Wien",
+};
+
+let mapCenterAddress = "";
+let mapZoom = 13; // Good for viewing a single district/postal code area
+
+if (propertyData.locationVienna) {
+  // Vienna: Extract the district number (e.g., '6.' from '6. Mariahilf')
+  const districtKeyMatch = propertyData.locationVienna.match(/^\d+\./);
+  const districtKey = districtKeyMatch ? districtKeyMatch[0] : null;
+
+  if (districtKey && viennaDistrictMap[districtKey]) {
+    // Use the postal code for better centering
+    mapCenterAddress = viennaDistrictMap[districtKey];
+  } else {
+    // Fallback to the full district name if mapping fails
+    mapCenterAddress = `${propertyData.locationVienna}, Wien, Österreich`;
+  }
+} else if (
+  propertyData.locationSurrounding &&
+  propertyData.postalCodeSurrounding
+) {
+  // Surrounding area: Use postal code and location
+  mapCenterAddress = `${propertyData.postalCodeSurrounding} ${propertyData.locationSurrounding}, Österreich`;
+  mapZoom = 12; // Slightly wider zoom for non-city area
+} else {
+  // Default fallback (e.g., office location or just Vienna)
+  mapCenterAddress = "Wien, Österreich";
+}
+
+// Prepare the address for the Google Maps Embed URL
+const encodedMapAddress = encodeURIComponent(mapCenterAddress);
+
+// The base URL for the Iframe embed, using the 'q=' parameter for search
+// We use 'zoom' to define the area proximity.
+const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${encodedMapAddress}&z=${mapZoom}&output=embed`;
+// ----------------------------------------------------
+// ✨ MAP LOGIC END
+// ----------------------------------------------------
 
 // 5. Serialize the data to pass it as a JSON string to the client-side component
 const propertyDataJson = JSON.stringify(propertyData);
 
+// [slug].astro frontmatter (---)
+
+// ... (Existing data fetching)
+
+// ----------------------------------------------------
+// ✨ SEO & METADATA SETUP
+// ----------------------------------------------------
+
+const title = propertyData.title || "Immobilien Detail";
+const location = propertyData.locationVienna
+  ? `Wien, ${propertyData.locationVienna}`
+  : propertyData.locationSurrounding;
+
+// Create a concise description for the meta tag
+const pageDescription = `Miete: ${title} in ${location}. ${propertyData.propertyDescription.substring(0, 100)}...`;
+
+// Open Graph Image URL (Use the main image URL you fixed earlier)
+const ogImageUrl = propertyData.mainImage.url;
+
 // Set the page title for the Layout component
-const pageTitle = propertyData.title || "Immobilien Detail";
+const pageTitle = title;
 ---
 
-<MainLayout title={pageTitle}>
+<MainLayout
+  title={pageTitle}
+  description={pageDescription}
+  ogImage={ogImageUrl}
+  ogTitle={`Wohnung mieten: ${title}`}
+>
   <!-- 6. PASS THE FETCHED DATA TO YOUR COMPONENT -->
-  <PropertyListingDetails propertyDataJson={propertyDataJson} />
+  <PropertyListingDetails
+    propertyDataJson={propertyDataJson}
+    googleMapsEmbedUrl={googleMapsEmbedUrl}
+  />
 </MainLayout>

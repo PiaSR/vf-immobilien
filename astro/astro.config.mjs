@@ -2,15 +2,17 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
+import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'server',
   image: {
       service: {
         entrypoint: 'astro/assets/services/sharp'
       }
     },
-
+   
   integrations: [
     react(),
     sanity({
@@ -20,5 +22,6 @@ export default defineConfig({
       useCdn: true,
       apiVersion: '2025-09-10' // Use today's date for a consistent API version
     }),
-  ]
+  ],
+  adapter: netlify(),
 });

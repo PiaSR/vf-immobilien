@@ -1,4 +1,5 @@
 ---
+const { propertyDataJson, googleMapsEmbedUrl } = Astro.props;
 const rawPropData = Astro.props.propertyDataJson;
 ---
 
@@ -12,7 +13,7 @@ const rawPropData = Astro.props.propertyDataJson;
 
   <!-- Main Content Area -->
   <div id="property-listing-content" style="display: none;">
-    <!-- Title and Header Area -->
+    <!-- Title and Header Area -->cd
     <header class="listing-header">
       <h1 id="listing-title" class="listing-title"></h1>
       <p id="listing-address" class="listing-address"></p>
@@ -83,6 +84,14 @@ const rawPropData = Astro.props.propertyDataJson;
         <section class="listing-section">
           <h2 class="section-header">Lage</h2>
           <p id="location-description" class="location-description-content"></p>
+          <div class="map-embed-container">
+            <iframe
+              src={googleMapsEmbedUrl}
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
         </section>
       </div>
 
@@ -97,6 +106,7 @@ const rawPropData = Astro.props.propertyDataJson;
                 src="https://placehold.co/100x100/e5e7eb/6b7280?text=M"
                 alt="Maklerbild"
                 class="agent-image"
+                loading="lazy"
               />
               <p id="agent-name" class="agent-name"></p>
               <p id="agent-phone" class="agent-phone"></p>
@@ -537,6 +547,20 @@ const rawPropData = Astro.props.propertyDataJson;
     font-size: var(--font-size-body-large);
   }
 
+  .map-embed-container {
+    /* Define the size for the map */
+    width: 100%;
+    height: 300px; /* Adjust height as needed */
+    margin-top: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+
+  .map-embed-container iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
   .complex-features-tags {
     display: flex;
     flex-wrap: wrap;
@@ -707,6 +731,14 @@ const renderPortableText = (blocks) => {
 /**
  * Updates the main image and highlights the active thumbnail.
  */
+// --- Utility function for Image Optimization ---
+const getOptimizedUrl = (originalUrl, width, quality = 80) => {
+  if (!originalUrl) return originalUrl;
+  // Use Sanity's URL parameters for resizing, quality, and format
+  return `${originalUrl}?w=${width}&q=${quality}&fit=max&fm=webp`;
+};
+// ---------------------------------------------
+
 const showImage = (index) => {
   if (allPhotos.length === 0) return;
 
@@ -721,7 +753,7 @@ const showImage = (index) => {
   // 1. Update main image (with smooth transition)
   mainImgElement.style.opacity = 0;
   setTimeout(() => {
-    mainImgElement.src = photo.url;
+    mainImgElement.src = getOptimizedUrl(photo.url, 1400, 85);
     mainImgElement.alt =
       photo.alt || `Immobilienfoto ${currentImageIndex + 1}`;
     mainImgElement.style.opacity = 1;
@@ -733,7 +765,7 @@ const showImage = (index) => {
       .getElementById("fullscreen-gallery-modal")
       .classList.contains("active")
   ) {
-    modalImgElement.src = photo.url;
+    modalImgElement.src = getOptimizedUrl(photo.url, 2000, 85);
     modalImgElement.alt =
       photo.alt || `Vollbildansicht ${currentImageIndex + 1}`;
   }
@@ -821,10 +853,11 @@ const renderProperty = (data) => {
     .map(
       (photo, index) => `
                 <img 
-                    src="${photo.url}" 
+                src="${getOptimizedUrl(photo.url, 250, 70)}"
                     alt="${photo.alt || "Immobilienfoto " + (index + 1)}" 
                     class="thumbnail-image"
                     data-index="${index}"
+                    loading="lazy"
                 >
             `
     )

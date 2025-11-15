@@ -22,5 +22,10 @@ export default defineType({
       title: 'E-Mail',
       type: 'string',
     }),
+    defineField({
+      name: 'agentImage',
+      title: 'Maklerfoto',
+      type: 'image',
+    }),
   ],
 })
