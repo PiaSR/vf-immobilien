@@ -30,7 +30,7 @@ const detailedPropertyQuery = `
     propertyType,
     available,
 	availableDate,
-    propertyDescription,
+  propertyDescription,
     "marketingType": marketingType->title, 
     address,
     locationVienna,
@@ -47,7 +47,7 @@ const detailedPropertyQuery = `
     energyCertificate,
     parking,
     garden,
-    "mainImage": mainImage.asset->url,
+    "mainImage": mainImage.asset->{url},
     "photos": photos[] {
         _key,
         "url": asset->url,

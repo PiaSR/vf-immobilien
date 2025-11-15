@@ -67,7 +67,7 @@ export default defineType({
       // This is a `Switch` field in Webflow with slug 'verfugbar'
     }),
     defineField({
-      name: 'description',
+      name: 'propertyDescription',
       title: 'Wohnung - Beschreibung',
       type: 'text',
       // Webflow uses `RichText`, so `text` is a good match. `slug` is 'beschreibung'
@@ -129,7 +129,7 @@ export default defineType({
       name: 'locationDescription',
       title: 'Lage - Beschreibung',
       type: 'text',
-      // The `slug` from Webflow is 'lage---beschreibung'
+      
     }),
 
     // Property Details
