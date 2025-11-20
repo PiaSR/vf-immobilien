@@ -14,7 +14,9 @@ import SectionHeader from "../../Base/SectionHeader.astro";
       headerColor="var(--color-brand-medium-green)"
       textColor="var(--color-neutral-font-dark)"
     />
-    <ButtonArrow class="button-orange">Kontaktieren Sie uns.</ButtonArrow>
+    <ButtonArrow class="button-orange" href="/contact">
+      Kontaktieren Sie uns.
+    </ButtonArrow>
   </div>
 </section>
 
@@ -29,6 +31,9 @@ import SectionHeader from "../../Base/SectionHeader.astro";
     z-index: 5;
     max-width: 60%;
     padding-top: 0;
+  }
+  .button-orange {
+    width: max-content;
   }
   @media (max-width: 1024px) {
     .site-container {

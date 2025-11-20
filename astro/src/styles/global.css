@@ -141,7 +141,7 @@ a {
   color: inherit;
 }
 /* ----------------------------------------------- BUTTONS -------------------------------------------- */
-button {
+.button-element {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,7 +160,7 @@ button {
     color 0.3s ease;
 }
 
-button:not([class]) {
+.button-element:not([class]) {
   border: solid 1px var(--color-neutral-font-dark);
   background-color: var(--color-neutral-lightest);
   color: var(--color-neutral-font-dark);
@@ -253,7 +253,7 @@ section {
 .angled-image {
   height: 100%;
   width: 100%;
-  clip-path: polygon(15% 0, 100% 0, 100% 100%, 70% 100%);
+  clip-path: polygon(15% 0, 170% 0, 100% 100%, 70% 100%);
   object-fit: cover;
 }
 .angled-image-mobile {
