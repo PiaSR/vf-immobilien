@@ -74,7 +74,7 @@ description: 'Interner Titel'
       name: 'address',
       title: 'Adresse',
       type: 'string',
-      description: 'Interne Info, gesamte Address (z.B. 12/5 Haupstrasse, 1020 Wien)'
+      description: 'Interne Info, gesamte Addresse (z.B. 12/5 Haupstrasse, 1020 Wien)'
 
     }),
     defineField({

@@ -56,9 +56,9 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     color: var(--color-brand-dark-green);
     overflow: visible;
   }
-  .padding-section {
+  /* .padding-section {
     padding-right: 0;
-  }
+  } */
 
   .site-container {
     padding-top: 0;
@@ -83,39 +83,43 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 
   .animated-word-wrapper {
     display: inline-flex;
-
+    /* padding-top: 2px; */
     overflow: hidden;
     position: relative;
     box-sizing: content-box;
-    vertical-align: top; /* Changed to top for consistent alignment */
+    vertical-align: top;
   }
   .animated-word-list {
     display: flex;
     flex-direction: column;
+    /* Initial state to hide the words before GSAP takes over */
+    transform: translateY(-1000px);
   }
   .animated-word-list span {
     display: block;
-    height: var(--line-height-header);
-    /* line-height: var(--line-height-header); */
+    height: (var(--line-height-header));
+    line-height: var(--line-height-header);
     white-space: nowrap;
     color: var(--color-brand-medium-green);
     font-size: inherit;
     font-weight: inherit;
+    margin-top: -1px;
   }
   @media (max-width: 61.875rem) {
-    h1 {
-      font-size: var(--font-size-h2);
-    }
     .hero-grid-content {
       grid-template-columns: 1fr;
     }
     .animated-word-wrapper {
-      height: var(--line-height-header);
-      line-height: var(--line-height-header);
+      /* height: var(--line-height-header); */
+      /* line-height: var(--line-height-header); */
     }
     .animated-word-list span {
-      height: var(--line-height-header);
-      line-height: var(--line-height-header);
+      margin-top: 0;
+    }
+  }
+  @media (max-width: 507px) {
+    .animated-word-list span {
+      margin-top: -1px;
     }
   }
 </style>
@@ -130,12 +134,13 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 
     let wordHeight, wordCount;
     let currentIndex = 0;
-
+    const yOffset = -2;
     // A function to get the current word height and update the wrapper
     const setWordHeight = () => {
       // Re-calculate height based on the first item's rendered line-height
-      const computedStyle = window.getComputedStyle(items[0]);
-      wordHeight = parseFloat(computedStyle.lineHeight);
+      // const computedStyle = window.getComputedStyle(items[0]);
+      // wordHeight = parseFloat(computedStyle.lineHeight);
+      wordHeight = items[0].offsetHeight;
       wordCount = items.length;
       wrapper.style.height = `${wordHeight}px`;
     };
@@ -146,6 +151,9 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     // Listen for resize events to re-calculate height
     window.addEventListener("resize", setWordHeight);
 
+    // Reset the initial CSS translateY property to the starting position (0)
+    // using GSAP's optimized 'y' property.
+    gsap.set(list, { y: 0 });
     // Initial fast spinning animation
     const spinLoop = gsap.to(list, {
       y: `-=${wordHeight * wordCount}`,
