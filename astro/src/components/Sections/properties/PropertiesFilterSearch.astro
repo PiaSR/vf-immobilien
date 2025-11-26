@@ -133,9 +133,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
               </div>
               <div id="panel-immobilie" class="filter-panel panel-immobilie">
                 <div id="filter-vermarktungsart" class="filter-form-group">
-                  <h2 class="filter-form-heading heading-style-h6">
-                    Vermarktungsart
-                  </h2>
+                  <h2 class="filter-form-heading">Vermarktungsart</h2>
                   <div class="filter-form-input-wrapper radio-input-group">
                     <label class="radio-classic-label">
                       <input
@@ -154,9 +152,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                   </div>
                 </div>
                 <div id="filter-objektart" class="filter-form-group">
-                  <h2 class="filter-form-heading heading-style-h6">
-                    Objektart
-                  </h2>
+                  <h2 class="filter-form-heading">Objektart</h2>
                   {/* ... existing objektarten map ... */}
                   {
                     objektarten.length > 0 ? (
@@ -192,13 +188,10 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 </div>
               </div>
               <div id="panel-ort" class="filter-panel panel-ort">
-                {/* ... existing ort map ... */}
                 {
                   Object.keys(districts).map((region) => (
                     <div class="filter-form-group">
-                      <h2 class="filter-form-heading heading-style-h6">
-                        {region}
-                      </h2>
+                      <h2 class="filter-form-heading ">{region}</h2>
                       <div class="filter-form-input-wrapper checkbox-columns">
                         <div class="checkbox-column">
                           {districts[region]
@@ -251,9 +244,8 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 </div>
               </div>
               <div id="panel-groesse" class="filter-panel panel-groesse">
-                {/* ... existing groesse content ... */}
                 <div class="filter-form-group">
-                  <h2 class="filter-form-heading heading-style-h6">Zimmer</h2>
+                  <h2 class="filter-form-heading">Zimmer</h2>
                   <div class="number-input-wrapper">
                     <input
                       class="text-field"
@@ -273,9 +265,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                   </div>
                 </div>
                 <div class="filter-form-group">
-                  <h2 class="filter-form-heading heading-style-h6">
-                    Fläche (m²)
-                  </h2>
+                  <h2 class="filter-form-heading">Fläche (m²)</h2>
                   <div class="number-input-wrapper">
                     <input
                       class="text-field"
@@ -310,9 +300,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
               <div id="panel-preis" class="filter-panel panel-preis">
                 {/* ... existing preis content ... */}
                 <div class="filter-form-group price-group price-group-kauf">
-                  <h2 class="filter-form-heading heading-style-h6">
-                    Kaufpreis (€)
-                  </h2>
+                  <h2 class="filter-form-heading">Kaufpreis (€)</h2>
                   <div class="number-input-wrapper">
                     <input
                       class="text-field"
@@ -333,9 +321,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 </div>
 
                 <div class="filter-form-group price-group price-group-miete">
-                  <h2 class="filter-form-heading heading-style-h6">
-                    Miete (€)
-                  </h2>
+                  <h2 class="filter-form-heading">Miete (€)</h2>
                   <div class="number-input-wrapper">
                     <input
                       class="text-field"
@@ -378,7 +364,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 class="filter-panel panel-ausstattung"
               >
                 <div class="filter-form-group">
-                  <h2 class="filter-form-heading heading-style-h6">Details</h2>
+                  <h2 class="filter-form-heading">Details</h2>
                   <div class="filter-form-input-wrapper checkbox-columns">
                     <div class="checkbox-column">
                       {
@@ -448,6 +434,10 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   BASE STRUCTURE & LAYOUT
   ============================================================== */
 
+  #properties-filter {
+    /* box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.2); */
+    border-bottom: 2px solid rgba(47, 60, 53, 0.3);
+  }
   .section-properties-filter-form {
     padding: var(--spacing-xl) 0;
     background-color: var(--color-brand-light-green);
@@ -471,8 +461,8 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   :global(.content-to-blur) {
     transition:
-      filter 0.3s ease,
-      transform 0.3s ease;
+      filter 0.05s ease,
+      transform 0.05s ease;
     filter: none;
     position: relative;
     z-index: 1;
@@ -931,8 +921,8 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   .filter-panel {
     position: static; /* CRITICAL: Reset desktop absolute position */
     top: auto;
-    left: auto;
-    right: auto;
+    left: 50%;
+
     width: 100%;
     margin-top: -1px;
     /* Set mobile-specific visibility/interaction properties for max-height transition */
@@ -1021,7 +1011,10 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
       /* Re-apply desktop dropdown settings */
       display: none; /* Default state, hide all */
       position: absolute; /* Panels are absolute relative to the FORM */
+      left: 50%;
 
+      transform: none;
+      transform: translateX(16%);
       /* Reset mobile accordion logic */
       max-height: none;
       overflow: visible;
@@ -1500,19 +1493,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update UI
         updateTabSelections();
         handleVermarktungsartChange();
-
-        // Close the panel after reset
-        if (activePanelId) {
-          const activePanel = document.getElementById(activePanelId);
-          activePanel.classList.remove("active");
-          if (isDesktop()) {
-            activePanel.style.display = "none";
-          }
-          activeTabElement?.classList.remove("active");
-          activePanelId = null;
-          activeTabElement = null;
-          document.body.classList.remove("is-filter-active");
-        }
 
         // Dispatch filter event
         const formData = new FormData(formElement);

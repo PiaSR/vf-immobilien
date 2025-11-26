@@ -7,7 +7,7 @@ import digital from "../../../assets/images/digital-value.png";
 import { Image } from "astro:assets";
 ---
 
-<section class="values-section">
+<section class="values-section slide-in-section">
   <div class="site-container padding-section">
     <div class="values-grid">
       <div class="values-text-container">
@@ -127,11 +127,13 @@ import { Image } from "astro:assets";
 
 <style>
   .values-section {
+    position: relative;
     background-color: var(--color-neutral-lightest);
     color: var(--color-neutral-font-dark);
+    z-index: 10;
   }
   .site-container {
-    z-index: 5;
+    /* z-index: 5; */
     padding-top: 0;
   }
   .values-grid {
@@ -199,5 +201,5 @@ import { Image } from "astro:assets";
     .value-card {
       flex: 1 1 12rem;
     }
-   
+  }
 </style>

@@ -27,6 +27,7 @@ import aboutHeroImgCut from "../../../assets/images/aboutHeroImgCut.jpg";
       /* The overlay */ url("../../../assets/images/aboutHeroImgCut.jpg")
         no-repeat center / cover;
     padding-bottom: calc(var(--spacing-4xl) + 15vw);
+    z-index: 10;
   }
 
   .about-hero::after {
@@ -41,7 +42,7 @@ import aboutHeroImgCut from "../../../assets/images/aboutHeroImgCut.jpg";
     ); /* Color of the section BELOW it */
     transform: skewY(11deg); /* Adjust this value for the angle */
     transform-origin: bottom right;
-    z-index: 1; /* Ensures the bottom wedge is on top */
+    z-index: -1; /* Ensures the bottom wedge is on top */
   }
   .container-align-left {
     padding-bottom: 0;

@@ -45,5 +45,41 @@ const {
       <slot />
     </main>
     <Footer />
+
+    <script is:inline>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sectionsToAnimate =
+          document.querySelectorAll(".slide-in-section");
+
+        const observerOptions = {
+          root: null, // relative to the viewport
+          rootMargin: "0px",
+          threshold: 0.1, // Trigger when 10% of the element is visible
+        };
+
+        const observerCallback = (entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // When element enters viewport, add the trigger class
+              entry.target.classList.add("is-visible");
+              // Stop observing it after it's visible
+              observer.unobserve(entry.target);
+            }
+          });
+        };
+
+        // Only create the observer if there are elements to observe
+        if (sectionsToAnimate.length > 0) {
+          const sectionObserver = new IntersectionObserver(
+            observerCallback,
+            observerOptions
+          );
+
+          sectionsToAnimate.forEach((section) => {
+            sectionObserver.observe(section);
+          });
+        }
+      });
+    </script>
   </body>
 </html>

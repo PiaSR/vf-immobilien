@@ -1,4 +1,4 @@
-<section class="stats-section">
+<section class="stats-section slide-in-section">
   <div class="stats-content-wrapper site-container">
     <div class="stats-grid">
       <div class="stats-card">
@@ -95,7 +95,7 @@
     /* transform: skewY(13deg); */
     transform-origin: bottom right;
     position: relative;
-    z-index: 1; /* Ensures this section is on top of content below it */
+    z-index: 10; /* Ensures this section is on top of content below it */
     /* margin-top: 10vw; */
   }
   .stats-section::before {
@@ -110,7 +110,7 @@
     ); /* Color of the section ABOVE it */
     transform: skewY(11deg);
     transform-origin: top left;
-    z-index: -5;
+    z-index: -1;
   }
 
   /* This creates the diagonal cut at the BOTTOM of the section */
@@ -126,7 +126,7 @@
     ); /* Color of the section BELOW it */
     transform: skewY(11deg); /* Adjust this value for the angle */
     transform-origin: bottom right;
-    z-index: -5; /* Ensures the bottom wedge is on top */
+    z-index: -1; /* Ensures the bottom wedge is on top */
   }
 
   /* This inner wrapper holds the content and counter-acts the skew */

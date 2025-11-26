@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import SubheaderSVG from "../../Base/SubheaderSVG.astro";
-import logoInverted from "/src/assets/images/inverted logo white wall.png";
+import logoInverted from "/src/assets/images/logo-inverter-iron.png";
 
 const values = [
   {
@@ -27,7 +27,7 @@ const values = [
 ];
 ---
 
-<section id="about-values" class="values-section">
+<section id="about-values" class="values-section slide-in-section">
   <div class="site-container padding-section">
     <Image
       class="image-logo-inverted"
@@ -68,6 +68,7 @@ const values = [
     justify-content: end;
     text-align: left;
     z-index: 5;
+    ba
   }
   .values-container {
     display: flex;
@@ -117,6 +118,10 @@ const values = [
     }
     .values-container {
       width: 80%;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: var(--spacing-xl);
+      border-radius: var(--border-radius);
+
     }
     .image-logo-inverted {
       left: -55%;

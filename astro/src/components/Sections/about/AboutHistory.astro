@@ -18,8 +18,10 @@ import ServiceCard from "../../Cards/ServiceCard.astro";
         description="Unsere Immobilienverwaltung in Wien bietet Ihnen eine umfassende, zuverlässige Betreuung für Ihre Liegenschaften. Wir kümmern uns um alle administrativen Aufgaben – von der Instandhaltung bis hin zur effizienten Mieterbetreuung."
         cardBgColor="var(--color-neutral-light-grey)"
         cardFontColor="var(--color-neutral-font-dark)"
-        cardBgHover="var(--color-brand-medium-green)"
+        cardBgHover="var(--color-brand-green)"
         cardFontHover="var(--color-neutral-white)"
+        href="https://richling.at/"
+        target="_blank"
       />
       <ServiceCard
         title="HV Hörtlehner"
@@ -28,6 +30,8 @@ import ServiceCard from "../../Cards/ServiceCard.astro";
         cardFontColor="var(--color-neutral-font-dark)"
         cardBgHover="var(--color-brand-green)"
         cardFontHover="var(--color-neutral-white)"
+        href="https://www.hoertlehner.at/"
+        target="_blank"
       />
     </div>
   </div>
@@ -39,7 +43,9 @@ import ServiceCard from "../../Cards/ServiceCard.astro";
     position: relative;
     /* padding-bottom: calc(var(--spacing-4xl) + 15vw); */
     /* margin-bottom: calc(var(--spacing-4xl) + 15vw); editing out until Team section is added, and diagonal after can be readded */
+    /* z-index: 100; */
   }
+  /* ---------- DO NOT DELETE!! NEEDED WHEN ADDING SUBSCRIPTION AGAIN ------------------- */
   /* .history-section::after {
     content: "";
     position: absolute;

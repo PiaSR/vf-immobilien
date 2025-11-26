@@ -228,6 +228,18 @@ li {
   max-width: 80rem; /* Use the same max-width as your navbar */
   margin: 0 auto;
 }
+.slide-in-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition:
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
+  will-change: opacity, transform;
+}
+.slide-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 section {
   /* width: 100%; */
   display: flex;

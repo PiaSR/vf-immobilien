@@ -3,7 +3,7 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
 import SectionHeader from "../../Base/SectionHeader.astro";
 ---
 
-<section class="intro-section">
+<section class="intro-section slide-in-section">
   <div class="site-container padding-section">
     <SectionHeader
       header="Immer für Sie da."
@@ -24,11 +24,12 @@ import SectionHeader from "../../Base/SectionHeader.astro";
   .intro-section {
     background-color: var(--color-neutral-lightest);
     justify-content: center;
-    padding-top: 35rem;
-    margin-top: -35rem;
+    /* padding-top: 35rem;
+    margin-top: -35rem; */
+    position: relative;
+    z-index: 10;
   }
   .site-container {
-    z-index: 5;
     max-width: 60%;
     padding-top: 0;
   }
