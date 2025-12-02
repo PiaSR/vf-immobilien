@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	};
 	// --- PAGINATION CONSTANTS AND STATE ---
 	// 👇️ NEW: 5 rows of 4 items = 20 items per page
-	const ITEMS_PER_PAGE = 3;
+	const ITEMS_PER_PAGE = 16;
 	let currentPage = 1;
 	let currentFilteredProperties = []; // Holds the full list after filtering
 
@@ -240,32 +240,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 		const controlsHTML = [];
+		const roundBtnBaseStyle = `
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        border-radius: 50%;
+		border: solid 1px var(--color-brand-dark-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none; /* Ensure no background by default */
+    `.replace(/\s+/g, " ");
+
+		// Style for ENABLED round buttons (adds the background color)
+		const enabledArrowStyle = `
+        ${roundBtnBaseStyle}
+        background-color: var(--color-neutral-lightest); /* <-- NEW: Only when enabled */
+    `.replace(/\s+/g, " ");
+
+		// Style for DISABLED round buttons (no special background)
+		const disabledArrowStyle = `
+        ${roundBtnBaseStyle}
+        opacity: 0.5;
+        cursor: not-allowed;
+    `.replace(/\s+/g, " ");
+
+		// Style for NON-ACTIVE Page Numbers (Base Reset)
+		const pageNumBaseStyle = `
+        background: none; 
+        border: none; 
+        outline: none; 
+        box-shadow: none; 
+        color: var(--color-brand-dark-green);
+        padding: var(--spacing-md);
+        cursor: pointer;
+        font-weight: var(--font-weight-medium);
+        transition: all 0.2s ease;
+    `.replace(/\s+/g, " ");
+
+		// Style for ACTIVE Page Number (Bolder, Highlighted Circle)
+		const activeStyle = `
+        background: none;
+        color: var(--color-brand-dark-green);
+        font-weight: var(--font-weight-black);
+       border: none;
+        width: 38px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        padding: 0;
+        display: inline-block;
+    `.replace(/\s+/g, " ");
 
 		// 1. Back Button
+		const backBtnInlineStyle =
+			currentPage === 1 ? disabledArrowStyle : enabledArrowStyle;
 		controlsHTML.push(`
             <button class="pagination-btn back-btn ${currentPage === 1 ? "disabled" : ""}" 
-                    ${currentPage === 1 ? "disabled" : ""} 
+			style="${backBtnInlineStyle}"
+                ${currentPage === 1 ? "disabled" : ""}
                     data-page="${currentPage - 1}">
-					${BACK_ARROW_SVG}
+                    ${BACK_ARROW_SVG}
             </button>
         `);
 
-		// 2. Page Numbers
+		// 2. Page Numbers (ADD INLINE STYLES)
 		for (let i = 1; i <= totalPages; i++) {
+			const currentInlineStyle =
+				i === currentPage ? activeStyle : pageNumBaseStyle;
+			const activeClass = i === currentPage ? "active" : "";
+
 			controlsHTML.push(`
-                <button class="pagination-page-num ${i === currentPage ? "active" : ""}" 
-                        data-page="${i}">
+			<button class="pagination-page-num ${activeClass}"
+							style="${currentInlineStyle}"                        
+							data-page="${i}">
                     ${i}
                 </button>
             `);
 		}
 
 		// 3. Next Button
+		const nextBtnInlineStyle =
+			currentPage === totalPages ? disabledArrowStyle : enabledArrowStyle;
 		controlsHTML.push(`
             <button class="pagination-btn next-btn ${currentPage === totalPages ? "disabled" : ""}" 
-                    ${currentPage === totalPages ? "disabled" : ""} 
+			style="${nextBtnInlineStyle}"
+                ${currentPage === totalPages ? "disabled" : ""}
                     data-page="${currentPage + 1}">
-					${NEXT_ARROW_SVG}
+                    ${NEXT_ARROW_SVG}
             </button>
         `);
 
@@ -489,7 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
   .pagination-btn {
     background-color: var(--color-neutral-lightest);
     color: var(--color-brand-dark-green);
-    border: 1px solid var(--color-neutral-green-grey); /* Keep border for arrows */
+
     padding: var(--spacing-xs) var(--spacing-md);
     border-radius: var(--border-radius-sm);
     cursor: pointer;
@@ -534,7 +596,6 @@ document.addEventListener("DOMContentLoaded", () => {
   .pagination-btn.disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    border-color: var(--color-neutral-green-grey);
   }
 
   .pagination-page-num.active {

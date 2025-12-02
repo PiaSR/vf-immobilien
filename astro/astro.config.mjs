@@ -2,11 +2,12 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
-import netlify from '@astrojs/netlify';
+import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+ 
   image: {
       service: {
         entrypoint: 'astro/assets/services/sharp'
@@ -23,5 +24,5 @@ export default defineConfig({
       apiVersion: '2025-09-10' // Use today's date for a consistent API version
     }),
   ],
-  adapter: netlify(),
+  adapter: vercel(),
 });

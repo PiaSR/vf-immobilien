@@ -2,7 +2,7 @@
 import ButtonArrow from "../../Base/ButtonArrow.astro";
 ---
 
-<section id="contact-form-section" class="contact-section slide-in-section">
+<section id="contact-form-section" class="contact-section">
   <div class="site-container padding-section">
     <div class="contact-card-wrapper">
       <div class="section-header-wrapper">
@@ -20,7 +20,7 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
           name="contact-form"
           data-name="contact form"
           method="POST"
-          action="/api/contactFormResend"
+          action="/api/contactFormSend"
           novalidate
         >
           <div class="form-grid-2-col">
@@ -35,7 +35,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
                 id="first-name"
                 required
               />
-              <!-- FIX: Korrekte ID für Vorname -->
               <span id="error-first-name" class="input-error-message"></span>
             </div>
             <div class="form-field-group">
@@ -49,7 +48,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
                 id="last-name"
                 required
               />
-              <!-- FIX: Korrekte ID für Nachname -->
               <span id="error-last-name" class="input-error-message"></span>
             </div>
           </div>
@@ -67,7 +65,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
               id="email"
               required
             />
-            <!-- FIX: Korrekte ID für Email -->
             <span id="error-email" class="input-error-message"></span>
           </div>
           <div class="form-field-group">
@@ -81,7 +78,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
               id="phone"
               required
             />
-            <!-- ID ist hier korrekt (error-phone) -->
             <span id="error-phone" class="input-error-message"></span>
           </div>
 
@@ -96,7 +92,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
               placeholder=""
               class="form-textarea"
               required></textarea>
-            <!-- FIX: Korrekte ID für Nachricht -->
             <span id="error-message" class="input-error-message"></span>
           </div>
 
@@ -128,7 +123,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
           </ButtonArrow>
         </form>
 
-        <!-- Form Feedback Messages -->
         <div id="form-success" class="form-success-message">
           <div>
             Danke für Ihre Anfrage! Unser Team wird sich bald bei Ihnen melden.
@@ -146,30 +140,7 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
 </section>
 
 <style>
-  /* --- Style Block (Unchanged, for context) --- */
-  :root {
-    /* Define CSS Variables for better organization (Mockup values) */
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-3xl: 3rem;
-    --spacing-4xl: 4rem;
-    --color-neutral-lightest: #f4f7f6;
-    --color-neutral-dark: #4a4a4a;
-    --color-neutral-medium-grey: #ccc;
-    --color-neutral-font-dark: #1a1a1a;
-    --color-brand-medium-green: #38a169;
-    --color-system-error: #f87171; /* Example red */
-    --color-system-success: #60a5fa; /* Example blue */
-    --color-system-error-font: #ffffff;
-    --color-system-success-font: #ffffff;
-    --border-radius: 0.5rem;
-    --font-size-body-base: 1rem;
-    --font-size-body-small: 0.875rem;
-    --font-size-body: 1rem;
-    --font-weight-bold: 700;
-  }
+  /* --- Style Block (Unchanged) --- */
 
   /* NEU: Styling für Fehlermeldungen */
   .input-error-message {
@@ -379,8 +350,16 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   const ERROR_MESSAGES = {
     "first-name": "Vorname ist erforderlich.",
     "last-name": "Nachname ist erforderlich.",
-    email: "E-Mail-Adresse ist erforderlich.",
-    phone: "Telefonnummer ist erforderlich.",
+    email: {
+      required: "E-Mail-Adresse ist erforderlich.",
+      invalid:
+        "Bitte geben Sie eine gültige E-Mail-Adresse ein (z.B. name@domain.at).",
+    },
+    phone: {
+      required: "Telefonnummer ist erforderlich.",
+      invalid:
+        "Die Telefonnummer darf nur Ziffern und übliche Zeichen (+, -, Klammern) enthalten.",
+    },
     message: "Eine Nachricht ist erforderlich.",
     TandCs: "Sie müssen den AGBs und Datenschutzbestimmungen zustimmen.",
   };
@@ -389,6 +368,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   const successMessage = document.getElementById("form-success");
   const errorMessage = document.getElementById("form-error");
   const formErrorDiv = errorMessage.querySelector("div");
+  // Variable for the parent container (to manage show/hide of the form vs. the message)
+  const formContainer = document.querySelector(".contact-form-container");
 
   // Funktion zum Zurücksetzen aller Fehler
   function clearErrors() {
@@ -414,7 +395,10 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
 
     // Server-Nachricht anzeigen
     if (element) {
-      element.style.display = "block";
+      // Use !important to force visibility and fix your original issue
+      element.style.cssText = "display: block !important;";
+
+      // If error message, update the detail text
       if (element === errorMessage && errorDetail) {
         formErrorDiv.innerHTML = `
           Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte
@@ -425,11 +409,24 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
       } else if (element === errorMessage) {
         formErrorDiv.textContent = `Beim Absenden des Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.`;
       }
-      // Formular bei Erfolg ausblenden
-      if (isSuccess) {
-        form.style.display = "none";
-      }
+
+      // Formular bei Erfolg ausblenden. This is now handled in the submit handler.
+      // This function is just responsible for displaying the message passed to it.
     }
+  }
+
+  // Helper-Funktion zur Validierung des E-Mail-Formats
+  function isValidEmail(email) {
+    // Einfaches Regex zur Überprüfung auf Standardformat (enthält @ und einen Punkt)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Helper-Funktion zur Validierung der Telefonnummer
+  function isValidPhone(phone) {
+    // Erlaubt Ziffern, Leerzeichen, Bindestriche, Klammern und das Plus-Zeichen am Anfang
+    const phoneRegex = /^[0-9\s\-\+\(\)]+$/;
+    return phoneRegex.test(phone);
   }
 
   // NEUE Funktion zur Client-Side-Validierung
@@ -438,23 +435,33 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
     let isValid = true;
     let firstInvalidField = null;
 
-    // Alle required Felder (Input, Textarea, Checkbox) holen
     const requiredFields = form.querySelectorAll("[required]");
 
     requiredFields.forEach((field) => {
       const fieldName = field.name;
-      // Hier wird die korrekte, eindeutige ID verwendet: error-Feldname
       const errorElement = document.getElementById(`error-${fieldName}`);
-
-      // Fehlerprüfung
+      const fieldValue = field.value.trim();
       let hasError = false;
+      let errorMessageKey = "required"; // Standardmäßig auf 'required' setzen
 
+      // 1. Check for emptiness (Required)
       if (field.type === "checkbox") {
         if (!field.checked) {
           hasError = true;
         }
-      } else if (field.value.trim() === "") {
+      } else if (fieldValue === "") {
         hasError = true;
+      }
+
+      // 2. Check for specific formats if not empty
+      if (!hasError && fieldValue !== "") {
+        if (fieldName === "email" && !isValidEmail(fieldValue)) {
+          hasError = true;
+          errorMessageKey = "invalid";
+        } else if (fieldName === "phone" && !isValidPhone(fieldValue)) {
+          hasError = true;
+          errorMessageKey = "invalid";
+        }
       }
 
       // Fehler anzeigen, falls vorhanden
@@ -462,7 +469,16 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
         isValid = false;
 
         if (errorElement) {
-          errorElement.textContent = ERROR_MESSAGES[fieldName];
+          // Wähle die entsprechende Fehlermeldung aus dem ERROR_MESSAGES-Objekt
+          let message;
+          if (typeof ERROR_MESSAGES[fieldName] === "object") {
+            message = ERROR_MESSAGES[fieldName][errorMessageKey];
+          } else {
+            // Für nicht-spezifische Felder (wie Name, Nachricht)
+            message = ERROR_MESSAGES[fieldName];
+          }
+
+          errorElement.textContent = message;
           errorElement.style.display = "block";
         }
 
@@ -471,12 +487,11 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
           field.classList.add("error");
         }
 
-        // Das erste ungültige Feld speichern, um dorthin zu scrollen/fokussieren
         if (!firstInvalidField) {
           firstInvalidField = field;
         }
       } else {
-        // Bei gültigen Feldern 'error' Klasse entfernen und Fehlermeldung ausblenden (wichtig!)
+        // Bei gültigen Feldern 'error' Klasse entfernen und Fehlermeldung ausblenden
         if (field.type !== "checkbox") {
           field.classList.remove("error");
         }
@@ -498,6 +513,13 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   // Funktion, um Fehler bei der Eingabe sofort zu entfernen
   function handleInput(event) {
     const field = event.target;
+
+    // Checkbox is special, process separately
+    if (field.type === "checkbox") {
+      validateForm();
+      return;
+    }
+
     // Prüfen, ob das Feld ausgefüllt ist
     if (field.value.trim() !== "") {
       field.classList.remove("error");
@@ -507,10 +529,6 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
       }
     } else if (field.hasAttribute("required")) {
       // Bei Leere die Validierung (inkl. Fehler anzeigen) erneut laufen lassen
-      validateForm();
-    }
-    // Spezielles Handling für Checkbox, da 'input' event nicht ideal ist
-    if (field.type === "checkbox") {
       validateForm();
     }
   }
@@ -527,13 +545,24 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   form.addEventListener("submit", async function (event) {
     event.preventDefault(); // Standard-Formularübermittlung verhindern
 
-    // *** SCHRITT 1: Client-Side Validierung ausführen ***
     if (!validateForm()) {
-      console.log("Client-Side Validierung fehlgeschlagen.");
-      return; // Formular nicht senden
+      // --- START DEBUG LOGGING ---
+      // (Simplified debugging for clarity, but keeping validation intact)
+      let foundError = false;
+      document.querySelectorAll(".input-error-message").forEach((el) => {
+        if (el.style.display === "block" && el.textContent.trim() !== "") {
+          foundError = true;
+        }
+      });
+      if (!foundError) {
+        console.error(
+          "Client-Side Validierung fehlgeschlagen. Kein sichtbarer Fehler gefunden."
+        );
+      }
+      // --- END DEBUG LOGGING ---
+      return;
     }
 
-    // Wenn die Validierung erfolgreich war, mit dem Senden beginnen
     const button = form.querySelector("button[type='submit']");
     const originalButtonText = button.textContent;
     button.textContent = "Sende...";
@@ -554,12 +583,14 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
         },
       });
 
+      // --- SERVER RESPONSE HANDLING ---
       if (response.ok) {
+        // SUCCESS: Hide form, show success message
+        form.style.display = "none"; // Hide the form element
         showMessage(successMessage, true);
         form.reset(); // Formularfelder leeren
-        clearErrors(); // Auch die Erfolgsmeldung löscht alle Fehler
       } else {
-        // Fehler-Handling von Server-Antwort
+        // ERROR: Process server error response
         let errorDetail = `Status ${response.status}`;
         const contentType = response.headers.get("content-type");
 
@@ -579,13 +610,18 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
           errorDetail
         );
         showMessage(errorMessage, false, errorDetail);
+        // Ensure form is visible again to allow correction/resubmission
+        form.style.display = "block";
       }
+      // --- END SERVER RESPONSE HANDLING ---
     } catch (error) {
       console.error("Netzwerkfehler beim Absenden des Formulars:", error);
       showMessage(errorMessage, false, `Netzwerkfehler: ${error.message}`);
+      // Ensure form is visible on network error
+      form.style.display = "block";
     } finally {
-      // Button-Status zurücksetzen (außer bei Erfolg, da das Formular dann ausgeblendet wird)
-      if (successMessage.style.display !== "block") {
+      // Button-Status zurücksetzen (nur wenn das Formular NICHT erfolgreich war)
+      if (form.style.display !== "none") {
         button.textContent = originalButtonText;
         button.disabled = false;
       }
