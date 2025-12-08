@@ -1,8 +1,13 @@
 ---
-const { href, class: className, ...rest } = Astro.props;
+const { href, type, class: className, ...rest } = Astro.props;
 const Tag = href ? "a" : "button";
 ---
 
-<Tag {...rest} href={href} class:list={[className, "button-element"]}>
+<Tag
+  {...rest}
+  href={href}
+  class:list={[className, "button-element"]}
+  type={type}
+>
   <slot />
 </Tag>

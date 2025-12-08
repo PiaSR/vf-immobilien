@@ -47,8 +47,11 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Extrahiere die Formularfelder
-  const email = getField('email');       // MUSS 'email' sein
-  const message = getField('message');   // MUSS 'message' sein
+  const email = getField('email');       
+  const message = getField('message'); 
+  const propertyId = getField('property-id'); // Is empty string if not present
+  const propertyTitle = getField('property-title'); // Is empty string if not present
+  const context = getField('context');
 
   // Grundlegende Validierung
   if (!email || !message) {
@@ -73,25 +76,52 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
   
-  // Wenn der Code HIER ankommt, ist alles in Ordnung.
   
   const firstName = getField('first-name');
   const lastName = getField('last-name');
+  const fullName = lastName ? `${firstName} ${lastName}` : firstName;
   const phone = getField('phone');
 
-  const subject = `Neue Kontaktanfrage von ${firstName} ${lastName} | VF Immobilien Website`;
-  const body = `
-    Vorname: ${firstName}
-    Nachname: ${lastName}
-    Email: ${email}
-    Telefon: ${phone}
-	---
-    Nachricht:
-    
-    ${message}
-  `;
+  let subject = `Neue Kontaktanfrage von ${fullName} | VF Immobilien Website`;
+  
+  if (propertyId && propertyTitle) {
+      subject = `🏠 ANFRAGE ZU OBJEKT: ${propertyTitle} | ${fullName}`;
+  } else if (context === 'Sidebar Agent Card') {
+      subject = `🙋‍♂️ Allgemeine Makler-Anfrage | ${fullName}`;
+  }  let body = `
+  --- KONTAKTDATEN ---
+  Name: ${fullName} 
+  Email: ${email}
+  Telefon: ${phone}
 
-  // E-Mail über Resend senden (Logik ausgelassen)
+`;
+
+// Bedingte Property-Information hinzufügen
+if (propertyId && propertyTitle) {
+  body += `
+  --- OBJEKTINTERESSE ---
+  Interessiert an Objekt: ${propertyTitle}
+  Interne ID: ${propertyId}
+  
+  
+  `;
+} else {
+  // Wenn es keine Property-ID gibt, ist es eine allgemeine Anfrage.
+  body += `
+  --- ANFRAGE-TYP ---
+  Dies ist eine allgemeine Kontaktanfrage (kein spezifisches Objekt).
+  Quelle: ${context || 'Kontaktformular Allgemein'}
+  
+  `;
+}
+
+// Nachricht zum Schluss hinzufügen
+body += `
+--- NACHRICHT ---
+
+${message}
+`;
+  // E-Mail über Resend senden 
   try {
     const { error } = await resend.emails.send({
       from: 'no-reply@vf-immobilien.at', 

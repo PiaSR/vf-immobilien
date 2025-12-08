@@ -26,45 +26,64 @@ const detailedPropertyQuery = `
   *[
     _type == "property" 
     && slug.current == $slug
-  ] | {
+  ][0] { 
+   
     "id": _id,
-    title,
+    title, 
+    name, 
+    slug,
     propertyType,
+    "marketingType": marketingType->title, // Dereference category for title
     available,
-	availableDate,
-  propertyDescription,
-    "marketingType": marketingType->title, 
+    availableDate,
+   
+    
     address,
     locationVienna,
     locationSurrounding,
     postalCodeSurrounding,
-    locationDescription,
+    suburb, 
+    
+    // Property Details
     purchasePrice,
     rentalPrice,
     livingArea,
+    useableArea, 
     rooms,
     bathrooms,
     yearBuilt,
     floor,
-    energyCertificate,
-    parking,
-    garden,
-    "mainImage": mainImage.asset->{url},
+    betriebskosten, 
+    heizkosten,     
+    provision,      
+    hwb,            
+    gee,            
+    energyCertificate, 
+    outdoorArea,    
+    isFullyFurnished, 
+    
+    "ausstattung": ausstattung[]->title, 
+    propertyDescription,
+    locationDescription,
+    ausstattungDetails, 
+    
+    "mainImage": mainImage.asset->{url, metadata}, 
     "photos": photos[] {
         _key,
-        "url": asset->url,
-        alt
+       
+        "url": asset->url, 
+        "dimensions": asset->metadata.dimensions 
     },
-    agent->{
+    "floorPlan": floorPlan.asset->{url, metadata}, 
+    
+    
+    agent->{ 
       name,
       phone,
       email
-    },
-    ausstattungDetails,
-    betriebskosten
-  }[0]
+    }
+  }
 `;
-
 const propertyData = await sanityClient.fetch(detailedPropertyQuery, { slug });
 
 // Handle case where property is not found
@@ -74,11 +93,10 @@ if (!propertyData) {
   return Astro.redirect("/404");
 }
 // ----------------------------------------------------
-// ✨ MAP LOGIC START (NEW/MODIFIED)
+// ✨ MAP LOGIC START (FIXED)
 // ----------------------------------------------------
 
-// 1. Helper map for Vienna District to Postal Code (since your CMS stores "6. Mariahilf")
-// We can't map all, but the district number is enough for Google Maps to center the district.
+// 1. Helper map for Vienna District to Postal Code (remains unchanged, used for centering)
 const viennaDistrictMap = {
   // Use the district number as the key
   "1.": "1010 Wien",
@@ -106,49 +124,63 @@ const viennaDistrictMap = {
   "23.": "1230 Wien",
 };
 
-let mapCenterAddress = "";
-let mapZoom = 13; // Good for viewing a single district/postal code area
+let mapSearchQuery = ""; // This variable holds the string Google Maps searches for (and displays)
+let mapZoom = 14;
 
-if (propertyData.locationVienna) {
-  // Vienna: Extract the district number (e.g., '6.' from '6. Mariahilf')
-  const districtKeyMatch = propertyData.locationVienna.match(/^\d+\./);
-  const districtKey = districtKeyMatch ? districtKeyMatch[0] : null;
-
-  if (districtKey && viennaDistrictMap[districtKey]) {
-    // Use the postal code for better centering
-    mapCenterAddress = viennaDistrictMap[districtKey];
-  } else {
-    // Fallback to the full district name if mapping fails
-    mapCenterAddress = `${propertyData.locationVienna}, Wien, Österreich`;
-  }
+if (propertyData.suburb && propertyData.locationVienna) {
+  // PRIORITY 1: Suburb
+  // Example: "Spittelberg"
+  mapSearchQuery = `${propertyData.suburb}`;
+  mapZoom = 15;
 } else if (
   propertyData.locationSurrounding &&
   propertyData.postalCodeSurrounding
 ) {
-  // Surrounding area: Use postal code and location
-  mapCenterAddress = `${propertyData.postalCodeSurrounding} ${propertyData.locationSurrounding}, Österreich`;
-  mapZoom = 12; // Slightly wider zoom for non-city area
+  // PRIORITY 2: Wien Umgebung + PLZ
+  // Example: "Hinterbrühl" + postal code
+  const postal = propertyData.postalCodeSurrounding
+    ? `${propertyData.postalCodeSurrounding} `
+    : "";
+  mapSearchQuery = `${propertyData.locationSurrounding}${postal}`;
+  mapZoom = 14;
+} else if (propertyData.locationVienna) {
+  // FALLBACK 3: Vienna District (Original robust fallback)
+  // We use the Postal Code for robust centering, and Google will label it with the district.
+  const districtKeyMatch = propertyData.locationVienna.match(/^\d+\./);
+  const districtKey = districtKeyMatch ? districtKeyMatch[0] : null;
+
+  if (districtKey && viennaDistrictMap[districtKey]) {
+    // Example: "1060 Wien, Österreich"
+    mapSearchQuery = viennaDistrictMap[districtKey];
+    mapZoom = 13;
+  } else {
+    // Fallback to the full district name if mapping fails
+    mapSearchQuery = `${propertyData.locationVienna}, Wien, Österreich`;
+    mapZoom = 13;
+  }
+} else if (propertyData.locationSurrounding) {
+  // FALLBACK 4: Surrounding Area (Original robust fallback)
+  // Example: "2453 Sommerein, Österreich"
+  mapSearchQuery = `${propertyData.locationSurrounding}, Österreich`;
+  mapZoom = 12;
 } else {
-  // Default fallback (e.g., office location or just Vienna)
-  mapCenterAddress = "Wien, Österreich";
+  // DEFAULT FALLBACK: Least specific
+  mapSearchQuery = "Wien, Österreich";
+  mapZoom = 11;
 }
 
-// Prepare the address for the Google Maps Embed URL
-const encodedMapAddress = encodeURIComponent(mapCenterAddress);
+// Encode the finalized search query. This query controls both centering and the top-left label.
+const encodedMapQuery = encodeURIComponent(mapSearchQuery);
 
-// The base URL for the Iframe embed, using the 'q=' parameter for search
-// We use 'zoom' to define the area proximity.
-const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${encodedMapAddress}&z=${mapZoom}&output=embed`;
+// Construct the embed URL
+const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${encodedMapQuery}&z=${mapZoom}&output=embed`;
+
 // ----------------------------------------------------
 // ✨ MAP LOGIC END
 // ----------------------------------------------------
 
 // 5. Serialize the data to pass it as a JSON string to the client-side component
 const propertyDataJson = JSON.stringify(propertyData);
-
-// [slug].astro frontmatter (---)
-
-// ... (Existing data fetching)
 
 // ----------------------------------------------------
 // ✨ SEO & METADATA SETUP
