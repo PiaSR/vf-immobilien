@@ -570,10 +570,11 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     gap: 0.5rem;
     height: 100%;
     transition: background-color 0.2s;
+    margin-left: var(--spacing-sm);
   }
 
   .custom-submit-button:hover {
-    background-color: #047857;
+    background-color: var(--color-brand-medium-green);
   }
 
   .search-icon {
@@ -1554,17 +1555,50 @@ document.addEventListener("DOMContentLoaded", () => {
     formElement.addEventListener("input", updateTabSelections);
 
     //search button listener
+    // Function to check if any form field has a non-empty/non-default value.
+    // It returns true if a search should be executed, false otherwise.
+    const hasMeaningfulInput = (formData) => {
+      // Define values that should NOT trigger a search (defaults/empties)
+      const defaultValues = ["", "0", "unbekannt", "egal"];
+
+      for (const [key, value] of formData.entries()) {
+        const trimmedValue = String(value).trim().toLowerCase();
+
+        // Ignore known non-input fields like the button name itself if present
+        if (key.startsWith("btn-") || key.startsWith("submit-")) {
+          continue;
+        }
+
+        // Check if the value is NOT one of the defined default/empty states
+        // This is the core logic: if we find *any* non-default value, we execute the search.
+        if (!defaultValues.includes(trimmedValue)) {
+          return true;
+        }
+      }
+
+      // If the loop finishes without finding any meaningful input, don't search.
+      return false;
+    };
+
     formElement.addEventListener("submit", (e) => {
       e.preventDefault();
       const formData = new FormData(formElement);
 
-      // Dispatch a custom event with the form data to the Property Grid component
-      const filterEvent = new CustomEvent("filter:submit", {
-        detail: { formData: formData },
-      });
-      document.dispatchEvent(filterEvent);
+      // 1. Check for meaningful input
+      if (hasMeaningfulInput(formData)) {
+        // 2. ONLY DISPATCH EVENT IF INPUT IS FOUND
+        const filterEvent = new CustomEvent("filter:submit", {
+          detail: { formData: formData },
+        });
+        document.dispatchEvent(filterEvent);
+      } else {
+        // OPTIONAL: Provide feedback to the user
+        console.log("Search blocked: No filters selected.");
+        // You might want to display a message on the UI here, e.g.,
+        // alert("Bitte wählen Sie mindestens einen Filter aus.");
+      }
 
-      // Close the active panel after submitting
+      // 3. Close the filter panel regardless of whether a search ran
       if (activePanelId) {
         const activePanel = document.getElementById(activePanelId);
         activePanel.classList.remove("active");
@@ -1577,7 +1611,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("is-filter-active");
       }
 
-      // NEW: Also close mobile expanded state on submit
+      // Also close mobile expanded state on submit
       formElement.classList.remove("is-expanded");
     });
 

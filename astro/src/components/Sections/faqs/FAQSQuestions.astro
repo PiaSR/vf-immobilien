@@ -44,7 +44,11 @@ const hasFaqs = allFaqItems.length > 0;
     {
       hasFaqs && (
         <>
-          <div class="faq-filter-wrapper" data-filter-controls>
+          <div
+            id="faq-filterable-list"
+            class="faq-filter-wrapper"
+            data-filter-controls
+          >
             <div class="faq-categories-list-ui">
               <button data-filter-value="all" class="button-filter active">
                 Alle
@@ -168,7 +172,10 @@ const hasFaqs = allFaqItems.length > 0;
 
   // Category Filtering Logic
   const filterButtons = document.querySelectorAll("[data-filter-value]");
-  const categoryGroups = document.querySelectorAll("[data-category-group]");
+  const faqListContainer = document.getElementById("faq-filterable-list");
+  const categoryGroups = faqListContainer
+    ? faqListContainer.querySelectorAll("[data-category-group]")
+    : document.querySelectorAll("[data-category-group]");
 
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {

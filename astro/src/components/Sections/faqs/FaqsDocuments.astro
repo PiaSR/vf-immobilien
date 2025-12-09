@@ -36,7 +36,7 @@ const hasDocuments = allDocuments.length > 0;
 
     {
       hasDocuments && (
-        <section class="document-wrapper">
+        <div class="document-wrapper">
           <div class="document-list-wrapper">
             {Array.from(groupedDocuments.keys()).map((categoryKey) => (
               <div class="doc-category-group" data-category-group={categoryKey}>
@@ -68,7 +68,7 @@ const hasDocuments = allDocuments.length > 0;
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )
     }
   </div>
