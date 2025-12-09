@@ -51,6 +51,7 @@ export const POST: APIRoute = async ({ request }) => {
   const message = getField('message'); 
   const propertyId = getField('property-id'); // Is empty string if not present
   const propertyTitle = getField('property-title'); // Is empty string if not present
+  const propertyAddress = getField('property-address'); 
   const context = getField('context');
 
   // Grundlegende Validierung
@@ -102,6 +103,7 @@ if (propertyId && propertyTitle) {
   --- OBJEKTINTERESSE ---
   Interessiert an Objekt: ${propertyTitle}
   Interne ID: ${propertyId}
+  Adresse: ${propertyAddress}
   
   
   `;
@@ -125,7 +127,7 @@ ${message}
   try {
     const { error } = await resend.emails.send({
       from: 'no-reply@vf-immobilien.at', 
-      to: 'pia@richling.at', 
+      to: 'no-reply@vf-immobilien.at', 
       subject: subject,
       html: body.replace(/\n/g, '<br>'),
     });

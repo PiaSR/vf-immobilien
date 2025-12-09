@@ -169,6 +169,13 @@ description: 'Interner Titel'
       
     }),
     defineField({
+      name: 'parking',
+      title: 'Parkplatz - Anzahl',
+      type: 'number',
+      description: "Anzahl an Parkplätzen eingeben - wenn kein Parkplatz, dann leer lassen."
+      
+    }),
+    defineField({
       name: 'yearBuilt',
       title: 'Baujahr',
       type: 'string',
@@ -197,6 +204,7 @@ description: 'Interner Titel'
       name: 'provision',
       title: 'Provision',
       type: 'string', 
+      description: "Prozensatz eintragen, z.B. 3,00%"
   }),
   defineField({
       name: 'hwb',

@@ -16,6 +16,12 @@ const { property = null } = Astro.props as Props;
 >
   <input type="hidden" name="property-id" value={property?.id ?? ""} />
   <input type="hidden" name="property-title" value={property?.title ?? ""} />
+  <input
+    type="hidden"
+    name="property-address"
+    value={property?.address ?? ""}
+  />
+
   <div class="form-field-group">
     <label for="agent-first-name" class="visually-hidden">Ihr Name</label>
     <input
@@ -386,7 +392,6 @@ const { property = null } = Astro.props as Props;
     function showMessage(isSuccess, errorDetail = null) {
       clearErrors();
       const element = isSuccess ? successMessage : errorMessage;
-      console.log("element for success msg", element);
 
       if (element) {
         element.classList.add("is-visible");

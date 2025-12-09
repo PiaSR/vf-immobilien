@@ -80,7 +80,8 @@ const detailedPropertyQuery = `
     agent->{ 
       name,
       phone,
-      email
+      email,
+      "agentImage": agentImage.asset->{url, metadata}
     }
   }
 `;

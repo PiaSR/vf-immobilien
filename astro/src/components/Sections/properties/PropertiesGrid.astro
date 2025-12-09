@@ -1,5 +1,6 @@
 ---
 import { sanityClient } from "../../../lib/sanityClient"; // Ensure this path is correct
+import SkeletonGrid from "./SkeletonGrid.astro";
 
 // Define the structure of a simplified property object returned by GROQ
 interface InitialProperty {
@@ -19,16 +20,16 @@ const initialPropertiesQuery = `
     *[_type == "property"] | order(title asc) {
       "slug": slug.current,
       title,
-      // CORRECTED: Dereference the category to get the Vermarktungsart title
+     
       "marketingType": marketingType->title, 
       propertyType, // Objektart is a direct string field
-      // CRITICAL FIX: Dereference the array of references to extract the 'title' of each amenity document
+     
       "ausstattung": ausstattung[]->title, 
       purchasePrice,
       rentalPrice,
       livingArea,
       rooms, 
-      // Use 'title' from category reference for price selection
+     
       "price": select(
         marketingType->title == "Miete" => rentalPrice, 
         marketingType->title == "Kauf" => purchasePrice, 
@@ -74,12 +75,14 @@ console.log("JSON Data:", propertiesJson);
 
 <section id="properties-grid-section" class="property-grid-section">
   <div class="padding-section site-container">
+    <div id="loading-state-wrapper">
+      <SkeletonGrid />
+    </div>
     <div
       id="property-list-container"
       class="property-grid-list"
       data-properties={propertiesJson}
     >
-      <p class="loading-message">Lade Immobilien...</p>
     </div>
 
     <div
@@ -98,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const container = document.getElementById("property-list-container");
 	const noResultsMessage = document.getElementById("no-results-message");
 	const paginationControls = document.getElementById("pagination-controls");
+	const skeletonWrapper = document.getElementById("loading-state-wrapper");
 
 	if (!container || !noResultsMessage || !paginationControls) return; // Basic safety check
 
@@ -212,6 +216,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const displayPropertiesForCurrentPage = (properties) => {
 		container.innerHTML = "";
+		if (skeletonWrapper) {
+			skeletonWrapper.style.display = "none";
+		}
 
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -355,6 +362,9 @@ document.addEventListener("DOMContentLoaded", () => {
 			displayPropertiesForCurrentPage(currentFilteredProperties);
 			renderPagination(currentFilteredProperties);
 		} else {
+			if (skeletonWrapper) {
+				skeletonWrapper.style.display = "none";
+			}
 			container.style.display = "none";
 			noResultsMessage.style.display = "block";
 		}
@@ -505,6 +515,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// --- Global function for Filter Form to call after AJAX search ---
 	window.renderPropertyCards = (properties) => {
+		if (skeletonWrapper) {
+			skeletonWrapper.style.display = "none";
+		}
 		currentFilteredProperties = properties;
 		currentPage = 1;
 		container.innerHTML = "";
@@ -537,74 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
     gap: var(--spacing-2xl);
   }
 
-  /* --- Pagination Controls Styles --- */
-
-  .pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-4xl);
-  }
-
-  /* 1. STYLES FOR ARROW BUTTONS ONLY */
-  .pagination-btn {
-    background-color: var(--color-neutral-lightest);
-    color: var(--color-brand-dark-green);
-
-    padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    font-weight: var(--font-weight-medium);
-    transition: all 0.2s ease;
-  }
-
-  /* 2. STYLES FOR PAGE NUMBERS ONLY (RESET BUTTON LOOK) */
-  .pagination-page-num {
-    background: red !important; /* Use !important to force override if needed */
-    border: none !important; /* Use !important to force override if needed */
-    outline: none !important; /* Removes focus ring */
-    box-shadow: none !important; /* Removes shadow effects */
-    -webkit-appearance: none; /* Removes mobile/webkit default styling */
-    -moz-appearance: none;
-    appearance: none;
-    /* Keep text/click styles */
-    color: var(--color-brand-dark-green);
-    padding: var(
-      --spacing-md
-    ); /* Slightly less horizontal padding than arrows */
-    cursor: pointer;
-    font-weight: var(--font-weight-medium);
-    transition: all 0.2s ease;
-  }
-
-  /* --- Hover and Disabled States --- */
-
-  /* Hover for Arrows */
-  .pagination-btn:hover:not(:disabled) {
-    background-color: var(--color-neutral-green-grey);
-  }
-
-  /* Hover for Page Numbers */
-  .pagination-page-num:hover:not(.active) {
-    /* Subtle underline or color change for hover effect */
-    color: var(--color-neutral-dark);
-    text-decoration: underline;
-    background: none; /* Ensure no background color shift */
-  }
-
-  .pagination-btn.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .pagination-page-num.active {
-    /* Active number state (you likely still want a distinction here) */
-    background: none;
-    color: var(--color-brand-dark-green); /* Keep the text color */
-    font-weight: var(--font-weight-bold);
-    text-decoration: underline; /* Highlight the active page */
-  }
   /* ------------------------------------------------ */
   /* Medium Screens (Tablets): 2 Columns */
   /* Starts applying at 768 pixels wide */
