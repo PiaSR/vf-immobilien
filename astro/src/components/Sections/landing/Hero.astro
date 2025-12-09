@@ -92,8 +92,10 @@ import HeroHeader from "../../Base/HeroHeader.astro";
   .animated-word-list {
     display: flex;
     flex-direction: column;
+    height: 0;
+    overflow: hidden;
     /* Initial state to hide the words before GSAP takes over */
-    transform: translateY(-1000px);
+    /* transform: translateY(-1000px); */
   }
   .animated-word-list span {
     display: block;
@@ -134,7 +136,6 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 
     let wordHeight, wordCount;
     let currentIndex = 0;
-    const yOffset = -2;
     // A function to get the current word height and update the wrapper
     const setWordHeight = () => {
       // Re-calculate height based on the first item's rendered line-height
@@ -143,6 +144,7 @@ import HeroHeader from "../../Base/HeroHeader.astro";
       wordHeight = items[0].offsetHeight;
       wordCount = items.length;
       wrapper.style.height = `${wordHeight}px`;
+      list.style.height = `${wordHeight * wordCount}px`;
     };
 
     // Set height on initial load

@@ -41,7 +41,7 @@ export const servicesVerwaltungData = [
 	{
 	  title: "Sub&shy;ver&shy;wal&shy;tung einzelner Ein&shy;heiten",
 	  description:
-		"Wir übernehmen auch die Verwaltung einzelner Eigentumswohnungen innerhalb größerer Liegenschaften - z. B. für vermietete Wohnungen, deren Eigentümer:innen nicht selbst vor Ort sind oder keine laufende Betreuung übernehmen möchten.",
+		"Wir übernehmen auch die Verwaltung einzelner Eigentumswohnungen innerhalb größerer Liegenschaften - z.B. für vermietete Wohnungen, deren Eigentümer:innen nicht selbst vor Ort sind oder keine laufende Betreuung übernehmen möchten.",
 	  image: SubverwaltungImage,
 	  alt: "image",
 	  listItems: [
