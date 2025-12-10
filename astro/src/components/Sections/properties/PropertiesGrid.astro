@@ -76,7 +76,7 @@ console.log("JSON Data:", propertiesJson);
 <section id="properties-grid-section" class="property-grid-section">
   <div class="padding-section site-container">
     <div id="loading-state-wrapper">
-      <SkeletonGrid />
+      <p class="loading-state-p">Immobilien laden...</p>
     </div>
     <div
       id="property-list-container"
@@ -536,6 +536,9 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <style>
+  .loading-state-p {
+    font-size: var(--font-size-h4);
+  }
   /* --- PROPERTY GRID LAYOUT--- */
 
   .property-grid-section {
