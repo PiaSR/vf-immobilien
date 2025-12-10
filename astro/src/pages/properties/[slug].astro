@@ -192,8 +192,11 @@ const location = propertyData.locationVienna
   : propertyData.locationSurrounding;
 
 // Create a concise description for the meta tag
-const pageDescription = `Miete: ${title} in ${location}. ${propertyData.propertyDescription.substring(0, 100)}...`;
+const rawDescription = propertyData.propertyDescription
+  ? propertyData.propertyDescription.substring(0, 100)
+  : "Besichtigungstermine auf Anfrage"; // Provide a helpful, non-crashing default text
 
+const pageDescription = `Miete: ${title} in ${location}. ${rawDescription}...`;
 // Open Graph Image URL (Use the main image URL you fixed earlier)
 const ogImageUrl = propertyData.mainImage.url;
 

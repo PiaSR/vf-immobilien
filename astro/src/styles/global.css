@@ -446,3 +446,214 @@ section {
     min-width: 100%;
   }
 }
+
+/* -------------------------------------------AGENT CONTACT FORM ------------------------------------------------ */
+
+.input-error-message {
+  font-size: 0.8rem;
+  color: var(--color-system-error);
+  margin-top: 0.25rem;
+  display: none;
+  font-weight: 500;
+}
+
+.form-input.error,
+.form-textarea.error {
+  border-color: var(--color-system-error);
+}
+
+.contact-section {
+  position: relative;
+  padding: var(--spacing-4xl) 0;
+  background-color: var(--color-neutral-lightest);
+  z-index: 5;
+  padding-bottom: calc(var(--spacing-4xl) + 15vw);
+}
+
+.contact-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+}
+.site-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+.padding-section {
+  padding-top: var(--spacing-3xl);
+  padding-bottom: var(--spacing-3xl);
+}
+.section-header-wrapper {
+  text-align: start;
+  word-wrap: break-word;
+}
+
+.heading-h2 {
+  color: var(--color-brand-medium-green);
+  margin-bottom: var(--spacing-md);
+  font-size: 2.5rem;
+}
+
+.text-description {
+  font-size: var(--font-size-body-base);
+  color: var(--color-neutral-dark);
+}
+
+.contact-form-container {
+  padding-top: var(--spacing-3xl);
+  color: var(--color-neutral-font-dark);
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important; /* Fixes issues with some screen readers */
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important; /* Prevents text wrapping */
+  border: 0 !important;
+}
+
+label {
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0.5rem;
+  display: block;
+  color: var(--color-neutral-font-dark);
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-neutral-medium-grey);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-body);
+  transition: border-color 0.3s ease;
+  font-family: var(--font-primary);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--color-neutral-font-dark);
+  outline: none;
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: var(--font-size-body-small);
+  color: var(--color-neutral-dark);
+  margin-bottom: var(--spacing-md);
+}
+
+.form-checkbox-label input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.checkbox-custom-indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-brand-medium-green);
+  border-radius: 4px;
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+  position: relative;
+  top: 2px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.checkbox-custom-indicator::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  display: none;
+}
+
+.form-checkbox-label
+  input[type="checkbox"]:checked
+  + .checkbox-custom-indicator {
+  background-color: var(--color-brand-medium-green);
+  border-color: var(--color-brand-medium-green);
+}
+
+.form-checkbox-label
+  input[type="checkbox"]:checked
+  + .checkbox-custom-indicator::after {
+  display: block;
+}
+
+.checkbox-text {
+  line-height: 1.4;
+  font-size: var(--font-size-body-xsmall);
+  font-weight: var(--font-weight-regular);
+  text-align: left;
+}
+.checkbox-text > a {
+  text-decoration: underline;
+}
+
+.padding-bottom {
+  padding-bottom: 1rem;
+}
+.padding-small {
+  padding-bottom: 0.5rem;
+}
+.padding-medium {
+  padding-bottom: 1rem;
+}
+
+.form-success-message,
+.form-error-message {
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+  display: none;
+}
+
+.button-green {
+  width: 100%;
+}
+.form-success-message {
+  background-color: var(--color-system-success);
+  color: var(--color-system-success-font);
+}
+
+.form-error-message {
+  background-color: var(--color-system-error);
+  color: var(--color-system-error-font);
+}
+.form-success-message.is-visible {
+  display: block !important; /* Force visibility */
+  opacity: 1; /* Ensure visibility if transitions/opacity were involved */
+}
