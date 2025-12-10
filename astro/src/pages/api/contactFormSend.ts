@@ -127,7 +127,7 @@ ${message}
   try {
     const { error } = await resend.emails.send({
       from: 'no-reply@vf-immobilien.at', 
-      to: 'no-reply@vf-immobilien.at', 
+      to: 'office@vf-immobilien.at', 
       subject: subject,
       html: body.replace(/\n/g, '<br>'),
     });
