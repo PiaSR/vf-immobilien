@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import Button from "./Button.astro";
 
 // --- Props & Types ---
 interface PropertyData {
@@ -363,13 +362,13 @@ const AgentContactForm: React.FC<AgentContactFormProps> = ({
       <div className="padding-bottom padding-small"></div>
 
       {/* Submission Button (Converted from Astro to HTML button) */}
-      <Button
+      <button
         type="submit"
-        className="button-green button-small"
+        className="button-element button-green button-small"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Anfrage senden..." : "Anfrage senden"}
-      </Button>
+      </button>
 
       {/* Success/Error Messages */}
       <div
