@@ -28,12 +28,11 @@ import ctaimage from "./../../assets/images/cta-services-alt.jpg";
       src={ctaimage}
       loading="lazy"
       alt="building facade, white, with green ivy climbing up"
-      class="angled-image"
-    />
-    <Image
-      src={ctaimage}
-      alt="building facade, white, with green ivy climbing up"
-      class="angled-image-mobile"
+      class="angled-image angled-image-mobile-show"
+      widths={[450, 600, 992, 1200, 1667]}
+      sizes="(max-width: 991px) 100vw, 28vw"
+      width={1667}
+      height={2500}
     />
   </div>
 </section>

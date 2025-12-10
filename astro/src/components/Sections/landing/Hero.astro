@@ -37,14 +37,14 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     <Image
       src={heroImage}
       alt="White building facade"
-      class="angled-image"
+      class="angled-image angled-image-mobile-show"
       loading="eager"
-    />
-    <Image
-      src={heroImage}
-      alt="White building facade"
-      class="angled-image-mobile"
       loading="eager"
+      fetchpriority="high"
+      widths={[450, 600, 992, 1200, 1667]}
+      sizes="(max-width: 991px) 100vw, 28vw"
+      width={1667}
+      height={2500}
     />
   </div>
 </section>

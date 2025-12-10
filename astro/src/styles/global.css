@@ -241,7 +241,6 @@ li {
   transform: translateY(0);
 }
 section {
-  /* width: 100%; */
   display: flex;
   justify-content: center;
 }
@@ -268,8 +267,9 @@ section {
   clip-path: polygon(15% 0, 170% 0, 100% 100%, 70% 100%);
   object-fit: cover;
 }
-.angled-image-mobile {
-  display: none;
+.angled-image-mobile-show {
+  /* Set default display here to be consistent with angled-image behavior */
+  display: block;
 }
 
 /* remove angled image on mobile */
@@ -281,14 +281,18 @@ section {
     flex-direction: column;
     padding-bottom: 16rem;
   }
-  .angled-image-mobile {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    display: block;
-    width: 100%;
+  .angled-image.angled-image-mobile-show {
+    clip-path: none;
+    width: 100vw;
     height: 16rem;
+    overflow: hidden;
+    display: block;
+    /* width: calc(100vw + (2 * var(--spacing-2xl))); */
+    position: absolute;
+    bottom: 0%;
+    left: 0;
     object-fit: cover;
+    /* margin-left: calc(-1 * var(--spacing-2xl)); */
   }
 }
 
@@ -475,26 +479,10 @@ section {
   flex-direction: column;
   max-width: 700px;
 }
-.site-container {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--spacing-md);
-  padding-right: var(--spacing-md);
-}
-.padding-section {
-  padding-top: var(--spacing-3xl);
-  padding-bottom: var(--spacing-3xl);
-}
+
 .section-header-wrapper {
   text-align: start;
   word-wrap: break-word;
-}
-
-.heading-h2 {
-  color: var(--color-brand-medium-green);
-  margin-bottom: var(--spacing-md);
-  font-size: 2.5rem;
 }
 
 .text-description {
@@ -619,16 +607,6 @@ label {
 }
 .checkbox-text > a {
   text-decoration: underline;
-}
-
-.padding-bottom {
-  padding-bottom: 1rem;
-}
-.padding-small {
-  padding-bottom: 0.5rem;
-}
-.padding-medium {
-  padding-bottom: 1rem;
 }
 
 .form-success-message,

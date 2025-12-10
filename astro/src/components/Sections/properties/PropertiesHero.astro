@@ -15,14 +15,12 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     <Image
       src={propertiesHero}
       alt="brown wooden door"
-      class="angled-image"
+      class="angled-image angled-image-mobile-show"
       loading="eager"
-    />
-    <Image
-      src={propertiesHero}
-      alt="brown wooden door"
-      class="angled-image-mobile"
-      loading="eager"
+      widths={[450, 600, 992, 1200, 1667]}
+      sizes="(max-width: 991px) 100vw, 28vw"
+      width={1667}
+      height={2500}
     />
   </div>
 </section>
@@ -48,9 +46,6 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     grid-template-columns: 1fr 28%;
     gap: var(--spacing-2xl);
     /* height: 90%; */
-  }
-  .angled-image-mobile {
-    display: none !important;
   }
 
   @media (max-width: 991px) {

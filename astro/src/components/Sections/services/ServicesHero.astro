@@ -23,14 +23,12 @@ import servicesHero from "/src/assets/images/services-hero.jpg";
     <Image
       src={servicesHero}
       alt="White building facade"
-      class="angled-image"
+      class="angled-image angled-image-mobile-show"
       loading="eager"
-    />
-    <Image
-      src={servicesHero}
-      alt="White building facade"
-      class="angled-image-mobile"
-      loading="eager"
+      widths={[450, 600, 992, 1200, 1667]}
+      sizes="(max-width: 991px) 100vw, 28vw"
+      width={1667}
+      height={2500}
     />
   </div>
 </section>

@@ -48,7 +48,7 @@ const { service, isReversed } = Astro.props;
     display: flex;
     flex-direction: column;
 
-    gap: var(--spacing-5xl);
+    gap: var(--spacing-2xl);
     align-items: flex-start;
   }
 
@@ -73,21 +73,26 @@ const { service, isReversed } = Astro.props;
     word-break: break-word;
     min-width: 0;
   }
-  @media (min-width: 768px) {
+  .services-offers-image {
+    width: 100%;
+    max-width: 850px;
+    max-height: 450px;
+    height: auto;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+  }
+  @media (min-width: 991px) {
     .service-card-container {
       flex-direction: row;
+      gap: var(--spacing-5xl);
     }
     .service-card-container.reverse {
       flex-direction: row-reverse;
     }
-  }
-  .services-offers-image {
-    width: 100%;
-    max-width: 400px;
-    min-height: 500px;
-    height: auto;
-    border-radius: var(--border-radius);
-    object-fit: cover;
+    .services-offers-image {
+      max-width: 450px;
+      min-height: 500px;
+    }
   }
 
   @media (max-width: 768px) {
