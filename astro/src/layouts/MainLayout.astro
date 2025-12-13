@@ -56,6 +56,30 @@ if (import.meta.env.PROD) {
       )
     }
 
+    <script is:inline>
+      function deferStylesheets() {
+        // Find all injected Astro CSS links
+        document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+          if (
+            link.href &&
+            link.href.includes("/_astro/") &&
+            link.media !== "print"
+          ) {
+            // Force the browser to load it without blocking render
+            link.media = "print";
+            // Once loaded, apply the styles
+            link.onload = function () {
+              this.media = "all";
+              this.onload = null;
+            };
+          }
+        });
+      }
+
+      // Run this script as early as possible
+      document.addEventListener("DOMContentLoaded", deferStylesheets);
+    </script>
+
     <noscript> </noscript>
     <link
       rel="preload"
