@@ -1,4 +1,4 @@
-import { $ as $$MainLayout } from '../chunks/MainLayout_CoMNAWfS.mjs';
+import { $ as $$MainLayout } from '../chunks/MainLayout_DU7Rr5R3.mjs';
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from '../chunks/astro/server_lfFasKkK.mjs';
 import 'piccolore';
 import { $ as $$CTAContactSection } from '../chunks/CTAContactSection_CcCDYf-H.mjs';
@@ -64,7 +64,9 @@ const $$AboutValues = createComponent(($$result, $$props, $$slots) => {
 }, "/Users/piasmith-richling/Code/VF Immobilien/astro/src/components/Sections/about/AboutValues.astro", void 0);
 
 const $$About = createComponent(($$result, $$props, $$slots) => {
-  return renderTemplate`${renderComponent($$result, "MainLayout", $$MainLayout, {}, { "default": ($$result2) => renderTemplate` ${renderComponent($$result2, "AboutHero", $$AboutHero, {})} ${renderComponent($$result2, "AboutIntro", $$AboutIntro, {})} ${renderComponent($$result2, "AboutValues", $$AboutValues, {})} ${renderComponent($$result2, "AboutHistory", $$AboutHistory, {})}  ${renderComponent($$result2, "CTAContactSection", $$CTAContactSection, {})} ` })}`;
+  const pageTitle = "\xDCber VF Immobilien: Ihr Partner f\xFCr Hausverwaltung";
+  const pageDescription = "Erfahren Sie mehr \xFCber VF Immobilien in Wien. Wir bieten vertrauensw\xFCrdige und transparente Verwaltung und Vermittlung f\xFCr Eigentumswohnungen und Zinsh\xE4user in der Wien und Umgebung.";
+  return renderTemplate`${renderComponent($$result, "MainLayout", $$MainLayout, { "title": pageTitle, "description": pageDescription }, { "default": ($$result2) => renderTemplate` ${renderComponent($$result2, "AboutHero", $$AboutHero, {})} ${renderComponent($$result2, "AboutIntro", $$AboutIntro, {})} ${renderComponent($$result2, "AboutValues", $$AboutValues, {})} ${renderComponent($$result2, "AboutHistory", $$AboutHistory, {})}  ${renderComponent($$result2, "CTAContactSection", $$CTAContactSection, {})} ` })}`;
 }, "/Users/piasmith-richling/Code/VF Immobilien/astro/src/pages/about.astro", void 0);
 
 const $$file = "/Users/piasmith-richling/Code/VF Immobilien/astro/src/pages/about.astro";

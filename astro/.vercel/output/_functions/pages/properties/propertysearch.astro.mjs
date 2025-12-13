@@ -1,4 +1,4 @@
-import { c as createSvgComponent, $ as $$MainLayout } from '../../chunks/MainLayout_CoMNAWfS.mjs';
+import { c as createSvgComponent, $ as $$MainLayout } from '../../chunks/MainLayout_DU7Rr5R3.mjs';
 import { c as createComponent, a as renderTemplate, f as defineScriptVars, r as renderComponent, e as addAttribute, m as maybeRenderHead } from '../../chunks/astro/server_lfFasKkK.mjs';
 import 'piccolore';
 import { $ as $$Image } from '../../chunks/_astro_assets_B2RpSsLg.mjs';

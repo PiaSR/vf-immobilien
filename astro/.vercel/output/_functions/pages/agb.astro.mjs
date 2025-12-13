@@ -1,4 +1,4 @@
-import { $ as $$MainLayout } from '../chunks/MainLayout_CoMNAWfS.mjs';
+import { $ as $$MainLayout } from '../chunks/MainLayout_DU7Rr5R3.mjs';
 import { c as createComponent, m as maybeRenderHead, a as renderTemplate, r as renderComponent } from '../chunks/astro/server_lfFasKkK.mjs';
 import 'piccolore';
 import 'clsx';

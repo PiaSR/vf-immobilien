@@ -6,62 +6,52 @@ import "../styles/global.css";
 import "../styles/fonts.css";
 
 const {
-  title,
+  title = "VF Immobilien |  Verwaltung, gebaut auf Vertrauen.",
   description = "VF Immobilien | Verwaltung, gebaut auf Vertrauen.", // Add a default for non-property pages
   ogImage = "/astro/src/assets/images/default-share-image-min.png",
   ogTitle = title,
 } = Astro.props;
-
-// --- CRITICAL CSS LOGIC ---
-// Define the absolute path to your built critical CSS file
-// process.cwd() refers to your project root (./astro)
-const CRITICAL_CSS_PATH = path.join(
-  process.cwd(),
-  "dist",
-  "client",
-  "critical.css"
-);
-
-let criticalCssContent = "";
-// Only attempt to read the file during production build
-if (import.meta.env.PROD) {
-  try {
-    // Read the file content synchronously at build time
-    criticalCssContent = fs.readFileSync(CRITICAL_CSS_PATH, "utf-8");
-  } catch (error) {
-    // Log a warning if the file isn't found (e.g., if postbuild script failed)
-    console.warn(
-      "CRITICAL CSS WARNING: Could not read critical.css. Full CSS will load render-blocking.",
-      error.message
-    );
-  }
-}
-// --- END CRITICAL CSS LOGIC ---
 ---
 
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    {
+    <!-- {
       criticalCssContent && (
         <style
           id="critical-styles"
           dangerouslySetInnerHTML={{ __html: criticalCssContent }}
         />
       )
-    }
-    <link
-      rel="stylesheet"
-      href="/src/styles/global.css"
-      media="print"
-      onload="
-      this.media = 'all'
-"
-    />
-    <noscript>
-      <link rel="stylesheet" href="/src/styles/global.css" />
-    </noscript>
+    } -->
+
+    <script is:inline>
+      // Function to find all automatically injected CSS links and apply deferral
+      // We wait for the browser to parse the HTML and find the link tags that Astro injected.
+      function deferStylesheets() {
+        document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+          //     // Skip if already deferred or if it's not a hashed Astro asset link
+          if (
+            link.href &&
+            link.href.includes("/_astro/") &&
+            link.media !== "print"
+          ) {
+            link.media = "print";
+            link.onload = function () {
+              this.media = "all";
+              this.onload = null; // Clean up memory
+            };
+          }
+        });
+      }
+
+      // Attempt to run the deferral script as early as possible
+      document.addEventListener("DOMContentLoaded", deferStylesheets);
+      // Fallback for full page load
+      window.addEventListener("load", deferStylesheets);
+    </script>
+    <noscript> </noscript>
     <link
       rel="preload"
       href="/astro/public/logos/Viki-new-logo-only-green-1.svg"
@@ -75,6 +65,7 @@ if (import.meta.env.PROD) {
 
     <title>{title}</title>
     <script
+      defer
       id="Cookiebot"
       src="https://consent.cookiebot.com/uc.js"
       data-cbid="dc9e07d5-dc72-477b-ab85-798ff7e1ee18"
@@ -97,28 +88,26 @@ if (import.meta.env.PROD) {
     <Footer />
 
     <script is:inline>
+      // Animation Observer Script (moved outside the non-existent loadFullCSS)
       document.addEventListener("DOMContentLoaded", () => {
         const sectionsToAnimate =
           document.querySelectorAll(".slide-in-section");
 
         const observerOptions = {
-          root: null, // relative to the viewport
+          root: null,
           rootMargin: "0px",
-          threshold: 0.1, // Trigger when 10% of the element is visible
+          threshold: 0.1,
         };
 
         const observerCallback = (entries, observer) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              // When element enters viewport, add the trigger class
               entry.target.classList.add("is-visible");
-              // Stop observing it after it's visible
               observer.unobserve(entry.target);
             }
           });
         };
 
-        // Only create the observer if there are elements to observe
         if (sectionsToAnimate.length > 0) {
           const sectionObserver = new IntersectionObserver(
             observerCallback,

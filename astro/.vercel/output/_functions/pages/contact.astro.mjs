@@ -1,4 +1,4 @@
-import { c as createSvgComponent, $ as $$MainLayout } from '../chunks/MainLayout_CoMNAWfS.mjs';
+import { c as createSvgComponent, $ as $$MainLayout } from '../chunks/MainLayout_DU7Rr5R3.mjs';
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, b as renderScript, a as renderTemplate, d as createAstro, e as addAttribute } from '../chunks/astro/server_lfFasKkK.mjs';
 import 'piccolore';
 import { $ as $$CTAServicesSection } from '../chunks/CTAServicesSection_AH1FUqs1.mjs';

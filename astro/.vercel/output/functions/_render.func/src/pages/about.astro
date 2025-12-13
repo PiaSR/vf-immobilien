@@ -6,9 +6,13 @@ import AboutIntro from "../components/Sections/about/AboutIntro.astro";
 import AboutTeam from "../components/Sections/about/AboutTeam.astro";
 import AboutValues from "../components/Sections/about/AboutValues.astro";
 import MainLayout from "../layouts/MainLayout.astro";
+
+const pageTitle = "Über VF Immobilien: Ihr Partner für Hausverwaltung";
+const pageDescription =
+  "Erfahren Sie mehr über VF Immobilien in Wien. Wir bieten vertrauenswürdige und transparente Verwaltung und Vermittlung für Eigentumswohnungen und Zinshäuser in der Wien und Umgebung.";
 ---
 
-<MainLayout>
+<MainLayout title={pageTitle} description={pageDescription}>
   <AboutHero />
   <AboutIntro />
   <AboutValues />

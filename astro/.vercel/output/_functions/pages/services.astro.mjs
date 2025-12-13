@@ -1,9 +1,9 @@
-import { c as createSvgComponent, $ as $$MainLayout } from '../chunks/MainLayout_CoMNAWfS.mjs';
+import { c as createSvgComponent, $ as $$MainLayout } from '../chunks/MainLayout_DU7Rr5R3.mjs';
 import { c as createComponent, d as createAstro, m as maybeRenderHead, e as addAttribute, r as renderComponent, u as unescapeHTML, b as renderScript, a as renderTemplate } from '../chunks/astro/server_lfFasKkK.mjs';
 import 'piccolore';
 import { $ as $$CTAContactSection } from '../chunks/CTAContactSection_CcCDYf-H.mjs';
 import { $ as $$Image } from '../chunks/_astro_assets_B2RpSsLg.mjs';
-import { T as TriangleGreen } from '../chunks/Triangle-green_Cmxg-n2f.mjs';
+import { T as TriangleGreen } from '../chunks/Triangle-green_D8fyFh0L.mjs';
 /* empty css                                    */
 import { $ as $$ButtonArrow } from '../chunks/ButtonArrow_C6883PUt.mjs';
 import { $ as $$HeroHeader } from '../chunks/HeroHeader_CLQrIJ7L.mjs';
@@ -167,7 +167,9 @@ const $$ServiceOffersVermittlung = createComponent(($$result, $$props, $$slots) 
 }, "/Users/piasmith-richling/Code/VF Immobilien/astro/src/components/Sections/services/ServiceOffersVermittlung.astro", void 0);
 
 const $$Services = createComponent(($$result, $$props, $$slots) => {
-  return renderTemplate`${renderComponent($$result, "MainLayout", $$MainLayout, {}, { "default": ($$result2) => renderTemplate` ${renderComponent($$result2, "ServicesHero", $$ServicesHero, {})} ${renderComponent($$result2, "ServicesOffers", $$ServicesOffersVerwaltung, {})}  ${renderComponent($$result2, "ServiceOffersVermittlung", $$ServiceOffersVermittlung, {})} ${renderComponent($$result2, "CTAContactSection", $$CTAContactSection, {})} ` })}`;
+  const pageTitle = "Hausverwaltung & Vermittlung Wien: Kompetent und Transparent";
+  const pageDescription = "VF Immobilien bietet umfassende Hausverwaltung und professionelle Vermittlung von Mietwohnungen und Objekten in Wien und Umgebung. Jetzt unverbindlich anfragen!";
+  return renderTemplate`${renderComponent($$result, "MainLayout", $$MainLayout, { "title": pageTitle, "description": pageDescription }, { "default": ($$result2) => renderTemplate` ${renderComponent($$result2, "ServicesHero", $$ServicesHero, {})} ${renderComponent($$result2, "ServicesOffers", $$ServicesOffersVerwaltung, {})}  ${renderComponent($$result2, "ServiceOffersVermittlung", $$ServiceOffersVermittlung, {})} ${renderComponent($$result2, "CTAContactSection", $$CTAContactSection, {})} ` })}`;
 }, "/Users/piasmith-richling/Code/VF Immobilien/astro/src/pages/services.astro", void 0);
 
 const $$file = "/Users/piasmith-richling/Code/VF Immobilien/astro/src/pages/services.astro";

@@ -139,47 +139,44 @@ const $$MainLayout = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$MainLayout;
   const {
-    title,
+    title = "VF Immobilien |  Verwaltung, gebaut auf Vertrauen.",
     description = "VF Immobilien | Verwaltung, gebaut auf Vertrauen.",
     // Add a default for non-property pages
     ogImage = "/astro/src/assets/images/default-share-image-min.png",
     ogTitle = title
   } = Astro2.props;
-  return renderTemplate(_a || (_a = __template(['<html lang="de"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="/src/styles/global.css"><link rel="preload" href="/astro/public/logos/Viki-new-logo-only-green-1.svg" as="image"><link rel="icon" type="image/svg+xml" href="/astro/public/logos/Viki-new-logo-only-green-1.svg"><title>', '</title><script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="dc9e07d5-dc72-477b-ab85-798ff7e1ee18" data-blockingmode="auto" type="text/javascript"><\/script><meta name="description"', '><meta property="og:title"', '><meta property="og:description"', '><meta property="og:type" content="website"><meta property="og:image"', '><meta property="og:url"', ">", "</head> <body> ", " <main> ", " </main> ", ` <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const sectionsToAnimate =
-          document.querySelectorAll(".slide-in-section");
+  return renderTemplate(_a || (_a = __template([`<html lang="de"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><!-- {
+      criticalCssContent && (
+        <style
+          id="critical-styles"
+          dangerouslySetInnerHTML={{ __html: criticalCssContent }}
+        />
+      )
+    } --><script>
+      // Function to find all automatically injected CSS links and apply deferral
+      // We wait for the browser to parse the HTML and find the link tags that Astro injected.
+      function deferStylesheets() {
+        document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+          //     // Skip if already deferred or if it's not a hashed Astro asset link
+          if (
+            link.href &&
+            link.href.includes("/_astro/") &&
+            link.media !== "print"
+          ) {
+            link.media = "print";
+            link.onload = function () {
+              this.media = "all";
+              this.onload = null; // Clean up memory
+            };
+          }
+        });
+      }
 
-        const observerOptions = {
-          root: null, // relative to the viewport
-          rootMargin: "0px",
-          threshold: 0.1, // Trigger when 10% of the element is visible
-        };
-
-        const observerCallback = (entries, observer) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              // When element enters viewport, add the trigger class
-              entry.target.classList.add("is-visible");
-              // Stop observing it after it's visible
-              observer.unobserve(entry.target);
-            }
-          });
-        };
-
-        // Only create the observer if there are elements to observe
-        if (sectionsToAnimate.length > 0) {
-          const sectionObserver = new IntersectionObserver(
-            observerCallback,
-            observerOptions
-          );
-
-          sectionsToAnimate.forEach((section) => {
-            sectionObserver.observe(section);
-          });
-        }
-      });
-    <\/script> </body> </html>`])), title, addAttribute(description, "content"), addAttribute(ogTitle, "content"), addAttribute(description, "content"), addAttribute(ogImage, "content"), addAttribute(Astro2.url.href, "content"), renderHead(), renderComponent($$result, "Navbar", $$Navbar, {}), renderSlot($$result, $$slots["default"]), renderComponent($$result, "Footer", $$Footer, {}));
+      // Attempt to run the deferral script as early as possible
+      document.addEventListener("DOMContentLoaded", deferStylesheets);
+      // Fallback for full page load
+      window.addEventListener("load", deferStylesheets);
+    <\/script>`, '<noscript></noscript><link rel="preload" href="/astro/public/logos/Viki-new-logo-only-green-1.svg" as="image"><link rel="icon" type="image/svg+xml" href="/astro/public/logos/Viki-new-logo-only-green-1.svg"><title>', '</title><script defer id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="dc9e07d5-dc72-477b-ab85-798ff7e1ee18" data-blockingmode="auto" type="text/javascript"><\/script><meta name="description"', '><meta property="og:title"', '><meta property="og:description"', '><meta property="og:type" content="website"><meta property="og:image"', '><meta property="og:url"', ">", "</head> <body> ", " <main> ", " </main> ", ' <script>\n      // Animation Observer Script (moved outside the non-existent loadFullCSS)\n      document.addEventListener("DOMContentLoaded", () => {\n        const sectionsToAnimate =\n          document.querySelectorAll(".slide-in-section");\n\n        const observerOptions = {\n          root: null,\n          rootMargin: "0px",\n          threshold: 0.1,\n        };\n\n        const observerCallback = (entries, observer) => {\n          entries.forEach((entry) => {\n            if (entry.isIntersecting) {\n              entry.target.classList.add("is-visible");\n              observer.unobserve(entry.target);\n            }\n          });\n        };\n\n        if (sectionsToAnimate.length > 0) {\n          const sectionObserver = new IntersectionObserver(\n            observerCallback,\n            observerOptions\n          );\n\n          sectionsToAnimate.forEach((section) => {\n            sectionObserver.observe(section);\n          });\n        }\n      });\n    <\/script> </body> </html>'])), maybeRenderHead(), title, addAttribute(description, "content"), addAttribute(ogTitle, "content"), addAttribute(description, "content"), addAttribute(ogImage, "content"), addAttribute(Astro2.url.href, "content"), renderHead(), renderComponent($$result, "Navbar", $$Navbar, {}), renderSlot($$result, $$slots["default"]), renderComponent($$result, "Footer", $$Footer, {}));
 }, "/Users/piasmith-richling/Code/VF Immobilien/astro/src/layouts/MainLayout.astro", void 0);
 
 export { $$MainLayout as $, createSvgComponent as c };
