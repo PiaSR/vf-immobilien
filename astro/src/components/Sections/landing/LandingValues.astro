@@ -7,7 +7,7 @@ import digital from "../../../assets/images/digital-value.png";
 import { Image } from "astro:assets";
 ---
 
-<section class="values-section slide-in-section">
+<section id="landing-values-section" class="values-section slide-in-section">
   <div class="site-container padding-section">
     <div class="values-grid">
       <div class="values-text-container">
@@ -200,6 +200,11 @@ import { Image } from "astro:assets";
     }
     .value-card {
       flex: 1 1 12rem;
+    }
+  }
+  @media (max-width: 420px) {
+    .value-card {
+      flex-direction: column;
     }
   }
 </style>

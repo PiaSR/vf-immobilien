@@ -11,13 +11,57 @@ const {
   ogImage = "/astro/src/assets/images/default-share-image-min.png",
   ogTitle = title,
 } = Astro.props;
+
+// --- CRITICAL CSS LOGIC ---
+// Define the absolute path to your built critical CSS file
+// process.cwd() refers to your project root (./astro)
+const CRITICAL_CSS_PATH = path.join(
+  process.cwd(),
+  "dist",
+  "client",
+  "critical.css"
+);
+
+let criticalCssContent = "";
+// Only attempt to read the file during production build
+if (import.meta.env.PROD) {
+  try {
+    // Read the file content synchronously at build time
+    criticalCssContent = fs.readFileSync(CRITICAL_CSS_PATH, "utf-8");
+  } catch (error) {
+    // Log a warning if the file isn't found (e.g., if postbuild script failed)
+    console.warn(
+      "CRITICAL CSS WARNING: Could not read critical.css. Full CSS will load render-blocking.",
+      error.message
+    );
+  }
+}
+// --- END CRITICAL CSS LOGIC ---
 ---
 
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="/src/styles/global.css" />
+    {
+      criticalCssContent && (
+        <style
+          id="critical-styles"
+          dangerouslySetInnerHTML={{ __html: criticalCssContent }}
+        />
+      )
+    }
+    <link
+      rel="stylesheet"
+      href="/src/styles/global.css"
+      media="print"
+      onload="
+      this.media = 'all'
+"
+    />
+    <noscript>
+      <link rel="stylesheet" href="/src/styles/global.css" />
+    </noscript>
     <link
       rel="preload"
       href="/astro/public/logos/Viki-new-logo-only-green-1.svg"

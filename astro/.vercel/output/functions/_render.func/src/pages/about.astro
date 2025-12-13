@@ -1,0 +1,18 @@
+---
+import CTAContactSection from "../components/Base/CTAContactSection.astro";
+import AboutHero from "../components/Sections/about/AboutHero.astro";
+import AboutHistory from "../components/Sections/about/AboutHistory.astro";
+import AboutIntro from "../components/Sections/about/AboutIntro.astro";
+import AboutTeam from "../components/Sections/about/AboutTeam.astro";
+import AboutValues from "../components/Sections/about/AboutValues.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout>
+  <AboutHero />
+  <AboutIntro />
+  <AboutValues />
+  <AboutHistory />
+  <!-- <AboutTeam />  leaving out Team for now until we have info on other team members-->
+  <CTAContactSection />
+</MainLayout>
