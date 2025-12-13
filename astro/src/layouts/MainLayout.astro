@@ -75,9 +75,8 @@ if (import.meta.env.PROD) {
           }
         });
       }
-      deferStylesheets();
-      // Run this script as early as possible
-      // document.addEventListener("DOMContentLoaded", deferStylesheets);
+
+      document.addEventListener("DOMContentLoaded", deferStylesheets);
     </script>
 
     <noscript> </noscript>
