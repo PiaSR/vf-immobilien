@@ -24,6 +24,10 @@ export default defineConfig({
       apiVersion: '2025-09-10' // Use today's date for a consistent API version
     }),
   ],
-  adapter: vercel(),
+  adapter: vercel({
+    
+    imageService: true, 
+    
+  }),
   
 });
