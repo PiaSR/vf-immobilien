@@ -6,8 +6,10 @@ import heroImage from "../../../assets/images/landing-hero.jpg";
 import HeroHeader from "../../Base/HeroHeader.astro";
 ---
 
-<section id="landing-hero" class="hero has-angled-image">
-  <div class="site-container hero-grid-content padding-section">
+<section id="landing-hero" class="landing-hero has-angled-image">
+  <div
+    class="site-container landing-hero-site-container landing-hero-grid-content padding-section"
+  >
     <div class="container-align-left">
       <HeroHeader
         text="Immobilienverwaltung & Vermittlung mit persönlichem Engagement und fachlicher Kompetenz."
@@ -48,83 +50,6 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     />
   </div>
 </section>
-
-<style>
-  .hero {
-    position: relative;
-    background: var(--color-neutral-lightest);
-    color: var(--color-brand-dark-green);
-    overflow: visible;
-  }
-  /* .padding-section {
-    padding-right: 0;
-  } */
-
-  .site-container {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .hero-grid-content {
-    display: grid;
-    grid-template-columns: 1fr 28%;
-    gap: var(--spacing-2xl);
-    height: 100%;
-    overflow: visible;
-  }
-
-  h1 {
-    line-height: var(--line-height-header);
-  }
-  .subtitle {
-    color: var(--color-neutral-font-dark);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-body-xlarge);
-  }
-
-  .animated-word-wrapper {
-    display: inline-flex;
-    /* padding-top: 2px; */
-    overflow: hidden;
-    position: relative;
-    box-sizing: content-box;
-    vertical-align: top;
-  }
-  .animated-word-list {
-    display: flex;
-    flex-direction: column;
-    height: 0;
-    overflow: hidden;
-    /* Initial state to hide the words before GSAP takes over */
-    /* transform: translateY(-1000px); */
-  }
-  .animated-word-list span {
-    display: block;
-    height: (var(--line-height-header));
-    line-height: var(--line-height-header);
-    white-space: nowrap;
-    color: var(--color-brand-medium-green);
-    font-size: inherit;
-    font-weight: inherit;
-    margin-top: -1px;
-  }
-  @media (max-width: 61.875rem) {
-    .hero-grid-content {
-      grid-template-columns: 1fr;
-    }
-    .animated-word-wrapper {
-      /* height: var(--line-height-header); */
-      /* line-height: var(--line-height-header); */
-    }
-    .animated-word-list span {
-      margin-top: 0;
-    }
-  }
-  @media (max-width: 507px) {
-    .animated-word-list span {
-      margin-top: -1px;
-    }
-  }
-</style>
 
 <script>
   import gsap from "gsap";

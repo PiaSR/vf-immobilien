@@ -6,7 +6,9 @@ import aboutHeroImgCut from "../../../assets/images/aboutHeroImgCut.jpg";
 ---
 
 <section id="about-hero" class="about-hero">
-  <div class="site-container hero-grid-content padding-section">
+  <div
+    class="site-container about-container-align-left hero-grid-content padding-section"
+  >
     <div class="container-align-left">
       <HeroHeader
         header="Tradition trifft Zukunft"
@@ -20,7 +22,6 @@ import aboutHeroImgCut from "../../../assets/images/aboutHeroImgCut.jpg";
     </div>
   </div>
 </section>
-
 <style>
   .about-hero {
     position: relative;
@@ -30,23 +31,5 @@ import aboutHeroImgCut from "../../../assets/images/aboutHeroImgCut.jpg";
         no-repeat center / cover;
     padding-bottom: calc(var(--spacing-4xl) + 15vw);
     z-index: 10;
-  }
-
-  .about-hero::after {
-    content: "";
-    position: absolute;
-    bottom: -40rem;
-    left: 0;
-    width: 100%;
-    height: 40rem; /* Adjust this to control the height of the diagonal */
-    background-color: var(
-      --color-neutral-lightest
-    ); /* Color of the section BELOW it */
-    transform: skewY(11deg); /* Adjust this value for the angle */
-    transform-origin: bottom right;
-    z-index: -1; /* Ensures the bottom wedge is on top */
-  }
-  .container-align-left {
-    padding-bottom: 0;
   }
 </style>
