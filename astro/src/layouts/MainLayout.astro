@@ -2,11 +2,11 @@
 // src/layouts/MainLayout.astro
 import Navbar from "../components/Layouts/Navbar.astro";
 import Footer from "../components/Layouts/Footer.astro";
-import globalStyles from "../styles/global.css";
-import fontStyles from "../styles/fonts.css";
-
+import globalStylesUrl from "../styles/global.css?url";
+import fontStylesUrl from "../styles/fonts.css?url";
 import path from "node:path";
 import fs from "node:fs";
+
 // ------------------------------------
 
 const {
@@ -20,9 +20,9 @@ const {
 // Define the absolute path to your built critical CSS file
 const CRITICAL_CSS_PATH = path.join(
   process.cwd(),
-  "dist",
-  "client",
-  "critical.css"
+  "src",
+  "styles",
+  "critical.css" // <-- Points exactly to the source file
 );
 
 let criticalCssContent = "";
@@ -57,43 +57,20 @@ if (import.meta.env.PROD) {
     }
     <link
       rel="preload"
-      href={globalStyles.src}
+      href={globalStylesUrl}
       as="style"
       onload="this.onload = null; this.rel = 'stylesheet'"
     />
-    <noscript><link rel="stylesheet" href={globalStyles.src} /></noscript>
+    <noscript><link rel="stylesheet" href={globalStylesUrl} /></noscript>
 
     <link
       rel="preload"
-      href={fontStyles.src}
+      href={fontStylesUrl}
       as="style"
       onload="this.onload = null; this.rel = 'stylesheet'"
     />
-    <noscript><link rel="stylesheet" href={fontStyles.src} /></noscript>
-    <script is:inline>
-      // function deferStylesheets() {
-      //   // Find all injected Astro CSS links
-      //   document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-      //     if (
-      //       link.href &&
-      //       link.href.includes("/_astro/") &&
-      //       link.media !== "print"
-      //     ) {
-      //       // Force the browser to load it without blocking render
-      //       link.media = "print";
-      //       // Once loaded, apply the styles
-      //       link.onload = function () {
-      //         this.media = "all";
-      //         this.onload = null;
-      //       };
-      //     }
-      //   });
-      // }
+    <noscript><link rel="stylesheet" href={fontStylesUrl} /></noscript>
 
-      // document.addEventListener("DOMContentLoaded", deferStylesheets);
-    </script>
-
-    <noscript> </noscript>
     <link href="/logos/Viki-new-logo-only-green-1.svg" as="image" />
     <link
       rel="icon"

@@ -8,12 +8,7 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   output: 'server',
  
-  // image: {
-  //     service: {
-  //       entrypoint: 'astro/assets/services/sharp'
-  //     }
-  //   },
-   
+  
   integrations: [
     react(),
     sanity({
