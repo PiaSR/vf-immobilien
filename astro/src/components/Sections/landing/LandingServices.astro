@@ -42,7 +42,7 @@ const services = [
 ---
 
 <section class="services-section">
-  <div class="site-container padding-section">
+  <div class="site-container services-site-container padding-section">
     <SectionHeader
       header="Ihre Immobilie. Unsere Leistungen."
       subheader="WAS WIR TUN"
@@ -69,7 +69,7 @@ const services = [
         ))
       }
     </div>
-    <div class="flex-center">
+    <div class="landing-services-button-flex-center">
       <ButtonArrow href="/services" class="button-orange">
         Mehr zu Leistungen
       </ButtonArrow>
@@ -77,27 +77,4 @@ const services = [
   </div>
 </section>
 
-<style>
-  .services-section {
-    background: var(--color-brand-dark-green);
-    position: relative;
-    z-index: 100;
-  }
-  .site-container {
-    padding-bottom: var(--spacing-lg);
-  }
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-    gap: var(--spacing-xl);
-    margin-top: var(--spacing-4xl);
-  }
-  .flex-center {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--spacing-2xl);
-  }
-  .flex-center {
-    justify-content: end;
-  }
-</style>
+<style></style>
