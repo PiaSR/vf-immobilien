@@ -316,6 +316,13 @@ const realEstateSchema = JSON.stringify({
       telephone: propertyData.agent.phone,
       email: propertyData.agent.email,
     },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Auhofstrasse 78C/1",
+      addressLocality: "Wien",
+      postalCode: "1130", // Replace with actual office postal code
+      addressCountry: "AT",
+    },
   }),
 });
 
