@@ -50,6 +50,7 @@ const { service, isReversed } = Astro.props;
 
     gap: var(--spacing-2xl);
     align-items: flex-start;
+    min-width: 0;
   }
 
   .service-card-container.reverse {
@@ -65,21 +66,27 @@ const { service, isReversed } = Astro.props;
     padding-bottom: var(--spacing-md);
 
     min-width: 0;
-    flex: 1;
+    /* flex: 1; */
   }
   .heading-h3 {
     font-size: var(--font-size-h2) !important;
     color: var(--color-brand-medium-green);
-    word-break: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
     min-width: 0;
   }
   .services-offers-image {
     width: 100%;
-    max-width: 850px;
+    /* max-width: 850px; */
     max-height: 450px;
     height: auto;
     border-radius: var(--border-radius);
     object-fit: cover;
+    min-width: 0;
+  }
+  .service-description {
+    overflow-wrap: break-word;
+    word-break: normal;
   }
   @media (min-width: 991px) {
     .service-card-container {
@@ -95,11 +102,11 @@ const { service, isReversed } = Astro.props;
     }
   }
 
-  @media (max-width: 768px) {
+  /* @media (max-width: 768px) {
     .services-offers-image {
       max-width: 100%;
     }
-  }
+  } */
   /* Collapsible Section */
   .service-collapsible-wrapper {
     width: 100%;
@@ -162,6 +169,8 @@ const { service, isReversed } = Astro.props;
   }
   .collapsible-list p {
     padding-left: var(--spacing-md);
+    min-width: 0;
+    overflow-wrap: break-word;
   }
   .list-item-icon {
     width: 0.5rem;
