@@ -28,7 +28,7 @@ const pathname = new URL(Astro.request.url).pathname;
       />
     </a>
     <nav class="cs-nav" role="navigation">
-      <MobileNavToggle client:load />
+      <MobileNavToggle client:idle />
       <div class="cs-ul-wrapper">
         <ul id="cs-expanded" class="cs-ul">
           {
