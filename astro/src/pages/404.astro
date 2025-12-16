@@ -1,9 +1,14 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import Button from "../components/Base/Button.astro";
+
+const pageTitle = "404 Seite nicht gefunden | VF Immobilien";
+
+const pageDescription =
+  "Die angeforderte Seite konnte nicht gefunden werden. Bitte nutzen Sie unsere Navigation oder kehren Sie zur Startseite von VF Immobilien zurück.";
 ---
 
-<MainLayout title="404 - Seite nicht gefunden">
+<MainLayout title={pageTitle} description={pageDescription}>
   <main class="error-page-content" style="text-align: center; padding: 4rem;">
     <h1>404</h1>
     <h2>Seite nicht gefunden.</h2>

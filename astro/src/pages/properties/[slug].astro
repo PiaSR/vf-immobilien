@@ -202,6 +202,119 @@ const ogImageUrl = propertyData.mainImage.url;
 
 // Set the page title for the Layout component
 const pageTitle = title;
+
+// --- JSON-LD Helper Function ---
+// This function determines the correct postal code based on the data structure
+const getPostalCode = (data) => {
+  if (data.locationVienna) {
+    // Extracts the district number (e.g., '1', '2', '23')
+    const districtMatch = data.locationVienna.match(/^\d+/);
+    const districtNumber = districtMatch ? districtMatch[0] : null;
+
+    // Vienna postal code structure: 1XX0 (e.g., 1010, 1020, 1100)
+    if (districtNumber) {
+      // Special case for 1st-9th district (1010-1090)
+      if (districtNumber.length === 1) return `10${districtNumber}0`;
+      // General case for 10th-23rd district
+      if (districtNumber.length === 2) return `1${districtNumber}0`;
+    }
+  }
+  // Fallback for surrounding areas
+  return data.postalCodeSurrounding
+    ? data.postalCodeSurrounding.toString()
+    : null;
+};
+
+// Determine the price and transactional type
+const price = propertyData.purchasePrice || propertyData.rentalPrice;
+
+// Determine the address locality (City/District)
+const addressLocality = propertyData.locationVienna
+  ? propertyData.locationVienna.split(".")[1].trim() // e.g., "Leopoldstadt"
+  : propertyData.locationSurrounding;
+
+// --- JSON-LD Script Block ---
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+
+    /* ---------------------- BASISDATEN ---------------------- */
+    name: propertyData.name,
+
+    // Use propertyDescription, ensuring it's not null
+    description: propertyData.propertyDescription
+      ? propertyData.propertyDescription.substring(0, 300)
+      : propertyData.name,
+
+    // URL dieser spezifischen Anzeige
+    url: `${Astro.site}${propertyData.slug.current}`,
+
+    // Hauptbild (Titelfoto)
+    image: propertyData.mainImage.url,
+
+    // Datum der Veröffentlichung (Use Sanity ID creation date if no specific date is available)
+    datePosted: propertyData.id ? propertyData.id.substring(0, 8) : null, // Not perfect, but uses the Sanity ID prefix for a date
+
+    /* ---------------------- PREIS & ANGEBOT (OFFERS) ---------------------- */
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "EUR",
+      price: price,
+
+      // Verfügbarkeit prüfen
+      availability: propertyData.available
+        ? "https://schema.org/InStock"
+        : "https://schema.org/SoldOut",
+
+      itemCondition: propertyData.isFullyFurnished
+        ? "https://schema.org/UsedCondition"
+        : "https://schema.org/NewCondition",
+    },
+
+    /* ---------------------- IMMOBILIEN-DETAILS (PROPERTY) ---------------------- */
+
+    numberOfRooms: propertyData.rooms,
+    numberOfBathroomsTotal: propertyData.bathrooms,
+
+    // propertyType mappen (Wohnung/Haus etc.)
+    homeType: propertyData.propertyType,
+
+    // Details zur Fläche
+    floorSize: {
+      "@type": "QuantitativeValue",
+      value: propertyData.livingArea || propertyData.useableArea,
+      unitText: "SQM",
+    },
+
+    // Baujahr
+    yearBuilt: propertyData.yearBuilt,
+    floorLevel: propertyData.floor,
+
+    /* ---------------------- ADRESSE (ADDRESS) ---------------------- */
+    address: {
+      "@type": "PostalAddress",
+
+      streetAddress: propertyData.address,
+      addressLocality: addressLocality,
+      addressRegion: propertyData.locationVienna
+        ? "Wien"
+        : propertyData.locationSurrounding,
+      postalCode: getPostalCode(propertyData),
+      addressCountry: "AT",
+    },
+
+    /* ---------------------- AGENT INFO ---------------------- */
+    // Including the agent as a primary contact point for the listing
+    broker: {
+      "@type": "RealEstateAgent",
+      name: propertyData.agent.name,
+      telephone: propertyData.agent.phone,
+      email: propertyData.agent.email,
+    },
+  })}
+/>;
 ---
 
 <MainLayout

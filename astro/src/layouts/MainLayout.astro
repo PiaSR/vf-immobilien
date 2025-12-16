@@ -107,6 +107,24 @@ if (import.meta.env.PROD) {
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImage} />
     <meta property="og:url" content={Astro.url.href} />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "VF Immobilien",
+        "url": "https://vf-immobilien.vercel.app/" /* Replace with your final live URL */,
+        "logo": "https://vf-immobilien.vercel.app/public/logos/Viki-new-logo-only-green-1.svg",
+        // "sameAs": [
+        //   "https://www.facebook.com/[your-page]",
+        //   "https://www.linkedin.com/[your-page]"
+        // ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+43 676 442 30 32",
+          "contactType": "customer support"
+        }
+      }
+    </script>
   </head>
 
   <body>

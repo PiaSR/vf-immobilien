@@ -1,8 +1,12 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import AGBText from "../components/Legal/AGBText.astro";
+
+const pageTitle = "AGB | VF Immobilien";
+const pageDescription =
+  "Die AGB von VF Immobilien regeln die Geschäftsbeziehungen, die Nutzung unserer Dienstleistungen sowie alle Vertragsbedingungen für unsere Immobilienangebote.";
 ---
 
-<MainLayout>
+<MainLayout title={pageTitle} description={pageDescription}>
   <AGBText />
 </MainLayout>

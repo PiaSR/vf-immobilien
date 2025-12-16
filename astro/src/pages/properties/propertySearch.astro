@@ -3,9 +3,13 @@ import PropertiesFilterSearch from "../../components/Sections/properties/Propert
 import PropertiesGrid from "../../components/Sections/properties/PropertiesGrid.astro";
 import PropertiesHero from "../../components/Sections/properties/PropertiesHero.astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+
+const pageTitle = "Immobiliensuche: Mieten & Kaufen | VF Immobilien";
+const pageDescription =
+  "Finden Sie aktuelle Immobilienangebote zur Miete und zum Kauf in Ihrer Region. Nutzen Sie unsere einfache Suchfunktion, um Ihr neues Zuhause zu entdecken.";
 ---
 
-<MainLayout>
+<MainLayout title={pageTitle} description={pageDescription}>
   <PropertiesHero />
 
   <PropertiesFilterSearch />

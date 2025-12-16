@@ -23,14 +23,14 @@ const {
 } = Astro.props;
 ---
 
-<a class="service-card slide-in-section" target={target} href={href}>
+<div class="service-card slide-in-section" target={target} href={href}>
   <div class="card-icon" set:html={icon} />
   <div class="card-content">
     <div class="card-line"></div>
     <h3 class="heading-style-h5">{title}</h3>
     <p class="text-s">{description}</p>
   </div>
-</a>
+</div>
 
 <style define:vars={{ cardBgColor, cardFontColor, cardBgHover, cardFontHover }}>
   .service-card {
@@ -44,7 +44,6 @@ const {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-small);
     text-decoration: none; /* Remove underline */
-    cursor: pointer;
   }
   .service-card:hover {
     background-color: var(--cardBgHover) !important;

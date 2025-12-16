@@ -1,8 +1,12 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import DatenschutzText from "../components/Legal/DatenschutzText.astro";
+
+const pageTitle = "Datenschutzerklärung | VF Immobilien";
+const pageDescription =
+  "Informationen zur Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten beim Besuch der VF Immobilien Webseite.";
 ---
 
-<MainLayout>
+<MainLayout title={pageTitle} description={pageDescription}>
   <DatenschutzText />
 </MainLayout>

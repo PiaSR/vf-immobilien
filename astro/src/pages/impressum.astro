@@ -1,8 +1,12 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import ImpressumText from "../components/Legal/ImpressumText.astro";
+
+const pageTitle = "Impressum | VF Immobilien";
+const pageDescription =
+  "Gesetzlich vorgeschriebene Angaben und Kontaktdaten der VF Immobilien zur Anbieterkennzeichnung und rechtlichen Information.";
 ---
 
-<MainLayout>
+<MainLayout title={pageTitle} description={pageDescription}>
   <ImpressumText />
 </MainLayout>

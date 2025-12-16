@@ -4,9 +4,13 @@ import MainLayout from "../layouts/MainLayout.astro";
 import FAQSQuestions from "../components/Sections/faqs/FAQSQuestions.astro";
 import FaqsDocuments from "../components/Sections/faqs/FaqsDocuments.astro";
 import CTAServicesSection from "../components/Base/CTAServicesSection.astro";
+
+const pageTitle = "FAQs & Dokumente | VF Immobilien";
+const pageDescription =
+  "Antworten auf häufige Fragen zur Immobilienverwaltung und Zugang zu wichtigen Dokumenten (Mietverträge, Abrechnungen) aus der VF Immobilien Wissensdatenbank.";
 ---
 
-<MainLayout>
+<MainLayout title={pageTitle} description={pageDescription}>
   <FaqsHero />
   <FAQSQuestions />
   <FaqsDocuments />
