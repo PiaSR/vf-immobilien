@@ -1215,13 +1215,12 @@ gap: var(--spacing-md);
         </a>
     `;
   factBox.insertAdjacentHTML("beforeend", downloadLinkHTML);
-  }
+}
 
-  // --- FETCH LOGIC ---
-  window.onload = function () {
-    console.log("property description", propertyData.propertyDescription);
-    renderProperty(propertyData);
-    window.scrollTo(0, 0);
-  };
+// --- FETCH LOGIC ---
+window.onload = function () {
+  console.log("property description", propertyData.propertyDescription);
+  renderProperty(propertyData);
+  window.scrollTo(0, 0);
+};
 </script>
- ../../Base/AgentContactForm.tsx

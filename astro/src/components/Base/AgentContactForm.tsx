@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 
 // --- Props & Types ---
@@ -373,7 +373,7 @@ const AgentContactForm: React.FC<AgentContactFormProps> = ({
       {/* Success/Error Messages */}
       <div
         id={AGENT_SUCCESS_ID}
-        className="form-success-message is-visible"
+        className="form-success-message"
         style={{ display: submissionStatus === "success" ? "block" : "none" }}
       >
         <div>Danke für Ihre Anfrage! Wir werden uns bald bei Ihnen melden.</div>
@@ -381,7 +381,7 @@ const AgentContactForm: React.FC<AgentContactFormProps> = ({
 
       <div
         id={AGENT_ERROR_ID}
-        className="form-error-message is-visible"
+        className="form-error-message"
         style={{ display: submissionStatus === "error" ? "block" : "none" }}
       >
         <div>
