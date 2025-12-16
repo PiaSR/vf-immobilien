@@ -14,6 +14,7 @@ const {
   description = "VF Immobilien | Verwaltung, gebaut auf Vertrauen.",
   ogImage = "/astro/src/assets/images/default-share-image-min.png",
   ogTitle = title,
+  schema = null,
 } = Astro.props;
 
 // --- CRITICAL CSS LOGIC ---
@@ -125,6 +126,7 @@ if (import.meta.env.PROD) {
         }
       }
     </script>
+    {schema && <script type="application/ld+json" set:html={schema} />}
   </head>
 
   <body>

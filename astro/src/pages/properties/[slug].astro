@@ -203,6 +203,10 @@ const ogImageUrl = propertyData.mainImage.url;
 // Set the page title for the Layout component
 const pageTitle = title;
 
+// ----------------------------------------------------
+// ✨ JSON-LD GENERATION (CORRECTLY MOVED TO FRONTMATTER)
+// ----------------------------------------------------
+
 // --- JSON-LD Helper Function ---
 // This function determines the correct postal code based on the data structure
 const getPostalCode = (data) => {
@@ -233,88 +237,89 @@ const addressLocality = propertyData.locationVienna
   ? propertyData.locationVienna.split(".")[1].trim() // e.g., "Leopoldstadt"
   : propertyData.locationSurrounding;
 
-// --- JSON-LD Script Block ---
-<script
-  type="application/ld+json"
-  set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "RealEstateListing",
+// --- JSON-LD Object Construction ---
+const realEstateSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "RealEstateListing",
 
-    /* ---------------------- BASISDATEN ---------------------- */
-    name: propertyData.name,
+  /* ---------------------- BASISDATEN ---------------------- */
+  name: propertyData.name,
 
-    // Use propertyDescription, ensuring it's not null
-    description: propertyData.propertyDescription
-      ? propertyData.propertyDescription.substring(0, 300)
-      : propertyData.name,
+  // Use propertyDescription, ensuring it's not null
+  description: propertyData.propertyDescription
+    ? propertyData.propertyDescription.substring(0, 300)
+    : propertyData.name,
 
-    // URL dieser spezifischen Anzeige
-    url: `${Astro.site}${propertyData.slug.current}`,
+  // URL dieser spezifischen Anzeige
+  url: `${Astro.site}${propertyData.slug.current}`,
 
-    // Hauptbild (Titelfoto)
-    image: propertyData.mainImage.url,
+  // Hauptbild (Titelfoto)
+  image: propertyData.mainImage.url,
 
-    // Datum der Veröffentlichung (Use Sanity ID creation date if no specific date is available)
-    datePosted: propertyData.id ? propertyData.id.substring(0, 8) : null, // Not perfect, but uses the Sanity ID prefix for a date
+  // Datum der Veröffentlichung (Use Sanity ID creation date if no specific date is available)
+  datePosted: propertyData.id ? propertyData.id.substring(0, 8) : null,
 
-    /* ---------------------- PREIS & ANGEBOT (OFFERS) ---------------------- */
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: price,
+  /* ---------------------- PREIS & ANGEBOT (OFFERS) ---------------------- */
+  offers: {
+    "@type": "Offer",
+    priceCurrency: "EUR",
+    price: price,
 
-      // Verfügbarkeit prüfen
-      availability: propertyData.available
-        ? "https://schema.org/InStock"
-        : "https://schema.org/SoldOut",
+    // Verfügbarkeit prüfen
+    availability: propertyData.available
+      ? "https://schema.org/InStock"
+      : "https://schema.org/SoldOut",
 
-      itemCondition: propertyData.isFullyFurnished
-        ? "https://schema.org/UsedCondition"
-        : "https://schema.org/NewCondition",
-    },
+    itemCondition: propertyData.isFullyFurnished
+      ? "https://schema.org/UsedCondition"
+      : "https://schema.org/NewCondition",
+  },
 
-    /* ---------------------- IMMOBILIEN-DETAILS (PROPERTY) ---------------------- */
+  /* ---------------------- IMMOBILIEN-DETAILS (PROPERTY) ---------------------- */
 
-    numberOfRooms: propertyData.rooms,
-    numberOfBathroomsTotal: propertyData.bathrooms,
+  numberOfRooms: propertyData.rooms,
+  numberOfBathroomsTotal: propertyData.bathrooms,
 
-    // propertyType mappen (Wohnung/Haus etc.)
-    homeType: propertyData.propertyType,
+  // propertyType mappen (Wohnung/Haus etc.)
+  homeType: propertyData.propertyType,
 
-    // Details zur Fläche
-    floorSize: {
-      "@type": "QuantitativeValue",
-      value: propertyData.livingArea || propertyData.useableArea,
-      unitText: "SQM",
-    },
+  // Details zur Fläche
+  floorSize: {
+    "@type": "QuantitativeValue",
+    value: propertyData.livingArea || propertyData.useableArea,
+    unitText: "SQM",
+  },
 
-    // Baujahr
-    yearBuilt: propertyData.yearBuilt,
-    floorLevel: propertyData.floor,
+  // Baujahr
+  yearBuilt: propertyData.yearBuilt,
+  floorLevel: propertyData.floor,
 
-    /* ---------------------- ADRESSE (ADDRESS) ---------------------- */
-    address: {
-      "@type": "PostalAddress",
+  /* ---------------------- ADRESSE (ADDRESS) ---------------------- */
+  address: {
+    "@type": "PostalAddress",
 
-      streetAddress: propertyData.address,
-      addressLocality: addressLocality,
-      addressRegion: propertyData.locationVienna
-        ? "Wien"
-        : propertyData.locationSurrounding,
-      postalCode: getPostalCode(propertyData),
-      addressCountry: "AT",
-    },
+    streetAddress: propertyData.address,
+    addressLocality: addressLocality,
+    addressRegion: propertyData.locationVienna
+      ? "Wien"
+      : propertyData.locationSurrounding,
+    postalCode: getPostalCode(propertyData),
+    addressCountry: "AT",
+  },
 
-    /* ---------------------- AGENT INFO ---------------------- */
-    // Including the agent as a primary contact point for the listing
-    broker: {
-      "@type": "RealEstateAgent",
-      name: propertyData.agent.name,
-      telephone: propertyData.agent.phone,
-      email: propertyData.agent.email,
-    },
-  })}
-/>;
+  /* ---------------------- AGENT INFO ---------------------- */
+  // Including the agent as a primary contact point for the listing
+  broker: {
+    "@type": "RealEstateAgent",
+    name: propertyData.agent.name,
+    telephone: propertyData.agent.phone,
+    email: propertyData.agent.email,
+  },
+});
+
+// ----------------------------------------------------
+// ✨ END JSON-LD GENERATION
+// ----------------------------------------------------
 ---
 
 <MainLayout
@@ -322,8 +327,8 @@ const addressLocality = propertyData.locationVienna
   description={pageDescription}
   ogImage={ogImageUrl}
   ogTitle={`Wohnung mieten: ${title}`}
+  schema={realEstateSchema}
 >
-  <!-- 6. PASS THE FETCHED DATA TO YOUR COMPONENT -->
   <PropertyListingDetails
     propertyDataJson={propertyDataJson}
     googleMapsEmbedUrl={googleMapsEmbedUrl}
