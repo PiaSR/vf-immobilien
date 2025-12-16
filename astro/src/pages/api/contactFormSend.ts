@@ -20,9 +20,8 @@ export const POST: APIRoute = async ({ request }) => {
           headers: { 'Content-Type': 'application/json' } 
       });
   }
-  const resend = new Resend(import.meta.env.RESEND_API_KEY); 
-
-  const apiKeyLoaded = import.meta.env.RESEND_API_KEY ? 'Yes' : 'No';
+  const resend = new Resend(apiKey);
+  const apiKeyLoaded = apiKey ? 'Yes' : 'No';
   console.log(`[DEBUG] Resend API Key Loaded: ${apiKeyLoaded}`);
   
   let params: URLSearchParams;
