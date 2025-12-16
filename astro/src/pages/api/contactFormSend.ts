@@ -5,7 +5,20 @@ export const prerender = false;
 
 // Initialisiere den Resend-Client
 export const POST: APIRoute = async ({ request }) => {
- 
+ // 💥 KORREKTUR: API-Schlüssel außerhalb der Klasse prüfen, um Absturz zu vermeiden
+ const apiKey = import.meta.env.RESEND_API_KEY;
+  
+ // Sicherheitsprüfung: Prüfen, ob der Schlüssel geladen wurde (WICHTIG für Vercel)
+ if (!apiKey || apiKey.length < 5) {
+     console.error('CRITICAL ERROR: RESEND_API_KEY is missing or invalid in Vercel Environment Variables.');
+     return new Response(JSON.stringify({ 
+         error: 'Interner Konfigurationsfehler: E-Mail-Dienst nicht verfügbar.',
+         details: 'API key not configured on server.'
+     }), { 
+         status: 500,
+         headers: { 'Content-Type': 'application/json' } 
+     });
+ }
   
   const resend = new Resend(import.meta.env.RESEND_API_KEY); 
 
