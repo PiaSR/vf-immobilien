@@ -769,16 +769,17 @@ const createDetailItem = (value, label) => {
   if (!value || value === "null") return "";
 
   // The main container style: display: block is the default for div
-  const itemStyle = "padding: 8px 0; display: flex; gap: var(--spacing-md)"; // Adds separation like a list item
+  const itemStyle =
+    "padding: 8px 0; display: flex; gap: var(--spacing-md); font-size: var(--font-size-body-base);"; // Adds separation like a list item
 
   // Style for the label (title)
   const titleStyle =
-    "text-align:left; font-size: 0.9em; color: #555; margin: 0; padding: 0;";
+    "text-align:left; color:var(--color-neutral-dark-grey); margin: 0; padding: 0;";
 
   // Style for the value (data) - aggressive breaking is still needed here
   // Note: We are using word-break: break-all; as you found it necessary
   const boldStyle =
-    "font-weight: 700; text-align:left; margin: 0; padding: 0; word-break: break-all;";
+    "font-weight: 700; color: var(--color-neutral-font-dark); text-align:left; margin: 0; padding: 0; word-break: break-all;";
 
   return `
     <div class="fact-item" style="${itemStyle}">
