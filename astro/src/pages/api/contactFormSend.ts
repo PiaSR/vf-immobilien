@@ -8,6 +8,9 @@ export const POST: APIRoute = async ({ request }) => {
  
   
   const resend = new Resend(import.meta.env.RESEND_API_KEY); 
+
+  const apiKeyLoaded = import.meta.env.RESEND_API_KEY ? 'Yes' : 'No';
+  console.log(`[DEBUG] Resend API Key Loaded: ${apiKeyLoaded}`);
   
   let params: URLSearchParams;
   // Eindeutige ID, um zu beweisen, dass dieser Code ausgeführt wird
@@ -127,7 +130,7 @@ ${message}
   try {
     const { error } = await resend.emails.send({
       from: 'no-reply@vf-immobilien.at', 
-      to: 'office@vf-immobilien.at', 
+      to: 'pia@richling.at', 
       subject: subject,
       html: body.replace(/\n/g, '<br>'),
     });
