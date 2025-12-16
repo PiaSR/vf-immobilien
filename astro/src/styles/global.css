@@ -255,7 +255,7 @@ section {
   align-items: start;
 
   justify-content: center;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-3xl);
   padding-top: var(--spacing-4xl);
   padding-bottom: var(--spacing-4xl);
 }

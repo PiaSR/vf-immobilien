@@ -84,7 +84,7 @@ import HeroHeader from "../../Base/HeroHeader.astro";
     // Initial fast spinning animation
     const spinLoop = gsap.to(list, {
       y: `-=${wordHeight * wordCount}`,
-      duration: 0.3,
+      duration: 0.6,
       repeat: -1,
       ease: "none",
     });
@@ -102,13 +102,13 @@ import HeroHeader from "../../Base/HeroHeader.astro";
         if (currentIndex < wordCount) {
           gsap.to(list, {
             y: targetY,
-            duration: 0.3,
+            duration: 0.6,
             ease: "power2.inOut",
           });
         } else {
           gsap.to(list, {
             y: targetY,
-            duration: 0.3,
+            duration: 0.6,
             ease: "power2.inOut",
             onComplete: () => {
               gsap.set(list, { y: 0 });
