@@ -8,11 +8,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "astro check"
-   
-    
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",
+    "@astrojs/sitemap": "^3.6.0",
     "@astrojs/vercel": "^9.0.2",
     "@portabletext/react": "^3.2.1",
     "@sanity/astro": "^3.2.10",
