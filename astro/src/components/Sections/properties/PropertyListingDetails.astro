@@ -127,7 +127,7 @@ try {
 
           <div class="sidebar-card fact-box">
             <h2>Objekdetails</h2>
-            <dl id="fact-box-list" class="fact-box-list"></dl>
+            <div id="fact-box-list" class="fact-box-list"></div>
           </div>
         </div>
       </div>
@@ -657,11 +657,8 @@ try {
   }
 
   .fact-box-list {
-    /* Use CSS Grid to organize <dt> and <dd> into two columns */
-    display: grid;
-    /* flex-direction: column; */
-    grid-template-columns: max-content max-content;
-    gap: 8px; /* Row and column spacing */
+    display: flex;
+    flex-direction: column;
     margin: 0;
     padding: 0;
   }
@@ -770,10 +767,25 @@ const createFactItem = (value, label, icon) => {
 //for Objektdetails card
 const createDetailItem = (value, label) => {
   if (!value || value === "null") return "";
-  const titleStyle = "text-align:left";
+
+  // The main container style: display: block is the default for div
+  const itemStyle = "padding: 8px 0; display: flex; gap: var(--spacing-md)"; // Adds separation like a list item
+
+  // Style for the label (title)
+  const titleStyle =
+    "text-align:left; font-size: 0.9em; color: #555; margin: 0; padding: 0;";
+
+  // Style for the value (data) - aggressive breaking is still needed here
+  // Note: We are using word-break: break-all; as you found it necessary
   const boldStyle =
-    "font-weight: 700; text-align:left; overflow-wrap: break-word;";
-  return `<dt class="fact-title" style="${titleStyle}">${label}</dt><dd class="fact-data" style="${boldStyle}">${value}</dd>`;
+    "font-weight: 700; text-align:left; margin: 0; padding: 0; word-break: break-all;";
+
+  return `
+    <div class="fact-item" style="${itemStyle}">
+      <p class="fact-title" style="${titleStyle}">${label}</p>
+      <p class="fact-data" style="${boldStyle}">${value}</p>
+    </div>
+  `;
 };
 
 const renderPortableText = (blocks) => {
