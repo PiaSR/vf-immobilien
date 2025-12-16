@@ -1,6 +1,7 @@
 /* src/styles/fonts.css */
 
 /*---- BITSTREAM IOWAN -----*/
+
 @font-face {
   font-family: "Bitstream Iowan";
   src: url("/fonts/bitstream-iowan-old-style-bt-586c36a8d7712.ttf")
@@ -9,7 +10,6 @@
   font-style: normal;
   font-display: swap;
 }
-
 @font-face {
   font-family: "Bitstream Iowan";
   src: url("/fonts/bitstream-iowan-old-style-bold-bt-586c371d8d669.ttf")
