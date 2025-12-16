@@ -269,6 +269,7 @@ section {
 .angled-image {
   height: 100%;
   width: 100%;
+  aspect-ratio: 1667 / 2500;
   clip-path: polygon(15% 0, 170% 0, 100% 100%, 70% 100%);
   object-fit: cover;
 }

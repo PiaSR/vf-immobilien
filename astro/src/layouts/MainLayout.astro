@@ -57,6 +57,20 @@ if (import.meta.env.PROD) {
     }
     <link
       rel="preload"
+      href="/fonts/Inter-SemiBold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/bitstream-iowan-old-style-black-bt-586c36e930225.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
       href={globalStylesUrl}
       as="style"
       onload="this.onload = null; this.rel = 'stylesheet'"
