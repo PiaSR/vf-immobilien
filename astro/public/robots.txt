@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vf-immobilien.vercel.app/sitemap-index.xml
+Sitemap: https://www.vf-immobilien.at/sitemap-index.xml

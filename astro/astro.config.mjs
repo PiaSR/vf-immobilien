@@ -8,7 +8,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  site: 'https://vf-immobilien.vercel.app',
+  site: 'https://vf-immobilien.at',
   
   integrations: [
     react(),
