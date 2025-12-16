@@ -309,12 +309,14 @@ const realEstateSchema = JSON.stringify({
 
   /* ---------------------- AGENT INFO ---------------------- */
   // Including the agent as a primary contact point for the listing
-  broker: {
-    "@type": "RealEstateAgent",
-    name: propertyData.agent.name,
-    telephone: propertyData.agent.phone,
-    email: propertyData.agent.email,
-  },
+  ...(propertyData.agent && {
+    broker: {
+      "@type": "RealEstateAgent",
+      name: propertyData.agent.name,
+      telephone: propertyData.agent.phone,
+      email: propertyData.agent.email,
+    },
+  }),
 });
 
 // ----------------------------------------------------
