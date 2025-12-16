@@ -321,7 +321,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 </div>
 
                 <div class="filter-form-group price-group price-group-miete">
-                  <h2 class="filter-form-heading">Miete (€)</h2>
+                  <h2 class="filter-form-heading">Preis (€)</h2>
                   <div class="number-input-wrapper">
                     <input
                       class="text-field"
@@ -692,6 +692,12 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     margin: 0;
   }
 
+  @media (max-width: 991px) {
+    .radio-classic-label,
+    .checkbox-label {
+      font-size: var(--font-size-body-base);
+    }
+  }
   /* ==============================================================
   INPUT STYLES: NUMBER/TEXT FIELDS
   ============================================================== */
@@ -721,6 +727,12 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
   .price-group.hidden {
     display: none !important;
+  }
+
+  @media (max-width: 991px) {
+    .text-field {
+      font-size: var(--font-size-body-base);
+    }
   }
   /* ==============================================================
   UTILITY & RESPONSIVENESS
