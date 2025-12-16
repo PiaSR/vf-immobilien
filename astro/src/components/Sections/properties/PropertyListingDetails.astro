@@ -771,7 +771,8 @@ const createFactItem = (value, label, icon) => {
 const createDetailItem = (value, label) => {
   if (!value || value === "null") return "";
   const titleStyle = "text-align:left";
-  const boldStyle = "font-weight: 700; text-align:left; word-break: normal;";
+  const boldStyle =
+    "font-weight: 700; text-align:left; overflow-wrap: break-word;";
   return `<dt class="fact-title" style="${titleStyle}">${label}</dt><dd class="fact-data" style="${boldStyle}">${value}</dd>`;
 };
 
