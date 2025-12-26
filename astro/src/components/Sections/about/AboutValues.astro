@@ -112,22 +112,30 @@ const values = [
   }
 
   @media (max-width: 1024px) {
+    .values-section {
+      overflow: visible;
+    }
     .site-container {
       justify-content: center;
+      margin-bottom: 10rem;
     }
+
     .values-container {
       width: 80%;
-      background-color: rgba(255, 255, 255, 0.8);
+      /* background-color: rgba(255, 255, 255, 0.8); */
       padding: var(--spacing-xl);
       border-radius: var(--border-radius);
     }
     .image-logo-inverted {
-      left: -55%;
-      width: 150%;
-      opacity: 60%;
+      left: -15%;
+      top: 90%;
+      width: 45%;
+      height: 40%;
+
+      z-index: 100;
     }
     .value-h3 {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
   }
 </style>
