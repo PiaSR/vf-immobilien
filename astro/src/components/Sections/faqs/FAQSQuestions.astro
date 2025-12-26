@@ -171,24 +171,24 @@ const hasFaqs = allFaqItems.length > 0;
   });
 
   // Category Filtering Logic
+  // const filterButtons = document.querySelectorAll("[data-filter-value]");
+  // const faqListContainer = document.getElementById("faq-filterable-list");
   const filterButtons = document.querySelectorAll("[data-filter-value]");
-  const faqListContainer = document.getElementById("faq-filterable-list");
-  const categoryGroups = faqListContainer
-    ? faqListContainer.querySelectorAll("[data-category-group]")
-    : document.querySelectorAll("[data-category-group]");
+  const categoryGroups = document.querySelectorAll("[data-category-group]");
 
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const filterValue = button.getAttribute("data-filter-value");
 
-      // Update active state on buttons
+      // 1. Update active button state
       filterButtons.forEach((btn) => btn.classList.remove("active"));
       button.classList.add("active");
 
-      // Toggle visibility of category groups
+      // 2. Filter Groups
       categoryGroups.forEach((group) => {
         const groupCategory = group.getAttribute("data-category-group");
 
+        // "all" shows everything; otherwise match the category ID
         if (filterValue === "all" || groupCategory === filterValue) {
           group.style.display = "block";
         } else {
