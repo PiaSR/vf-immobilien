@@ -53,7 +53,7 @@ interface Property {
 // Empty preference = "no preference" (matches anything).
 function propertyMatchesSubscriber(property: Property, subscriber: Subscriber): boolean {
   // 1. Vermarktungsart — required match
-  if (subscriber.vermarktungsart) {
+  if (subscriber.vermarktungsart && subscriber.vermarktungsart !== 'beides') {
     const subType = subscriber.vermarktungsart === 'miete' ? 'Miete' : 'Kauf';
     if (property.marketingTypeTitle !== subType) return false;
   }
@@ -86,7 +86,10 @@ function propertyMatchesSubscriber(property: Property, subscriber: Subscriber): 
   }
 
   // 6. Preis — range match (compare against the relevant price field)
-  const price = property.marketingTypeTitle === 'Kauf' ? property.purchasePrice : property.rentalPrice;
+  // For "beides", check whichever price field the property has
+  const price = property.marketingTypeTitle === 'Kauf'
+    ? property.purchasePrice
+    : property.rentalPrice;
   if (subscriber.preisMin != null && price != null) {
     if (price < subscriber.preisMin) return false;
   }
@@ -312,7 +315,7 @@ export const POST: APIRoute = async ({ request }) => {
   const emailResults = await Promise.allSettled(
     matched.map(subscriber =>
       resend.emails.send({
-        from: 'office@vf-immobilien.at',
+        from: 'suchabo@vf-immobilien.at',
         to: subscriber.email,
         subject: `🏠 Neues Objekt: ${property.name}${property.locationVienna || property.locationSurrounding ? ` – ${property.locationVienna || property.locationSurrounding}` : ''}`,
         html: buildEmailHtml(subscriber, property),

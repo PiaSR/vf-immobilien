@@ -42,18 +42,11 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // --- 3. Check if this email already has an active subscription ---
-  const existing = await sanityWriteClient.fetch(
-    `*[_type == "subscriber" && email == $email && active == true][0]._id`,
-    { email }
+  // --- 3. Check if this email already exists ---
+  const existingId = await sanityWriteClient.fetch(
+    `*[_type == "subscriber" && email == $email][0]._id`,
+    { email: email.trim().toLowerCase() }
   );
-
-  if (existing) {
-    return new Response(
-      JSON.stringify({ error: 'Diese E-Mail-Adresse hat bereits ein aktives Suchabo.' }),
-      { status: 409, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
 
   // --- 4. Build the subscriber document ---
   const subscriber: Record<string, any> = {
@@ -62,8 +55,17 @@ export const POST: APIRoute = async ({ request }) => {
     lastName: lastName.trim(),
     email: email.trim().toLowerCase(),
     active: true,
-    subscribedAt: new Date().toISOString(),
     vermarktungsart,
+    // Clear optional fields first — they'll be re-set below if provided.
+    // This ensures old values don't linger when someone updates their prefs.
+    objektarten: [],
+    bezirke: [],
+    zimmerMin: null,
+    zimmerMax: null,
+    flaecheMin: null,
+    flaecheMax: null,
+    preisMin: null,
+    preisMax: null,
   };
 
   // Only include optional fields if they have actual values
@@ -76,12 +78,27 @@ export const POST: APIRoute = async ({ request }) => {
   if (body.preisMin != null && body.preisMin !== '') subscriber.preisMin = Number(body.preisMin);
   if (body.preisMax != null && body.preisMax !== '') subscriber.preisMax = Number(body.preisMax);
 
-  // --- 5. Save to Sanity ---
+  // --- 5. Create or update ---
   try {
-    await sanityWriteClient.create(subscriber);
+    const isUpdate = !!existingId;
+
+    if (isUpdate) {
+      // Patch existing document with new preferences
+      await sanityWriteClient.patch(existingId).set(subscriber).commit();
+    } else {
+      // New subscriber — set the subscribedAt timestamp
+      subscriber.subscribedAt = new Date().toISOString();
+      await sanityWriteClient.create(subscriber);
+    }
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Suchabo erfolgreich eingerichtet!' }),
+      JSON.stringify({
+        success: true,
+        updated: isUpdate,
+        message: isUpdate
+          ? 'Ihr Suchabo wurde aktualisiert!'
+          : 'Suchabo erfolgreich eingerichtet!',
+      }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {

@@ -136,6 +136,10 @@ const districts: Record<string, string[]> = {
             <label class="radio-classic-label">
               <input type="radio" name="vermarktungsart" value="kauf" /> Kauf
             </label>
+            <label class="radio-classic-label">
+              <input type="radio" name="vermarktungsart" value="beides" />
+              Beides
+            </label>
           </div>
           <p id="error-vermarktungsart" class="field-error hidden">
             Bitte wählen Sie Miete oder Kauf.
@@ -834,6 +838,7 @@ const districts: Record<string, string[]> = {
       )?.value;
       priceGroupKauf?.classList.toggle("hidden", vmArt === "miete");
       priceGroupMiete?.classList.toggle("hidden", vmArt === "kauf");
+      // "beides" or unset = show both
     }
 
     // --- Update tab summary texts ---
@@ -1094,6 +1099,19 @@ const districts: Record<string, string[]> = {
         const data = await response.json();
 
         if (response.ok && data.success) {
+          // Show success — message differs for new vs update
+          const successTitle = document.querySelector(
+            "#subscription-success h3"
+          );
+          const successText = document.querySelector("#subscription-success p");
+          if (successTitle)
+            successTitle.textContent = data.updated
+              ? "Suchabo erfolgreich aktualisiert!"
+              : "Suchabo erfolgreich eingerichtet!";
+          if (successText)
+            successText.textContent = data.updated
+              ? "Ihre Suchpräferenzen wurden gespeichert."
+              : "Sie erhalten eine E-Mail, sobald ein passendes Objekt inseriert wird.";
           // Show success
           document
             .querySelector(".filter-heading-wrapper")
