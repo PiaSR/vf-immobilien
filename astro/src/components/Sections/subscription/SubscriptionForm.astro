@@ -1059,7 +1059,9 @@ const districts: Record<string, string[]> = {
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", (e) => {
+    if (e._subscriptionInit) return;
+    e._subscriptionInit = true;
     const panelSequence = ["immobilie", "ort", "groesse", "preis", "kontakt"];
     let currentStep = 0;
     let maxReachedStep = 0;
@@ -1424,9 +1426,11 @@ const districts: Record<string, string[]> = {
       });
     });
 
-    document
-      .getElementById("submit-button")
-      ?.addEventListener("click", handleSubmit);
+    document.getElementById("submit-button")?.addEventListener("click", (e) => {
+      if (e._submitHandled) return;
+      e._submitHandled = true;
+      handleSubmit();
+    });
 
     errorRetry?.addEventListener("click", () => {
       errorEl?.classList.add("hidden");

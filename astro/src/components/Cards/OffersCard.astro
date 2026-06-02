@@ -189,7 +189,9 @@ const { service, isReversed } = Astro.props;
     const icon = header.querySelector(".collapsible-icon");
     const list = header.nextElementSibling; // The list is the next sibling element
 
-    header.addEventListener("click", () => {
+    header.addEventListener("click", (e) => {
+      if (e._collapsibleHandled) return;
+      e._collapsibleHandled = true;
       // Toggle the 'active' class on both the icon and the list
       icon.classList.toggle("active");
       list.classList.toggle("active");

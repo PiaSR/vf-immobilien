@@ -43,13 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // --- 3. Check if this email already exists ---
-  const existingId = await sanityWriteClient.fetch(
-    `*[_type == "subscriber" && email == $email][0]._id`,
-    { email: email.trim().toLowerCase() }
-  );
-
-  // --- 4. Build the subscriber document ---
+  // --- 3. Build the subscriber document ---
   const subscriber: Record<string, any> = {
     _type: 'subscriber',
     firstName: firstName.trim(),
@@ -81,6 +75,10 @@ export const POST: APIRoute = async ({ request }) => {
 
   // --- 5. Create or update ---
   try {
+    const existingId = await sanityWriteClient.fetch(
+      `*[_type == "subscriber" && email == $email][0]._id`,
+      { email: email.trim().toLowerCase() }
+    );
     const isUpdate = !!existingId;
     let savedId: string;
 

@@ -996,11 +996,15 @@ const renderProperty = (data) => {
 
   // Add click listeners for main gallery navigation
   document.getElementById("next-button").addEventListener("click", (e) => {
+    if (e._navHandled) return;
+    e._navHandled = true;
     e.preventDefault(); // Stop image from jumping up
     e.currentTarget.blur();
     nextImage();
   });
   document.getElementById("prev-button").addEventListener("click", (e) => {
+    if (e._navHandled) return;
+    e._navHandled = true;
     e.preventDefault(); // Stop image from jumping up
     e.currentTarget.blur();
     prevImage();
@@ -1015,11 +1019,21 @@ const renderProperty = (data) => {
   document
     .getElementById("modal-close")
     .addEventListener("click", closeModal);
-  document.getElementById("modal-next").addEventListener("click", nextImage);
-  document.getElementById("modal-prev").addEventListener("click", prevImage);
+  document.getElementById("modal-next").addEventListener("click", (e) => {
+    if (e._navHandled) return;
+    e._navHandled = true;
+    nextImage();
+  });
+  document.getElementById("modal-prev").addEventListener("click", (e) => {
+    if (e._navHandled) return;
+    e._navHandled = true;
+    prevImage();
+  });
 
   // Add keyboard navigation for the modal
   document.addEventListener("keydown", (e) => {
+    if (e._kbHandled) return;
+    e._kbHandled = true;
     if (e.key === "Escape") {
       closeModal();
     } else if (

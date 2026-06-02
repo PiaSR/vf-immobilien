@@ -514,6 +514,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
 
   // Funktion, um Fehler bei der Eingabe sofort zu entfernen
   function handleInput(event) {
+    if (event._inputHandled) return;
+    event._inputHandled = true;
     const field = event.target;
 
     // Checkbox is special, process separately
@@ -546,6 +548,8 @@ import ButtonArrow from "../../Base/ButtonArrow.astro";
   // Handle form submission using AJAX (Fetch API)
   form.addEventListener("submit", async function (event) {
     event.preventDefault(); // Standard-Formularübermittlung verhindern
+    if (event._submitHandled) return;
+    event._submitHandled = true;
 
     if (!validateForm()) {
       // --- START DEBUG LOGGING ---

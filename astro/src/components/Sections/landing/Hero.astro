@@ -54,7 +54,9 @@ import HeroHeader from "../../Base/HeroHeader.astro";
 <script>
   import gsap from "gsap";
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", (e) => {
+    if (e._heroInit) return;
+    e._heroInit = true;
     const list = document.querySelector(".animated-word-list");
     const items = list.querySelectorAll("span");
     const wrapper = document.querySelector(".animated-word-wrapper");
