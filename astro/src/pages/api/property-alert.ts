@@ -108,10 +108,14 @@ function buildEmailHtml(subscriber: Subscriber, property: Property): string {
     ? new Intl.NumberFormat('de-AT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(price)
     : 'Preis auf Anfrage';
   const location = property.locationVienna || property.locationSurrounding || '';
-  const propertyUrl = `https://vf-immobilien.at/immobilien/${property.slug}`;
+  const propertyUrl = `https://vf-immobilien.at/properties/${property.slug}`;
+  const unsubUrl = `https://vf-immobilien.at/api/unsubscribe?id=${subscriber._id}`;
+  const updateUrl = `https://vf-immobilien.at/subscription`;
 
-  return `
-<!DOCTYPE html>
+  const hasRooms = property.rooms != null;
+  const hasArea = property.livingArea != null;
+
+  return `<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -124,86 +128,66 @@ function buildEmailHtml(subscriber: Subscriber, property: Property): string {
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-          <!-- Header -->
           <tr>
             <td style="background-color:#1a3329;padding:32px 40px;border-radius:8px 8px 0 0;text-align:center;">
+              <img src="https://vf-immobilien.at/logos/Viki-new-logo-only-green-1.svg" alt="VF Immobilien" width="52" height="50" style="display:block;margin:0 auto 16px;" />
               <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:normal;letter-spacing:1px;">VF Immobilien</h1>
               <p style="color:#a8c4b0;margin:8px 0 0;font-size:13px;letter-spacing:0.5px;">SUCHABO — NEUES OBJEKT</p>
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="background-color:#ffffff;padding:40px;border-radius:0 0 8px 8px;">
 
-              <p style="color:#2f3c35;font-size:16px;margin:0 0 24px;">
-                Liebe/r ${subscriber.firstName},
-              </p>
+              <p style="color:#2f3c35;font-size:16px;margin:0 0 24px;">Liebe/r ${subscriber.firstName},</p>
               <p style="color:#4a5c52;font-size:15px;line-height:1.6;margin:0 0 32px;">
-                ein neues Objekt entspricht Ihrem Suchprofil. Hier sind die Details:
+                ein neues Objekt entspricht Ihrem Suchprofil:
               </p>
 
-              <!-- Property card -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e0e8e3;border-radius:8px;overflow:hidden;margin-bottom:32px;">
-                ${property.imageUrl ? `
+              <!-- Property card — entire card is the link -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
                 <tr>
-                  <td style="padding:0;">
-                    <img src="${property.imageUrl}" alt="${property.name}" width="600"
-                      style="width:100%;max-width:600px;height:200px;object-fit:cover;display:block;" />
-                  </td>
-                </tr>` : ''}
-                <tr>
-                  <td style="padding:24px;">
-                    <p style="margin:0 0 4px;font-size:11px;color:#7a9a82;text-transform:uppercase;letter-spacing:1px;">
-                      ${property.marketingTypeTitle} · ${property.propertyType}${location ? ` · ${location}` : ''}
-                    </p>
-                    <h2 style="margin:0 0 16px;font-size:20px;color:#1a3329;font-weight:normal;">
-                      ${property.name}
-                    </h2>
-
-                    <!-- Key details grid -->
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        ${property.rooms != null ? `
-                        <td style="padding:8px 16px 8px 0;border-right:1px solid #e0e8e3;text-align:center;">
-                          <p style="margin:0;font-size:20px;font-weight:bold;color:#1a3329;">${property.rooms}</p>
-                          <p style="margin:4px 0 0;font-size:11px;color:#7a9a82;text-transform:uppercase;">Zimmer</p>
-                        </td>` : ''}
-                        ${property.livingArea != null ? `
-                        <td style="padding:8px 16px;${property.rooms != null ? 'border-right:1px solid #e0e8e3;' : ''}text-align:center;">
-                          <p style="margin:0;font-size:20px;font-weight:bold;color:#1a3329;">${property.livingArea} m²</p>
-                          <p style="margin:4px 0 0;font-size:11px;color:#7a9a82;text-transform:uppercase;">Wohnfläche</p>
-                        </td>` : ''}
-                        <td style="padding:8px 0 8px 16px;text-align:center;">
-                          <p style="margin:0;font-size:20px;font-weight:bold;color:#1a3329;">${priceFormatted}</p>
-                          <p style="margin:4px 0 0;font-size:11px;color:#7a9a82;text-transform:uppercase;">${priceLabel}</p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- CTA button -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center">
-                    <a href="${propertyUrl}"
-                      style="display:inline-block;background-color:#1a3329;color:#ffffff;text-decoration:none;
-                             padding:14px 36px;border-radius:6px;font-size:15px;letter-spacing:0.5px;">
-                      Objekt ansehen →
+                  <td>
+                    <a href="${propertyUrl}" style="display:block;text-decoration:none;border:1px solid #e0e8e3;border-radius:8px;overflow:hidden;color:inherit;">
+                      ${property.imageUrl ? `
+                      <img src="${property.imageUrl}" alt="${property.name}" width="600"
+                        style="width:100%;max-width:600px;height:220px;object-fit:cover;display:block;" />` : ''}
+                      <div style="padding:24px;">
+                        <p style="margin:0 0 4px;font-size:11px;color:#7a9a82;text-transform:uppercase;letter-spacing:1px;">
+                          ${property.marketingTypeTitle} · ${property.propertyType}${location ? ` · ${location}` : ''}
+                        </p>
+                        <h2 style="margin:0 0 20px;font-size:20px;color:#1a3329;font-weight:normal;">
+                          ${property.name}
+                        </h2>
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            ${hasRooms ? `
+                            <td style="padding:8px 16px 8px 0;border-right:1px solid #e0e8e3;text-align:center;">
+                              <p style="margin:0;font-size:20px;font-weight:bold;color:#1a3329;">${property.rooms}</p>
+                              <p style="margin:4px 0 0;font-size:11px;color:#7a9a82;text-transform:uppercase;">Zimmer</p>
+                            </td>` : ''}
+                            ${hasArea ? `
+                            <td style="padding:8px 16px;${hasRooms ? 'border-right:1px solid #e0e8e3;' : ''}text-align:center;">
+                              <p style="margin:0;font-size:20px;font-weight:bold;color:#1a3329;">${property.livingArea} m²</p>
+                              <p style="margin:4px 0 0;font-size:11px;color:#7a9a82;text-transform:uppercase;">Wohnfläche</p>
+                            </td>` : ''}
+                            <td style="padding:8px 0 8px ${hasRooms || hasArea ? '16px' : '0'};text-align:center;">
+                              <p style="margin:0;font-size:20px;font-weight:bold;color:#1a3329;">${priceFormatted}</p>
+                              <p style="margin:4px 0 0;font-size:11px;color:#7a9a82;text-transform:uppercase;">${priceLabel}</p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <!-- Divider -->
-              <hr style="border:none;border-top:1px solid #e0e8e3;margin:40px 0;" />
+              <hr style="border:none;border-top:1px solid #e0e8e3;margin:0 0 24px;" />
 
-              <!-- Unsubscribe note -->
-              <p style="color:#9ab0a0;font-size:12px;text-align:center;margin:0;line-height:1.6;">
-                Sie erhalten diese E-Mail, weil Sie ein Suchabo bei VF Immobilien eingerichtet haben.<br/>
-                Wenn Sie keine weiteren Benachrichtigungen wünschen, antworten Sie einfach auf diese E-Mail.
+              <p style="color:#9ab0a0;font-size:12px;text-align:center;margin:0;line-height:1.8;">
+                Sie erhalten diese E-Mail, weil Sie ein Suchabo bei VF Immobilien eingerichtet haben.<br />
+                <a href="${updateUrl}" style="color:#9ab0a0;">Präferenzen ändern</a> · <a href="${unsubUrl}" style="color:#9ab0a0;">Vom Suchabo abmelden</a>
               </p>
             </td>
           </tr>
@@ -213,8 +197,7 @@ function buildEmailHtml(subscriber: Subscriber, property: Property): string {
     </tr>
   </table>
 </body>
-</html>
-  `.trim();
+</html>`.trim();
 }
 
 // --- Webhook handler ---
@@ -315,7 +298,7 @@ export const POST: APIRoute = async ({ request }) => {
   const emailResults = await Promise.allSettled(
     matched.map(subscriber =>
       resend.emails.send({
-        from: 'suchabo@vf-immobilien.at',
+        from: 'office@vf-immobilien.at',
         to: subscriber.email,
         subject: `🏠 Neues Objekt: ${property.name}${property.locationVienna || property.locationSurrounding ? ` – ${property.locationVienna || property.locationSurrounding}` : ''}`,
         html: buildEmailHtml(subscriber, property),

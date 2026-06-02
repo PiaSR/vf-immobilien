@@ -1,7 +1,6 @@
 ---
 import { sanityClient } from "../../../lib/sanityClient";
 
-// --- 1. Vienna Districts (hardcoded, same as filter) ---
 const viennaDistricts = [
   "1. Innere Stadt",
   "2. Leopoldstadt",
@@ -28,8 +27,13 @@ const viennaDistricts = [
   "23. Liesing",
 ];
 
-// --- 2. Fetch dynamic options from Sanity ---
-let filterData = { propertyTypes: [], surroundingDistrictsRaw: [] };
+let filterData: {
+  propertyTypes: string[];
+  surroundingDistrictsRaw: (string | null)[];
+} = {
+  propertyTypes: [],
+  surroundingDistrictsRaw: [],
+};
 try {
   filterData = await sanityClient.fetch(`{
     "propertyTypes": *[_type == "propertyType"].title,
@@ -45,9 +49,7 @@ const objektarten: string[] = filterData.propertyTypes?.length
 
 const surroundingDistricts: string[] = Array.from(
   new Set(
-    (filterData.surroundingDistrictsRaw || []).filter(
-      (l: string | null): l is string => !!l
-    )
+    (filterData.surroundingDistrictsRaw || []).filter((l): l is string => !!l)
   )
 );
 
@@ -61,65 +63,65 @@ const districts: Record<string, string[]> = {
 
 <section class="section-subscription">
   <div class="subscription-wrapper">
-    <!-- Step indicator -->
+    <!-- Step indicator — all 5 dots always visible -->
     <div class="step-indicator" id="step-indicator">
       <div class="step-dot active" data-step="0"></div>
-      <div class="step-line"></div>
+      <div class="step-line" id="line-0"></div>
       <div class="step-dot" data-step="1"></div>
-      <div class="step-line"></div>
+      <div class="step-line" id="line-1"></div>
       <div class="step-dot" data-step="2"></div>
-      <div class="step-line"></div>
+      <div class="step-line" id="line-2"></div>
       <div class="step-dot" data-step="3"></div>
-      <div class="step-line"></div>
+      <div class="step-line" id="line-3"></div>
       <div class="step-dot" data-step="4"></div>
     </div>
 
     <!-- Tab nav -->
-    <div class="filter-heading-wrapper" id="tab-nav">
-      <div data-tab="immobilie" class="filter-heading-tab tab-container active">
-        <div class="filter-heading-tab-name">Immobilie</div>
-        <div id="selection-immobilie" class="filter-heading-tab-selection">
-          Alle Kategorien
+    <div class="filter-heading-bar" id="tab-nav">
+      <div class="filter-group-wrapper">
+        <div
+          data-tab="immobilie"
+          class="filter-heading-tab tab-container active"
+        >
+          <div class="filter-heading-tab-name">Immobilie</div>
+          <div id="selection-immobilie" class="filter-heading-tab-selection">
+            Alle Kategorien
+          </div>
         </div>
       </div>
-      <div data-tab="ort" class="filter-heading-tab tab-container">
-        <div class="filter-heading-tab-name">Ort</div>
-        <div id="selection-ort" class="filter-heading-tab-selection">
-          Alle Orte
+      <div class="filter-group-wrapper">
+        <div data-tab="ort" class="filter-heading-tab tab-container">
+          <div class="filter-heading-tab-name">Ort</div>
+          <div id="selection-ort" class="filter-heading-tab-selection">
+            Alle Orte
+          </div>
         </div>
       </div>
-      <div data-tab="groesse" class="filter-heading-tab tab-container">
-        <div class="filter-heading-tab-name">Größe</div>
-        <div id="selection-groesse" class="filter-heading-tab-selection">
-          Jede Größe
+      <div class="filter-group-wrapper">
+        <div data-tab="groesse" class="filter-heading-tab tab-container">
+          <div class="filter-heading-tab-name">Größe</div>
+          <div id="selection-groesse" class="filter-heading-tab-selection">
+            Jede Größe
+          </div>
         </div>
       </div>
-      <div data-tab="preis" class="filter-heading-tab tab-container">
-        <div class="filter-heading-tab-name">Preis</div>
-        <div id="selection-preis" class="filter-heading-tab-selection">
-          Jeder Preis
+      <div class="filter-group-wrapper">
+        <div data-tab="preis" class="filter-heading-tab tab-container">
+          <div class="filter-heading-tab-name">Preis</div>
+          <div id="selection-preis" class="filter-heading-tab-selection">
+            Jeder Preis
+          </div>
         </div>
       </div>
-      <div data-tab="kontakt" class="filter-heading-tab tab-container">
-        <div class="filter-heading-tab-name">Ihre Daten</div>
-        <div id="selection-kontakt" class="filter-heading-tab-selection">
-          Angaben
+      <div class="filter-group-wrapper">
+        <div data-tab="kontakt" class="filter-heading-tab tab-container">
+          <div class="filter-heading-tab-name">Ihre Daten</div>
+          <div id="selection-kontakt" class="filter-heading-tab-selection">
+            Angaben
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Hidden form inputs — populated by JS before submit -->
-    <form id="subscription-form">
-      <input type="hidden" name="vermarktungsart" id="hidden-vermarktungsart" />
-      <input type="hidden" name="objektarten" id="hidden-objektarten" />
-      <input type="hidden" name="bezirke" id="hidden-bezirke" />
-      <input type="hidden" name="zimmerMin" id="hidden-zimmerMin" />
-      <input type="hidden" name="zimmerMax" id="hidden-zimmerMax" />
-      <input type="hidden" name="flaecheMin" id="hidden-flaecheMin" />
-      <input type="hidden" name="flaecheMax" id="hidden-flaecheMax" />
-      <input type="hidden" name="preisMin" id="hidden-preisMin" />
-      <input type="hidden" name="preisMax" id="hidden-preisMax" />
-    </form>
 
     <!-- Panels -->
     <div class="filter-panel-wrapper">
@@ -129,7 +131,7 @@ const districts: Record<string, string[]> = {
           <h2 class="filter-form-heading">
             Vermarktungsart <span class="required">*</span>
           </h2>
-          <div class="radio-input-group">
+          <div class="filter-form-input-wrapper radio-input-group">
             <label class="radio-classic-label">
               <input type="radio" name="vermarktungsart" value="miete" /> Miete
             </label>
@@ -142,14 +144,16 @@ const districts: Record<string, string[]> = {
             </label>
           </div>
           <p id="error-vermarktungsart" class="field-error hidden">
-            Bitte wählen Sie Miete oder Kauf.
+            Bitte wählen Sie eine Option.
           </p>
         </div>
         <div class="filter-form-group">
           <h2 class="filter-form-heading">
             Objektart <span class="optional">(optional)</span>
           </h2>
-          <div class="checkbox-columns objektart-filter">
+          <div
+            class="filter-form-input-wrapper checkbox-columns objektart-filter"
+          >
             {
               objektarten.map((type) => (
                 <label class="checkbox-label">
@@ -181,7 +185,7 @@ const districts: Record<string, string[]> = {
               <h2 class="filter-form-heading">
                 {region} <span class="optional">(optional)</span>
               </h2>
-              <div class="checkbox-columns">
+              <div class="filter-form-input-wrapper checkbox-columns">
                 <div class="checkbox-column">
                   {districts[region]
                     .slice(0, Math.ceil(districts[region].length / 2))
@@ -355,7 +359,7 @@ const districts: Record<string, string[]> = {
                 autocomplete="given-name"
               />
               <p id="error-firstName" class="field-error hidden">
-                Bitte geben Sie Ihren Vornamen ein.
+                Vorname erforderlich.
               </p>
             </div>
             <div class="filter-form-group">
@@ -371,7 +375,7 @@ const districts: Record<string, string[]> = {
                 autocomplete="family-name"
               />
               <p id="error-lastName" class="field-error hidden">
-                Bitte geben Sie Ihren Nachnamen ein.
+                Nachname erforderlich.
               </p>
             </div>
           </div>
@@ -388,35 +392,57 @@ const districts: Record<string, string[]> = {
               autocomplete="email"
             />
             <p id="error-email" class="field-error hidden">
-              Bitte geben Sie eine gültige E-Mail-Adresse ein.
+              Bitte gültige E-Mail-Adresse eingeben.
+            </p>
+          </div>
+          <div class="filter-form-group consent-group">
+            <label class="consent-label">
+              <input
+                type="checkbox"
+                id="consent-checkbox"
+                name="consent"
+                class="checkbox-input"
+              />
+              <span
+                >Ich stimme zu, dass meine Daten zur Bearbeitung meiner
+                Immobiliensuche gespeichert werden. Weitere Informationen in
+                unserer <a href="/datenschutz" class="privacy-link"
+                  >Datenschutzerklärung</a
+                >. <span class="required">*</span></span
+              >
+            </label>
+            <p id="error-consent" class="field-error hidden">
+              Bitte stimmen Sie der Datenschutzerklärung zu.
             </p>
           </div>
           <p class="privacy-note">
-            Mit dem Absenden stimmen Sie zu, dass Ihre Daten zur Bearbeitung
-            Ihrer Immobiliensuche gespeichert und verwendet werden. Sie können
-            sich jederzeit abmelden.
+            Ihre Daten werden ausschließlich für Ihre Immobiliensuche verwendet
+            und nicht an Dritte weitergegeben. Sie können Ihre Einwilligung
+            jederzeit widerrufen.
           </p>
         </div>
         <div class="panel-footer">
           <button type="button" class="back-button" data-next="3"
             >← Zurück</button
           >
-          <button type="button" id="submit-button" class="submit-button">
+          <button type="button" id="submit-button" class="next-button">
             <span id="submit-label">Suchabo starten</span>
             <span id="submit-spinner" class="spinner hidden"></span>
           </button>
         </div>
       </div>
-    </div>
+    </div><!-- /filter-panel-wrapper -->
 
-    <!-- Success / Error messages -->
+    <!-- Success -->
     <div id="subscription-success" class="feedback-message success hidden">
       <div class="feedback-icon">✓</div>
-      <h3>Suchabo erfolgreich eingerichtet!</h3>
+      <h3>Suchabo eingerichtet!</h3>
       <p>
         Sie erhalten eine E-Mail, sobald ein passendes Objekt inseriert wird.
       </p>
     </div>
+
+    <!-- Error -->
     <div id="subscription-error" class="feedback-message error hidden">
       <div class="feedback-icon">✕</div>
       <h3 id="error-heading">Fehler</h3>
@@ -429,92 +455,96 @@ const districts: Record<string, string[]> = {
 </section>
 
 <style>
+  /* ─────────────────────────────────────────
+     PAGE WRAPPER
+  ───────────────────────────────────────── */
   .section-subscription {
-    padding: var(--spacing-2xl) var(--spacing-md);
+    padding: var(--spacing-xl) 0;
     background-color: var(--color-brand-light-green);
-    min-height: 60vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
   }
-
   .subscription-wrapper {
-    width: 100%;
-    max-width: 600px;
-    background-color: var(--color-neutral-lightest);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-xl);
-    box-shadow:
-      0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    max-width: 1200px;
+    margin: var(--spacing-lg) auto;
+    padding: var(--spacing-sm) var(--spacing-md) 0;
+    /* Prevent ANY child from blowing out the width */
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
-  /* Step indicator dots */
+  /* ─────────────────────────────────────────
+     STEP INDICATOR
+  ───────────────────────────────────────── */
   .step-indicator {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
   }
   .step-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: var(--color-neutral-medium);
-    transition: background-color 0.3s;
+    background-color: var(--color-neutral-lightest);
+    border: 2px solid var(--color-neutral-lightest);
     flex-shrink: 0;
+    transition:
+      background-color 0.3s,
+      border-color 0.3s,
+      transform 0.2s;
   }
   .step-dot.active {
     background-color: var(--color-brand-dark-green);
-    width: 12px;
-    height: 12px;
+    border-color: var(--color-brand-dark-green);
+    transform: scale(1.3);
   }
   .step-dot.completed {
-    background-color: var(
-      --color-brand-medium-green,
-      var(--color-brand-dark-green)
-    );
+    background-color: var(--color-brand-dark-green);
+    border-color: var(--color-brand-dark-green);
   }
   .step-line {
     flex: 1;
     height: 2px;
-    background-color: var(--color-neutral-light);
-    max-width: 80px;
+    background-color: var(--color-neutral-lightest);
+    transition: background-color 0.3s;
+  }
+  .step-line.completed {
+    background-color: var(--color-brand-dark-green);
   }
 
-  /* Tab nav */
-  .filter-heading-wrapper {
-    display: flex;
-    gap: var(--spacing-xs);
-    margin-bottom: var(--spacing-lg);
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: none;
+  /* ─────────────────────────────────────────
+     TAB NAV  — matches filter-heading-bar exactly
+  ───────────────────────────────────────── */
+  .filter-heading-bar {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-sm);
+    background-color: var(--color-neutral-lightest);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: var(--spacing-sm);
   }
-  .filter-heading-wrapper::-webkit-scrollbar {
-    display: none;
+  .filter-group-wrapper {
+    min-width: 0; /* prevent grid blowout */
   }
-
   .filter-heading-tab {
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
-    white-space: nowrap;
-    flex-shrink: 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
     transition: background-color 0.2s;
-    border: 2px solid transparent;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .filter-heading-tab:hover {
-    background-color: var(--color-neutral-light);
-  }
+  .filter-heading-tab:hover,
   .filter-heading-tab.active {
-    border-color: var(--color-brand-dark-green);
-    background-color: var(--color-neutral-light);
+    background-color: var(--color-neutral-green-grey);
   }
   .filter-heading-tab-name {
     font-size: var(--font-size-caption);
     color: var(--color-neutral-medium);
+    white-space: nowrap;
   }
   .filter-heading-tab-selection {
     font-size: var(--font-size-body-small);
@@ -523,33 +553,44 @@ const districts: Record<string, string[]> = {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 120px;
   }
 
-  /* Panels */
+  /* ─────────────────────────────────────────
+     PANEL CARD
+  ───────────────────────────────────────── */
   .filter-panel-wrapper {
-    position: relative;
+    background-color: var(--color-neutral-lightest);
+    border: 1px solid var(--color-neutral-light);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    /* Prevent content from overflowing the card */
+    overflow: hidden;
   }
   .filter-panel {
     display: none;
     flex-direction: column;
-    gap: var(--spacing-md);
+    padding: var(--spacing-xl);
+    /* Prevent any child overflowing this panel */
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
   }
   .filter-panel.active {
     display: flex;
   }
 
+  /* ─────────────────────────────────────────
+     FORM GROUPS
+  ───────────────────────────────────────── */
   .filter-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    /* Prevent label/input from breaking out */
+    max-width: 100%;
   }
   .filter-form-heading {
-    font-size: var(--font-size-body-small);
-    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h6);
+    margin-bottom: var(--spacing-md);
     color: var(--color-neutral-dark);
-    margin: 0;
   }
   .required {
     color: #e53e3e;
@@ -561,31 +602,45 @@ const districts: Record<string, string[]> = {
     font-size: var(--font-size-caption);
   }
 
-  /* Radio */
+  /* ─────────────────────────────────────────
+     RADIO
+  ───────────────────────────────────────── */
   .radio-input-group {
     display: flex;
-    gap: var(--spacing-lg);
     flex-wrap: wrap;
+    gap: var(--spacing-md);
   }
   .radio-classic-label {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-neutral-green-grey);
     cursor: pointer;
+    user-select: none;
     font-size: var(--font-size-body-small);
     color: var(--color-neutral-font-dark);
-    padding: var(--spacing-xs) 0;
+    white-space: nowrap;
+  }
+  .radio-classic-label input[type="radio"] {
+    margin: 0;
   }
 
-  /* Checkboxes */
+  /* ─────────────────────────────────────────
+     CHECKBOXES
+  ───────────────────────────────────────── */
   .checkbox-columns {
     display: flex;
-    gap: var(--spacing-lg) var(--spacing-xl);
+    flex-direction: row;
     flex-wrap: wrap;
+    gap: var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
   }
   .checkbox-column {
-    flex: 1;
-    min-width: 150px;
+    flex-basis: calc(50% - var(--spacing-md));
+    flex-grow: 1;
+    min-width: 0; /* prevent blowout */
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -595,37 +650,52 @@ const districts: Record<string, string[]> = {
     flex-wrap: wrap;
   }
   .checkbox-label {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--spacing-sm);
     cursor: pointer;
+    user-select: none;
     font-size: var(--font-size-body-small);
     color: var(--color-neutral-font-dark);
+    min-width: 0;
+  }
+  .checkbox-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .checkbox-input {
     margin: 0;
+    flex-shrink: 0;
   }
 
-  /* Number inputs */
+  /* ─────────────────────────────────────────
+     NUMBER INPUTS
+  ───────────────────────────────────────── */
   .number-input-wrapper {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    max-width: 280px;
+    max-width: 300px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .text-field {
     padding: var(--spacing-sm);
+    background-color: var(--color-neutral-green-grey);
     border: 1px solid var(--color-neutral-medium);
     border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-body-small);
-    width: 90px;
+    width: 0; /* let flex-grow handle width */
     flex-grow: 1;
-    background-color: var(--color-neutral-lightest);
+    min-width: 0;
+    font-size: var(--font-size-body-small);
+    box-sizing: border-box;
   }
   .text-field.full-width {
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+    flex-grow: 1;
+    min-width: 0;
+    height: 2.75rem;
   }
   .input-separator {
     color: var(--color-neutral-medium);
@@ -636,23 +706,43 @@ const districts: Record<string, string[]> = {
     display: none !important;
   }
 
-  /* Contact step */
+  /* ─────────────────────────────────────────
+     CONTACT STEP
+  ───────────────────────────────────────── */
   .contact-fields {
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-lg);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .contact-fields .filter-form-group {
+    margin-bottom: 0;
+  }
+  .consent-label {
+    display: flex;
+    align-items: flex-start;
     gap: var(--spacing-sm);
+    cursor: pointer;
+    font-size: var(--font-size-body-small);
+    color: var(--color-neutral-font-dark);
+    line-height: 1.4;
+  }
+  .consent-label .checkbox-input {
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .privacy-link {
+    color: var(--color-brand-dark-green);
+    text-decoration: underline;
   }
   .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
   }
-  @media (max-width: 480px) {
-    .field-row {
-      grid-template-columns: 1fr;
-    }
-  }
-
   .privacy-note {
     font-size: var(--font-size-caption);
     color: var(--color-neutral-medium);
@@ -660,17 +750,21 @@ const districts: Record<string, string[]> = {
     margin-top: var(--spacing-sm);
   }
 
-  /* Validation */
+  /* ─────────────────────────────────────────
+     VALIDATION
+  ───────────────────────────────────────── */
   .field-error {
     font-size: var(--font-size-caption);
     color: #e53e3e;
-    margin: 0;
+    margin: 4px 0 0;
   }
   .field-error.hidden {
     display: none;
   }
 
-  /* Footer buttons */
+  /* ─────────────────────────────────────────
+     FOOTER BUTTONS
+  ───────────────────────────────────────── */
   .panel-footer {
     display: flex;
     justify-content: space-between;
@@ -678,34 +772,30 @@ const districts: Record<string, string[]> = {
     margin-top: var(--spacing-lg);
     padding-top: var(--spacing-md);
     border-top: 1px solid var(--color-neutral-light);
+    gap: var(--spacing-md);
   }
-  .next-button,
-  .submit-button {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-sm) var(--spacing-lg);
+  .next-button {
     background-color: var(--color-brand-dark-green);
     color: white;
+    padding: 0.75rem 1.5rem;
     border: none;
     border-radius: var(--border-radius);
-    font-size: var(--font-size-body-small);
-    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-body);
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
     transition: background-color 0.2s;
+    white-space: nowrap;
   }
-  .next-button:hover,
-  .submit-button:hover {
-    background-color: var(--color-brand-medium-green, #047857);
+  .next-button:hover {
+    background-color: var(--color-brand-medium-green);
   }
-  .next-button:disabled,
-  .submit-button:disabled {
+  .next-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
   .back-button {
-    display: inline-flex;
-    align-items: center;
     background: none;
     border: none;
     color: var(--color-brand-dark-green);
@@ -713,9 +803,15 @@ const districts: Record<string, string[]> = {
     cursor: pointer;
     text-decoration: underline;
     padding: 0;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  /* Spinner */
+  /* ─────────────────────────────────────────
+     SPINNER
+  ───────────────────────────────────────── */
   .spinner {
     width: 14px;
     height: 14px;
@@ -734,10 +830,16 @@ const districts: Record<string, string[]> = {
     }
   }
 
-  /* Feedback messages */
+  /* ─────────────────────────────────────────
+     FEEDBACK MESSAGES
+  ───────────────────────────────────────── */
   .feedback-message {
+    background-color: var(--color-neutral-lightest);
+    border: 1px solid var(--color-neutral-light);
+    border-radius: var(--border-radius);
     text-align: center;
     padding: var(--spacing-2xl) var(--spacing-xl);
+    box-sizing: border-box;
   }
   .feedback-message.hidden {
     display: none;
@@ -769,6 +871,143 @@ const districts: Record<string, string[]> = {
     color: var(--color-neutral-medium);
     font-size: var(--font-size-body-small);
   }
+
+  /* ─────────────────────────────────────────
+     MOBILE  (≤ 991px)  — mirrors property search
+  ───────────────────────────────────────── */
+  @media (max-width: 991px) {
+    /* Wrapper: full bleed, no side padding, small top gap for step dots */
+    .subscription-wrapper {
+      padding: var(--spacing-md) 0 0;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* Step dots: add padding so they don't hit the edge */
+    .step-indicator {
+      padding: 0 var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Tab bar: scroll horizontally, no grid, no border-radius */
+    .filter-heading-bar {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 0;
+      box-shadow: none;
+      border-bottom: 1px solid var(--color-neutral-light);
+      gap: 0;
+      padding: var(--spacing-xs);
+      margin-bottom: 0;
+    }
+    .filter-heading-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-group-wrapper {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .filter-heading-tab {
+      padding: var(--spacing-sm) var(--spacing-sm);
+      border-radius: var(--border-radius-sm);
+      width: 100%;
+      overflow: hidden;
+    }
+    .filter-heading-tab-selection {
+      max-width: 90px;
+    }
+
+    /* Panel card: full bleed, no side borders, no border-radius */
+    .filter-panel-wrapper {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      box-shadow: none;
+    }
+    .filter-panel {
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    /* Headings larger on mobile */
+    .filter-form-heading {
+      font-size: var(--font-size-h5);
+    }
+
+    /* Radio: stack vertically so they don't overflow */
+    .radio-input-group {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+    }
+    .radio-classic-label {
+      font-size: var(--font-size-body-base);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Checkboxes: single column on mobile */
+    .checkbox-columns {
+      flex-direction: column;
+    }
+    .checkbox-column {
+      flex-basis: 100%;
+      width: 100%;
+    }
+    .objektart-filter {
+      flex-direction: column;
+    }
+    .checkbox-label {
+      font-size: var(--font-size-body-base);
+    }
+
+    /* Number inputs: full width */
+    .number-input-wrapper {
+      max-width: 100%;
+      height: 3rem;
+    }
+    .text-field {
+      font-size: var(--font-size-body-base);
+      height: 100%;
+    }
+
+    /* Contact: stack first/last name */
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+    .text-field.full-width {
+      font-size: var(--font-size-body-base);
+    }
+
+    /* Footer: Weiter on top, Zurück below */
+    .panel-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .next-button {
+      flex: none;
+      width: 100%;
+      order: 1;
+      justify-content: center;
+      padding: var(--spacing-lg);
+      font-size: var(--font-size-body-large);
+    }
+    .back-button {
+      order: 2;
+      text-align: center;
+      padding: var(--spacing-sm) 0;
+    }
+
+    /* Feedback message: remove side radius */
+    .feedback-message {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      padding: var(--spacing-xl) var(--spacing-md);
+    }
+  }
 </style>
 
 <script>
@@ -779,72 +1018,73 @@ const districts: Record<string, string[]> = {
     const panelWrapper = document.querySelector(".filter-panel-wrapper");
     const tabNav = document.getElementById("tab-nav");
     const stepDots = document.querySelectorAll(".step-dot");
-    const formEl = document.getElementById(
-      "subscription-form"
-    ) as HTMLFormElement;
     const successEl = document.getElementById("subscription-success");
     const errorEl = document.getElementById("subscription-error");
     const errorHeading = document.getElementById("error-heading");
     const errorMsg = document.getElementById("error-message");
     const errorRetry = document.getElementById("error-retry");
-
-    // Price group elements
     const priceGroupKauf = document.querySelector(".price-group-kauf");
     const priceGroupMiete = document.querySelector(".price-group-miete");
+    const selImmobilie = document.getElementById("selection-immobilie");
+    const selOrt = document.getElementById("selection-ort");
+    const selGroesse = document.getElementById("selection-groesse");
+    const selPreis = document.getElementById("selection-preis");
 
-    // --- Tab selection text elements ---
-    const selectionImmobilie = document.getElementById("selection-immobilie");
-    const selectionOrt = document.getElementById("selection-ort");
-    const selectionGroesse = document.getElementById("selection-groesse");
-    const selectionPreis = document.getElementById("selection-preis");
-
-    // --- Show a specific step ---
+    // ── Show step ──
     function showStep(index: number) {
       if (index < 0 || index >= panelSequence.length) return;
       currentStep = index;
-      const panelName = panelSequence[index];
+      const name = panelSequence[index];
 
-      // Toggle panels
       document
         .querySelectorAll(".filter-panel")
         .forEach((p) => p.classList.remove("active"));
-      const panel = document.getElementById(`panel-${panelName}`);
-      if (panel) panel.classList.add("active");
+      document.getElementById(`panel-${name}`)?.classList.add("active");
 
-      // Toggle tabs
       document
         .querySelectorAll(".filter-heading-tab")
         .forEach((t) => t.classList.remove("active"));
-      const tab = document.querySelector(`[data-tab="${panelName}"]`);
-      if (tab) tab.classList.add("active");
+      const activeTab = document.querySelector(
+        `[data-tab="${name}"]`
+      ) as HTMLElement | null;
+      activeTab?.classList.add("active");
 
-      // Update step dots
+      // Scroll active tab into view on mobile
+      activeTab?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+
       stepDots.forEach((dot, i) => {
         dot.classList.remove("active", "completed");
         if (i === index) dot.classList.add("active");
         else if (i < index) dot.classList.add("completed");
       });
+      for (let i = 0; i < 4; i++) {
+        document
+          .getElementById(`line-${i}`)
+          ?.classList.toggle("completed", i < index);
+      }
 
-      // Handle price group visibility
-      if (panelName === "preis") updatePriceGroups();
+      if (name === "preis") updatePriceGroups();
     }
 
-    // --- Price group visibility ---
+    // ── Price visibility ──
     function updatePriceGroups() {
-      const vmArt = (
+      const vm = (
         document.querySelector(
           '[name="vermarktungsart"]:checked'
         ) as HTMLInputElement
       )?.value;
-      priceGroupKauf?.classList.toggle("hidden", vmArt === "miete");
-      priceGroupMiete?.classList.toggle("hidden", vmArt === "kauf");
-      // "beides" or unset = show both
+      priceGroupKauf?.classList.toggle("hidden", vm === "miete");
+      priceGroupMiete?.classList.toggle("hidden", vm === "kauf");
+      // "beides" or unset → both visible
     }
 
-    // --- Update tab summary texts ---
+    // ── Tab summary texts ──
     function updateTabTexts() {
-      // Immobilie
-      const vmArt = (
+      const vm = (
         document.querySelector(
           '[name="vermarktungsart"]:checked'
         ) as HTMLInputElement
@@ -852,31 +1092,33 @@ const districts: Record<string, string[]> = {
       const objArts = Array.from(
         document.querySelectorAll('[name="objektart"]:checked')
       ).map((el) => (el as HTMLInputElement).value);
-      let immText = "Alle Kategorien";
-      if (vmArt && objArts.length === 0)
-        immText = vmArt === "miete" ? "Mieten" : "Kaufen";
-      else if (vmArt && objArts.length === 1)
-        immText = `${objArts[0]} ${vmArt === "miete" ? "mieten" : "kaufen"}`;
-      else if (vmArt && objArts.length > 1)
-        immText = `${objArts.length} Objektarten`;
-      else if (!vmArt && objArts.length === 1) immText = objArts[0];
-      else if (!vmArt && objArts.length > 1)
-        immText = `${objArts.length} Objektarten`;
-      if (selectionImmobilie) selectionImmobilie.textContent = immText;
 
-      // Ort
+      let immText = "Alle Kategorien";
+      if (vm === "beides" && objArts.length === 0) immText = "Miete & Kauf";
+      else if (vm === "beides" && objArts.length > 0)
+        immText = `${objArts.length > 1 ? objArts.length + " Typen" : objArts[0]}, beides`;
+      else if (vm && objArts.length === 0)
+        immText = vm === "miete" ? "Mieten" : "Kaufen";
+      else if (vm && objArts.length === 1)
+        immText = `${objArts[0]} ${vm === "miete" ? "mieten" : "kaufen"}`;
+      else if (vm && objArts.length > 1)
+        immText = `${objArts.length} Objektarten`;
+      else if (!vm && objArts.length === 1) immText = objArts[0];
+      else if (!vm && objArts.length > 1)
+        immText = `${objArts.length} Objektarten`;
+      if (selImmobilie) selImmobilie.textContent = immText;
+
       const lages = Array.from(
         document.querySelectorAll('[name="lage"]:checked')
       ).map((el) => (el as HTMLInputElement).value);
-      if (selectionOrt)
-        selectionOrt.textContent =
+      if (selOrt)
+        selOrt.textContent =
           lages.length === 0
             ? "Alle Orte"
             : lages.length === 1
               ? lages[0]
               : `${lages.length} Orte`;
 
-      // Größe
       const zimMin = (
         document.querySelector('[name="zimmer-min"]') as HTMLInputElement
       )?.value;
@@ -889,8 +1131,7 @@ const districts: Record<string, string[]> = {
       const flMax = (
         document.querySelector('[name="flaeche-max"]') as HTMLInputElement
       )?.value;
-      let gText = "Jede Größe";
-      const zText =
+      const zT =
         zimMin && zimMax
           ? `${zimMin}–${zimMax} Zi.`
           : zimMin
@@ -898,7 +1139,7 @@ const districts: Record<string, string[]> = {
             : zimMax
               ? `bis ${zimMax} Zi.`
               : "";
-      const fText =
+      const fT =
         flMin && flMax
           ? `${flMin}–${flMax} m²`
           : flMin
@@ -906,104 +1147,103 @@ const districts: Record<string, string[]> = {
             : flMax
               ? `bis ${flMax} m²`
               : "";
-      if (zText && fText) gText = `${zText}, ${fText}`;
-      else if (zText) gText = zText;
-      else if (fText) gText = fText;
-      if (selectionGroesse) selectionGroesse.textContent = gText;
+      if (selGroesse)
+        selGroesse.textContent =
+          zT && fT ? `${zT}, ${fT}` : zT || fT || "Jede Größe";
 
-      // Preis
-      const pKaufMin = (
-        document.querySelector('[name="preis-kauf-min"]') as HTMLInputElement
-      )?.value;
-      const pKaufMax = (
-        document.querySelector('[name="preis-kauf-max"]') as HTMLInputElement
-      )?.value;
-      const pMieteMin = (
-        document.querySelector('[name="preis-miete-min"]') as HTMLInputElement
-      )?.value;
-      const pMieteMax = (
-        document.querySelector('[name="preis-miete-max"]') as HTMLInputElement
-      )?.value;
       const fmt = (n: string) =>
         n ? new Intl.NumberFormat("de-DE").format(Number(n)) : "";
+      const pKMin = (
+        document.querySelector('[name="preis-kauf-min"]') as HTMLInputElement
+      )?.value;
+      const pKMax = (
+        document.querySelector('[name="preis-kauf-max"]') as HTMLInputElement
+      )?.value;
+      const pMMin = (
+        document.querySelector('[name="preis-miete-min"]') as HTMLInputElement
+      )?.value;
+      const pMMax = (
+        document.querySelector('[name="preis-miete-max"]') as HTMLInputElement
+      )?.value;
       let pText = "Jeder Preis";
-      if (vmArt === "kauf" && (pKaufMin || pKaufMax)) {
+      if (vm === "kauf" && (pKMin || pKMax))
         pText =
-          pKaufMin && pKaufMax
-            ? `${fmt(pKaufMin)}–${fmt(pKaufMax)} €`
-            : pKaufMin
-              ? `ab ${fmt(pKaufMin)} €`
-              : `bis ${fmt(pKaufMax)} €`;
-      } else if (vmArt === "miete" && (pMieteMin || pMieteMax)) {
+          pKMin && pKMax
+            ? `${fmt(pKMin)}–${fmt(pKMax)} €`
+            : pKMin
+              ? `ab ${fmt(pKMin)} €`
+              : `bis ${fmt(pKMax)} €`;
+      else if (vm === "miete" && (pMMin || pMMax))
         pText =
-          pMieteMin && pMieteMax
-            ? `${fmt(pMieteMin)}–${fmt(pMieteMax)} €`
-            : pMieteMin
-              ? `ab ${fmt(pMieteMin)} €`
-              : `bis ${fmt(pMieteMax)} €`;
-      }
-      if (selectionPreis) selectionPreis.textContent = pText;
+          pMMin && pMMax
+            ? `${fmt(pMMin)}–${fmt(pMMax)} €`
+            : pMMin
+              ? `ab ${fmt(pMMin)} €`
+              : `bis ${fmt(pMMax)} €`;
+      if (selPreis) selPreis.textContent = pText;
     }
 
-    // --- Validation ---
+    // ── Validation ──
     function validateStep(step: number): boolean {
       if (step === 0) {
-        const vmArt = (
+        const vm = (
           document.querySelector(
             '[name="vermarktungsart"]:checked'
           ) as HTMLInputElement
         )?.value;
         const errEl = document.getElementById("error-vermarktungsart");
-        if (!vmArt) {
+        if (!vm) {
           errEl?.classList.remove("hidden");
           return false;
         }
         errEl?.classList.add("hidden");
       }
       if (step === 4) {
-        let valid = true;
-        const firstName = (
+        let ok = true;
+        const fn = (
           document.getElementById("sub-firstName") as HTMLInputElement
         )?.value.trim();
-        const lastName = (
+        const ln = (
           document.getElementById("sub-lastName") as HTMLInputElement
         )?.value.trim();
-        const email = (
+        const em = (
           document.getElementById("sub-email") as HTMLInputElement
         )?.value.trim();
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        const fErr = document.getElementById("error-firstName");
-        const lErr = document.getElementById("error-lastName");
-        const eErr = document.getElementById("error-email");
-
-        if (!firstName) {
-          fErr?.classList.remove("hidden");
-          valid = false;
-        } else {
-          fErr?.classList.add("hidden");
-        }
-        if (!lastName) {
-          lErr?.classList.remove("hidden");
-          valid = false;
-        } else {
-          lErr?.classList.add("hidden");
-        }
-        if (!email || !emailRegex.test(email)) {
-          eErr?.classList.remove("hidden");
-          valid = false;
-        } else {
-          eErr?.classList.add("hidden");
-        }
-
-        return valid;
+        const emOk = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+          em
+        );
+        if (!fn) {
+          document
+            .getElementById("error-firstName")
+            ?.classList.remove("hidden");
+          ok = false;
+        } else
+          document.getElementById("error-firstName")?.classList.add("hidden");
+        if (!ln) {
+          document.getElementById("error-lastName")?.classList.remove("hidden");
+          ok = false;
+        } else
+          document.getElementById("error-lastName")?.classList.add("hidden");
+        if (!emOk) {
+          document.getElementById("error-email")?.classList.remove("hidden");
+          ok = false;
+        } else document.getElementById("error-email")?.classList.add("hidden");
+        const consent = (
+          document.getElementById("consent-checkbox") as HTMLInputElement
+        )?.checked;
+        if (!consent) {
+          document.getElementById("error-consent")?.classList.remove("hidden");
+          ok = false;
+        } else
+          document.getElementById("error-consent")?.classList.add("hidden");
+        return ok;
       }
       return true;
     }
 
-    // --- Build payload from form state ---
+    // ── Build payload ──
     function buildPayload() {
-      const vmArt = (
+      const vm = (
         document.querySelector(
           '[name="vermarktungsart"]:checked'
         ) as HTMLInputElement
@@ -1026,29 +1266,22 @@ const districts: Record<string, string[]> = {
       const flaecheMax = (
         document.querySelector('[name="flaeche-max"]') as HTMLInputElement
       )?.value;
-      const isKauf = vmArt === "kauf";
-      const preisMin = isKauf
-        ? (
-            document.querySelector(
-              '[name="preis-kauf-min"]'
-            ) as HTMLInputElement
-          )?.value
-        : (
-            document.querySelector(
-              '[name="preis-miete-min"]'
-            ) as HTMLInputElement
-          )?.value;
-      const preisMax = isKauf
-        ? (
-            document.querySelector(
-              '[name="preis-kauf-max"]'
-            ) as HTMLInputElement
-          )?.value
-        : (
-            document.querySelector(
-              '[name="preis-miete-max"]'
-            ) as HTMLInputElement
-          )?.value;
+      const pKMin = (
+        document.querySelector('[name="preis-kauf-min"]') as HTMLInputElement
+      )?.value;
+      const pKMax = (
+        document.querySelector('[name="preis-kauf-max"]') as HTMLInputElement
+      )?.value;
+      const pMMin = (
+        document.querySelector('[name="preis-miete-min"]') as HTMLInputElement
+      )?.value;
+      const pMMax = (
+        document.querySelector('[name="preis-miete-max"]') as HTMLInputElement
+      )?.value;
+      const preisMin =
+        vm === "kauf" ? pKMin : vm === "miete" ? pMMin : pKMin || pMMin;
+      const preisMax =
+        vm === "kauf" ? pKMax : vm === "miete" ? pMMax : pKMax || pMMax;
       const firstName = (
         document.getElementById("sub-firstName") as HTMLInputElement
       )?.value.trim();
@@ -1058,12 +1291,11 @@ const districts: Record<string, string[]> = {
       const email = (
         document.getElementById("sub-email") as HTMLInputElement
       )?.value.trim();
-
       return {
         firstName,
         lastName,
         email,
-        vermarktungsart: vmArt,
+        vermarktungsart: vm,
         objektarten,
         bezirke,
         zimmerMin: zimmerMin || undefined,
@@ -1075,58 +1307,40 @@ const districts: Record<string, string[]> = {
       };
     }
 
-    // --- Submit ---
+    // ── Submit ──
     async function handleSubmit() {
       if (!validateStep(4)) return;
-
-      const submitBtn = document.getElementById(
-        "submit-button"
-      ) as HTMLButtonElement;
-      const submitLabel = document.getElementById("submit-label");
-      const submitSpinner = document.getElementById("submit-spinner");
-
-      submitBtn.disabled = true;
-      submitLabel!.textContent = "Wird gespeichert…";
-      submitSpinner?.classList.remove("hidden");
-
+      const btn = document.getElementById("submit-button") as HTMLButtonElement;
+      const label = document.getElementById("submit-label");
+      const spinner = document.getElementById("submit-spinner");
+      btn.disabled = true;
+      if (label) label.textContent = "Wird gespeichert…";
+      spinner?.classList.remove("hidden");
       try {
-        const payload = buildPayload();
-        const response = await fetch("/api/subscribe", {
+        const res = await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(buildPayload()),
         });
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          // Show success — message differs for new vs update
-          const successTitle = document.querySelector(
-            "#subscription-success h3"
-          );
-          const successText = document.querySelector("#subscription-success p");
-          if (successTitle)
-            successTitle.textContent = data.updated
-              ? "Suchabo erfolgreich aktualisiert!"
-              : "Suchabo erfolgreich eingerichtet!";
-          if (successText)
-            successText.textContent = data.updated
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const h = document.querySelector("#subscription-success h3");
+          const p = document.querySelector("#subscription-success p");
+          if (h)
+            h.textContent = data.updated
+              ? "Suchabo aktualisiert!"
+              : "Suchabo eingerichtet!";
+          if (p)
+            p.textContent = data.updated
               ? "Ihre Suchpräferenzen wurden gespeichert."
               : "Sie erhalten eine E-Mail, sobald ein passendes Objekt inseriert wird.";
-          // Show success
-          document
-            .querySelector(".filter-heading-wrapper")
-            ?.classList.add("hidden");
+          tabNav?.classList.add("hidden");
           document.querySelector(".step-indicator")?.classList.add("hidden");
           panelWrapper?.classList.add("hidden");
           successEl?.classList.remove("hidden");
-        } else {
-          throw new Error(data.error || "Unbekannter Fehler");
-        }
+        } else throw new Error(data.error || "Unbekannter Fehler");
       } catch (err: any) {
-        // Show error
-        document
-          .querySelector(".filter-heading-wrapper")
-          ?.classList.add("hidden");
+        tabNav?.classList.add("hidden");
         document.querySelector(".step-indicator")?.classList.add("hidden");
         panelWrapper?.classList.add("hidden");
         if (errorHeading) errorHeading.textContent = "Fehler beim Speichern";
@@ -1135,52 +1349,46 @@ const districts: Record<string, string[]> = {
             err.message || "Bitte versuchen Sie es erneut.";
         errorEl?.classList.remove("hidden");
       } finally {
-        submitBtn.disabled = false;
-        submitLabel!.textContent = "Suchabo starten";
-        submitSpinner?.classList.add("hidden");
+        btn.disabled = false;
+        if (label) label.textContent = "Suchabo starten";
+        spinner?.classList.add("hidden");
       }
     }
 
-    // --- Event listeners ---
-
-    // Next/back buttons
+    // ── Event listeners ──
     document.querySelectorAll("[data-next]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const nextIndex = parseInt((btn as HTMLElement).dataset.next || "0");
-        if (nextIndex > currentStep && !validateStep(currentStep)) return;
+        const next = parseInt((btn as HTMLElement).dataset.next || "0");
+        if (next > currentStep && !validateStep(currentStep)) return;
         updateTabTexts();
-        showStep(nextIndex);
+        showStep(next);
       });
     });
 
-    // Tab clicks for direct navigation (only to visited steps)
     document.querySelectorAll(".filter-heading-tab").forEach((tab, index) => {
       tab.addEventListener("click", () => {
-        if (index <= currentStep) showStep(index);
+        if (index <= currentStep) {
+          updateTabTexts();
+          showStep(index);
+        }
       });
     });
 
-    // Submit button
     document
       .getElementById("submit-button")
       ?.addEventListener("click", handleSubmit);
 
-    // Retry button
     errorRetry?.addEventListener("click", () => {
       errorEl?.classList.add("hidden");
-      document
-        .querySelector(".filter-heading-wrapper")
-        ?.classList.remove("hidden");
+      tabNav?.classList.remove("hidden");
       document.querySelector(".step-indicator")?.classList.remove("hidden");
       panelWrapper?.classList.remove("hidden");
       showStep(4);
     });
 
-    // Live text updates
     document.addEventListener("change", updateTabTexts);
     document.addEventListener("input", updateTabTexts);
 
-    // Init
     updatePriceGroups();
     showStep(0);
   });
