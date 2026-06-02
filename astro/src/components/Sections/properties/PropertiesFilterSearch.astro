@@ -246,42 +246,56 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
               <div id="panel-groesse" class="filter-panel panel-groesse">
                 <div class="filter-form-group">
                   <h2 class="filter-form-heading">Zimmer</h2>
-                  <div class="number-input-wrapper">
-                    <input
-                      class="text-field"
-                      name="zimmer-min"
-                      placeholder="Min"
-                      type="number"
-                      id="filter-zimmer-min"
-                    />
-                    <div class="input-separator">bis</div>
-                    <input
-                      class="text-field"
-                      name="zimmer-max"
-                      placeholder="Max"
-                      type="number"
-                      id="filter-zimmer-max"
-                    />
+                  <div class="range-select-wrapper">
+                    <select name="zimmer-min" id="filter-zimmer-min" class="select-field">
+                      <option value="">ab</option>
+                      <option value="1">1 Zi.</option>
+                      <option value="2">2 Zi.</option>
+                      <option value="3">3 Zi.</option>
+                      <option value="4">4 Zi.</option>
+                      <option value="5">5 Zi.</option>
+                    </select>
+                    <span class="input-separator">–</span>
+                    <select name="zimmer-max" id="filter-zimmer-max" class="select-field">
+                      <option value="">egal</option>
+                      <option value="1">1 Zi.</option>
+                      <option value="2">2 Zi.</option>
+                      <option value="3">3 Zi.</option>
+                      <option value="4">4 Zi.</option>
+                      <option value="5">5+ Zi.</option>
+                    </select>
                   </div>
                 </div>
                 <div class="filter-form-group">
                   <h2 class="filter-form-heading">Fläche (m²)</h2>
-                  <div class="number-input-wrapper">
-                    <input
-                      class="text-field"
-                      name="flaeche-min"
-                      placeholder="Min"
-                      type="number"
-                      id="filter-flaeche-min"
-                    />
-                    <div class="input-separator">bis</div>
-                    <input
-                      class="text-field"
-                      name="flaeche-max"
-                      placeholder="Max"
-                      type="number"
-                      id="filter-flaeche-max"
-                    />
+                  <div class="range-select-wrapper">
+                    <select name="flaeche-min" id="filter-flaeche-min" class="select-field">
+                      <option value="">ab</option>
+                      <option value="20">20 m²</option>
+                      <option value="30">30 m²</option>
+                      <option value="40">40 m²</option>
+                      <option value="50">50 m²</option>
+                      <option value="60">60 m²</option>
+                      <option value="70">70 m²</option>
+                      <option value="80">80 m²</option>
+                      <option value="100">100 m²</option>
+                      <option value="120">120 m²</option>
+                      <option value="150">150 m²</option>
+                    </select>
+                    <span class="input-separator">–</span>
+                    <select name="flaeche-max" id="filter-flaeche-max" class="select-field">
+                      <option value="">egal</option>
+                      <option value="30">30 m²</option>
+                      <option value="40">40 m²</option>
+                      <option value="50">50 m²</option>
+                      <option value="60">60 m²</option>
+                      <option value="70">70 m²</option>
+                      <option value="80">80 m²</option>
+                      <option value="100">100 m²</option>
+                      <option value="120">120 m²</option>
+                      <option value="150">150 m²</option>
+                      <option value="200">200+ m²</option>
+                    </select>
                   </div>
                 </div>
                 <a href="#" data-panel="groesse" class="reset-button button"
@@ -298,46 +312,65 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
                 </div>
               </div>
               <div id="panel-preis" class="filter-panel panel-preis">
-                {/* ... existing preis content ... */}
                 <div class="filter-form-group price-group price-group-kauf">
                   <h2 class="filter-form-heading">Kaufpreis (€)</h2>
-                  <div class="number-input-wrapper">
-                    <input
-                      class="text-field"
-                      name="preis-kauf-min"
-                      placeholder="Min"
-                      type="number"
-                      id="filter-preis-kauf-min"
-                    />
-                    <div class="input-separator">bis</div>
-                    <input
-                      class="text-field"
-                      name="preis-kauf-max"
-                      placeholder="Max"
-                      type="number"
-                      id="filter-preis-kauf-max"
-                    />
+                  <div class="range-select-wrapper">
+                    <select name="preis-kauf-min" id="filter-preis-kauf-min" class="select-field">
+                      <option value="">ab</option>
+                      <option value="50000">50.000 €</option>
+                      <option value="75000">75.000 €</option>
+                      <option value="100000">100.000 €</option>
+                      <option value="150000">150.000 €</option>
+                      <option value="200000">200.000 €</option>
+                      <option value="250000">250.000 €</option>
+                      <option value="300000">300.000 €</option>
+                      <option value="400000">400.000 €</option>
+                      <option value="500000">500.000 €</option>
+                    </select>
+                    <span class="input-separator">–</span>
+                    <select name="preis-kauf-max" id="filter-preis-kauf-max" class="select-field">
+                      <option value="">egal</option>
+                      <option value="100000">100.000 €</option>
+                      <option value="150000">150.000 €</option>
+                      <option value="200000">200.000 €</option>
+                      <option value="250000">250.000 €</option>
+                      <option value="300000">300.000 €</option>
+                      <option value="400000">400.000 €</option>
+                      <option value="500000">500.000 €</option>
+                      <option value="750000">750.000 €</option>
+                      <option value="1000000">1.000.000+ €</option>
+                    </select>
                   </div>
                 </div>
 
                 <div class="filter-form-group price-group price-group-miete">
-                  <h2 class="filter-form-heading">Preis (€)</h2>
-                  <div class="number-input-wrapper">
-                    <input
-                      class="text-field"
-                      name="preis-miete-min"
-                      placeholder="Min"
-                      type="number"
-                      id="filter-preis-miete-min"
-                    />
-                    <div class="input-separator">bis</div>
-                    <input
-                      class="text-field"
-                      name="preis-miete-max"
-                      placeholder="Max"
-                      type="number"
-                      id="filter-preis-miete-max"
-                    />
+                  <h2 class="filter-form-heading">Miete (€)</h2>
+                  <div class="range-select-wrapper">
+                    <select name="preis-miete-min" id="filter-preis-miete-min" class="select-field">
+                      <option value="">ab</option>
+                      <option value="300">300 €</option>
+                      <option value="400">400 €</option>
+                      <option value="500">500 €</option>
+                      <option value="600">600 €</option>
+                      <option value="700">700 €</option>
+                      <option value="800">800 €</option>
+                      <option value="1000">1.000 €</option>
+                      <option value="1200">1.200 €</option>
+                      <option value="1500">1.500 €</option>
+                    </select>
+                    <span class="input-separator">–</span>
+                    <select name="preis-miete-max" id="filter-preis-miete-max" class="select-field">
+                      <option value="">egal</option>
+                      <option value="400">400 €</option>
+                      <option value="500">500 €</option>
+                      <option value="600">600 €</option>
+                      <option value="700">700 €</option>
+                      <option value="800">800 €</option>
+                      <option value="1000">1.000 €</option>
+                      <option value="1200">1.200 €</option>
+                      <option value="1500">1.500 €</option>
+                      <option value="2000">2.000+ €</option>
+                    </select>
                   </div>
                 </div>
                 <a href="#" data-panel="preis" class="reset-button button"
@@ -598,6 +631,7 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     border: 1px solid var(--color-neutral-light);
     border-radius: var(--border-radius);
     z-index: 1;
+    pointer-events: none;
     width: 50rem;
 
     /* MOBILE ACCORDION COLLAPSE STATE */
@@ -699,30 +733,34 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
     }
   }
   /* ==============================================================
-  INPUT STYLES: NUMBER/TEXT FIELDS
+  INPUT STYLES: RANGE SELECTS
   ============================================================== */
 
-  .number-input-wrapper {
+  .range-select-wrapper {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    max-width: 300px;
+    max-width: 340px;
+    width: 100%;
   }
 
-  .text-field {
-    padding: var(--spacing-sm);
+  .select-field {
+    padding: var(--spacing-sm) var(--spacing-md);
     background-color: var(--color-neutral-green-grey);
     border: 1px solid var(--color-neutral-medium);
     border-radius: var(--border-radius-sm);
-    width: 100px;
-    height: 100%;
-    flex-grow: 1;
+    flex: 1;
+    min-width: 0;
     font-size: var(--font-size-body-small);
+    color: var(--color-neutral-font-dark);
+    cursor: pointer;
+    height: 2.5rem;
   }
 
   .input-separator {
     color: var(--color-neutral-medium);
     font-size: var(--font-size-body-small);
+    flex-shrink: 0;
   }
 
   .price-group.hidden {
@@ -730,8 +768,13 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
   }
 
   @media (max-width: 991px) {
-    .text-field {
+    .range-select-wrapper {
+      max-width: 100%;
+      height: 3rem;
+    }
+    .select-field {
       font-size: var(--font-size-body-base);
+      height: 100%;
     }
   }
   /* ==============================================================
@@ -1006,10 +1049,11 @@ const allLocations = [...viennaDistricts, ...surroundingDistricts];
 
     /* Ensure the tab container inside also displays correctly */
     #filter-heading-bar {
-      display: grid; /* Re-apply your desktop grid layout */
+      display: grid;
       grid-template-columns: repeat(6, 1fr);
       padding: var(--spacing-sm);
-      /* Ensure no mobile styles like flex-direction: column are applied */
+      position: relative;
+      z-index: 101;
     }
     /* Hide the mobile summary bar and ensure individual tabs are shown */
     #mobile-summary-bar {
@@ -1487,6 +1531,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Listen for tab clicks to toggle panels (MODIFIED)
     filterBar.addEventListener("click", (e) => {
+      // Guard against Cookiebot's auto-blocking mode double-registering this listener
+      if (e._filterHandled) return;
+      e._filterHandled = true;
+
       const targetTab = e.target.closest(".tab-container");
       if (!targetTab) return;
 

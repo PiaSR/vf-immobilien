@@ -236,44 +236,58 @@ const districts: Record<string, string[]> = {
           <h2 class="filter-form-heading">
             Zimmer <span class="optional">(optional)</span>
           </h2>
-          <div class="number-input-wrapper">
-            <input
-              class="text-field"
-              name="zimmer-min"
-              placeholder="Min"
-              type="number"
-              min="0"
-            />
-            <div class="input-separator">bis</div>
-            <input
-              class="text-field"
-              name="zimmer-max"
-              placeholder="Max"
-              type="number"
-              min="0"
-            />
+          <div class="range-select-wrapper">
+            <select name="zimmer-min" class="select-field">
+              <option value="">ab</option>
+              <option value="1">1 Zi.</option>
+              <option value="2">2 Zi.</option>
+              <option value="3">3 Zi.</option>
+              <option value="4">4 Zi.</option>
+              <option value="5">5 Zi.</option>
+            </select>
+            <span class="input-separator">–</span>
+            <select name="zimmer-max" class="select-field">
+              <option value="">egal</option>
+              <option value="1">1 Zi.</option>
+              <option value="2">2 Zi.</option>
+              <option value="3">3 Zi.</option>
+              <option value="4">4 Zi.</option>
+              <option value="5">5+ Zi.</option>
+            </select>
           </div>
         </div>
         <div class="filter-form-group">
           <h2 class="filter-form-heading">
             Fläche (m²) <span class="optional">(optional)</span>
           </h2>
-          <div class="number-input-wrapper">
-            <input
-              class="text-field"
-              name="flaeche-min"
-              placeholder="Min"
-              type="number"
-              min="0"
-            />
-            <div class="input-separator">bis</div>
-            <input
-              class="text-field"
-              name="flaeche-max"
-              placeholder="Max"
-              type="number"
-              min="0"
-            />
+          <div class="range-select-wrapper">
+            <select name="flaeche-min" class="select-field">
+              <option value="">ab</option>
+              <option value="20">20 m²</option>
+              <option value="30">30 m²</option>
+              <option value="40">40 m²</option>
+              <option value="50">50 m²</option>
+              <option value="60">60 m²</option>
+              <option value="70">70 m²</option>
+              <option value="80">80 m²</option>
+              <option value="100">100 m²</option>
+              <option value="120">120 m²</option>
+              <option value="150">150 m²</option>
+            </select>
+            <span class="input-separator">–</span>
+            <select name="flaeche-max" class="select-field">
+              <option value="">egal</option>
+              <option value="30">30 m²</option>
+              <option value="40">40 m²</option>
+              <option value="50">50 m²</option>
+              <option value="60">60 m²</option>
+              <option value="70">70 m²</option>
+              <option value="80">80 m²</option>
+              <option value="100">100 m²</option>
+              <option value="120">120 m²</option>
+              <option value="150">150 m²</option>
+              <option value="200">200+ m²</option>
+            </select>
           </div>
         </div>
         <div class="panel-footer">
@@ -292,44 +306,64 @@ const districts: Record<string, string[]> = {
           <h2 class="filter-form-heading">
             Kaufpreis (€) <span class="optional">(optional)</span>
           </h2>
-          <div class="number-input-wrapper">
-            <input
-              class="text-field"
-              name="preis-kauf-min"
-              placeholder="Min"
-              type="number"
-              min="0"
-            />
-            <div class="input-separator">bis</div>
-            <input
-              class="text-field"
-              name="preis-kauf-max"
-              placeholder="Max"
-              type="number"
-              min="0"
-            />
+          <div class="range-select-wrapper">
+            <select name="preis-kauf-min" class="select-field">
+              <option value="">ab</option>
+              <option value="50000">50.000 €</option>
+              <option value="75000">75.000 €</option>
+              <option value="100000">100.000 €</option>
+              <option value="150000">150.000 €</option>
+              <option value="200000">200.000 €</option>
+              <option value="250000">250.000 €</option>
+              <option value="300000">300.000 €</option>
+              <option value="400000">400.000 €</option>
+              <option value="500000">500.000 €</option>
+            </select>
+            <span class="input-separator">–</span>
+            <select name="preis-kauf-max" class="select-field">
+              <option value="">egal</option>
+              <option value="100000">100.000 €</option>
+              <option value="150000">150.000 €</option>
+              <option value="200000">200.000 €</option>
+              <option value="250000">250.000 €</option>
+              <option value="300000">300.000 €</option>
+              <option value="400000">400.000 €</option>
+              <option value="500000">500.000 €</option>
+              <option value="750000">750.000 €</option>
+              <option value="1000000">1.000.000+ €</option>
+            </select>
           </div>
         </div>
         <div class="filter-form-group price-group price-group-miete">
           <h2 class="filter-form-heading">
             Miete (€) <span class="optional">(optional)</span>
           </h2>
-          <div class="number-input-wrapper">
-            <input
-              class="text-field"
-              name="preis-miete-min"
-              placeholder="Min"
-              type="number"
-              min="0"
-            />
-            <div class="input-separator">bis</div>
-            <input
-              class="text-field"
-              name="preis-miete-max"
-              placeholder="Max"
-              type="number"
-              min="0"
-            />
+          <div class="range-select-wrapper">
+            <select name="preis-miete-min" class="select-field">
+              <option value="">ab</option>
+              <option value="300">300 €</option>
+              <option value="400">400 €</option>
+              <option value="500">500 €</option>
+              <option value="600">600 €</option>
+              <option value="700">700 €</option>
+              <option value="800">800 €</option>
+              <option value="1000">1.000 €</option>
+              <option value="1200">1.200 €</option>
+              <option value="1500">1.500 €</option>
+            </select>
+            <span class="input-separator">–</span>
+            <select name="preis-miete-max" class="select-field">
+              <option value="">egal</option>
+              <option value="400">400 €</option>
+              <option value="500">500 €</option>
+              <option value="600">600 €</option>
+              <option value="700">700 €</option>
+              <option value="800">800 €</option>
+              <option value="1000">1.000 €</option>
+              <option value="1200">1.200 €</option>
+              <option value="1500">1.500 €</option>
+              <option value="2000">2.000+ €</option>
+            </select>
           </div>
         </div>
         <div class="panel-footer">
@@ -463,10 +497,10 @@ const districts: Record<string, string[]> = {
     background-color: var(--color-brand-light-green);
   }
   .subscription-wrapper {
+    width: 100%;
     max-width: 1200px;
     margin: var(--spacing-lg) auto;
     padding: var(--spacing-sm) var(--spacing-md) 0;
-    /* Prevent ANY child from blowing out the width */
     box-sizing: border-box;
     overflow: hidden;
   }
@@ -517,6 +551,8 @@ const districts: Record<string, string[]> = {
     position: relative;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    width: 100%;
+    box-sizing: border-box;
     gap: var(--spacing-sm);
     background-color: var(--color-neutral-lightest);
     padding: var(--spacing-sm);
@@ -525,7 +561,8 @@ const districts: Record<string, string[]> = {
     margin-bottom: var(--spacing-sm);
   }
   .filter-group-wrapper {
-    min-width: 0; /* prevent grid blowout */
+    min-width: 0;
+    overflow: hidden;
   }
   .filter-heading-tab {
     display: flex;
@@ -559,11 +596,12 @@ const districts: Record<string, string[]> = {
      PANEL CARD
   ───────────────────────────────────────── */
   .filter-panel-wrapper {
+    width: 100%;
+    box-sizing: border-box;
     background-color: var(--color-neutral-lightest);
     border: 1px solid var(--color-neutral-light);
     border-radius: var(--border-radius);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    /* Prevent content from overflowing the card */
     overflow: hidden;
   }
   .filter-panel {
@@ -670,14 +708,27 @@ const districts: Record<string, string[]> = {
   }
 
   /* ─────────────────────────────────────────
-     NUMBER INPUTS
+     INPUTS & SELECTS
   ───────────────────────────────────────── */
-  .number-input-wrapper {
+  .range-select-wrapper {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    max-width: 300px;
+    max-width: 380px;
     width: 100%;
+    box-sizing: border-box;
+  }
+  .select-field {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-neutral-green-grey);
+    border: 1px solid var(--color-neutral-medium);
+    border-radius: var(--border-radius-sm);
+    flex: 1;
+    min-width: 0;
+    font-size: var(--font-size-body-small);
+    color: var(--color-neutral-font-dark);
+    cursor: pointer;
+    height: 2.5rem;
     box-sizing: border-box;
   }
   .text-field {
@@ -685,7 +736,7 @@ const districts: Record<string, string[]> = {
     background-color: var(--color-neutral-green-grey);
     border: 1px solid var(--color-neutral-medium);
     border-radius: var(--border-radius-sm);
-    width: 0; /* let flex-grow handle width */
+    width: 0;
     flex-grow: 1;
     min-width: 0;
     font-size: var(--font-size-body-small);
@@ -737,8 +788,8 @@ const districts: Record<string, string[]> = {
     text-decoration: underline;
   }
   .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-md);
     width: 100%;
     box-sizing: border-box;
@@ -963,19 +1014,16 @@ const districts: Record<string, string[]> = {
       font-size: var(--font-size-body-base);
     }
 
-    /* Number inputs: full width */
-    .number-input-wrapper {
+    /* Selects: full width on mobile */
+    .range-select-wrapper {
       max-width: 100%;
+    }
+    .select-field {
+      font-size: var(--font-size-body-base);
       height: 3rem;
     }
     .text-field {
       font-size: var(--font-size-body-base);
-      height: 100%;
-    }
-
-    /* Contact: stack first/last name */
-    .field-row {
-      grid-template-columns: 1fr;
     }
     .text-field.full-width {
       font-size: var(--font-size-body-base);
@@ -1014,6 +1062,7 @@ const districts: Record<string, string[]> = {
   document.addEventListener("DOMContentLoaded", () => {
     const panelSequence = ["immobilie", "ort", "groesse", "preis", "kontakt"];
     let currentStep = 0;
+    let maxReachedStep = 0;
 
     const panelWrapper = document.querySelector(".filter-panel-wrapper");
     const tabNav = document.getElementById("tab-nav");
@@ -1034,6 +1083,7 @@ const districts: Record<string, string[]> = {
     function showStep(index: number) {
       if (index < 0 || index >= panelSequence.length) return;
       currentStep = index;
+      if (index > maxReachedStep) maxReachedStep = index;
       const name = panelSequence[index];
 
       document
@@ -1367,7 +1417,7 @@ const districts: Record<string, string[]> = {
 
     document.querySelectorAll(".filter-heading-tab").forEach((tab, index) => {
       tab.addEventListener("click", () => {
-        if (index <= currentStep) {
+        if (index <= maxReachedStep) {
           updateTabTexts();
           showStep(index);
         }

@@ -13,8 +13,6 @@ const sanityWriteClient = createClient({
   token: import.meta.env.SANITY_WRITE_TOKEN,
 });
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY);
-
 export const POST: APIRoute = async ({ request }) => {
   // --- 1. Parse the JSON body sent from the form ---
   let body: Record<string, any>;
@@ -126,6 +124,7 @@ async function sendConfirmationEmail(
   subscriberId: string,
   isUpdate: boolean
 ) {
+  const resend = new Resend(import.meta.env.RESEND_API_KEY);
   await resend.emails.send({
     from: 'office@vf-immobilien.at',
     to: sub.email,
