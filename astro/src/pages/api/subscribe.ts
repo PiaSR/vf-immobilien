@@ -91,10 +91,11 @@ export const POST: APIRoute = async ({ request }) => {
       savedId = created._id;
     }
 
-    // Fire-and-forget — don't block the response on email delivery
-    sendConfirmationEmail(subscriber, savedId, isUpdate).catch(err =>
-      console.error('Confirmation email error:', err)
-    );
+    try {
+      await sendConfirmationEmail(subscriber, savedId, isUpdate);
+    } catch (err) {
+      console.error('Confirmation email error:', err);
+    }
 
     return new Response(
       JSON.stringify({
