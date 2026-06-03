@@ -1,0 +1,58 @@
+---
+import ButtonArrow from "../../Base/ButtonArrow.astro";
+---
+
+<section class="suchabo-cta-section">
+  <div class="suchabo-cta-container site-container">
+    <div class="suchabo-cta-text">
+      <h2 class="heading-style-h3 suchabo-cta-heading">
+        Nichts Passendes dabei?
+      </h2>
+      <p class="suchabo-cta-body">
+        Mit der Suchvorvormerkung benachrichtigen wir Sie, sobald ein Objekt
+        Ihren Wünschen entspricht - kostenlos und unverbindlich.
+      </p>
+    </div>
+    <ButtonArrow href="/subscription" class="button-orange suchabo-cta-btn">
+      Jetzt vormerken lassen
+    </ButtonArrow>
+  </div>
+</section>
+
+<style>
+  .suchabo-cta-section {
+    background-color: var(--color-neutral-lightest);
+    padding: var(--spacing-4xl) var(--spacing-2xl);
+  }
+
+  .suchabo-cta-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-2xl);
+    flex-wrap: wrap;
+  }
+
+  .suchabo-cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    max-width: 38rem;
+  }
+
+  .suchabo-cta-heading {
+    color: var(--color-brand-dark-green);
+    margin: 0;
+  }
+
+  .suchabo-cta-body {
+    color: var(--color-brand-dark-green);
+    opacity: 0.85;
+    font-size: var(--font-size-body);
+    margin: 0;
+  }
+
+  .suchabo-cta-btn {
+    flex-shrink: 0;
+  }
+</style>
