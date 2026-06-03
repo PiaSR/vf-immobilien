@@ -20,8 +20,8 @@ const pathname = new URL(Astro.request.url).pathname;
       <Image
         src={logo}
         alt="logo"
-        width="90"
-        height="75"
+        width="68"
+        height="56"
         aria-hidden="true"
         decoding="async"
         loading="eager"
@@ -86,7 +86,7 @@ const pathname = new URL(Astro.request.url).pathname;
       #cs-navigation .cs-logo {
         width: 40%;
         max-width: 9.125rem;
-        height: 4.0625rem;
+        height: 3.25rem;
         margin: 0 auto 0 0;
         padding: 0;
         display: flex;
@@ -212,7 +212,7 @@ const pathname = new URL(Astro.request.url).pathname;
     @media only screen and (min-width: 64rem) {
       #cs-navigation {
         width: 100%;
-        padding: 0 var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-md);
         box-sizing: border-box;
         background-color: var(--color-neutral-lightest);
         box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
@@ -234,7 +234,7 @@ const pathname = new URL(Astro.request.url).pathname;
       #cs-navigation .cs-logo {
         width: 18.4%;
         max-width: 21.875rem;
-        height: 4.0625rem;
+        height: 3.25rem;
         margin: 0 auto 0 0;
         padding: 0;
         display: flex;
@@ -243,7 +243,7 @@ const pathname = new URL(Astro.request.url).pathname;
         z-index: 100;
       }
       #cs-navigation .cs-logo img {
-        width: 90px;
+        width: 68px;
         height: auto;
         object-fit: contain;
       }
