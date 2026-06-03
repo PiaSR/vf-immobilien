@@ -1,17 +1,8 @@
 import type { APIRoute } from 'astro';
-import { createClient } from '@sanity/client';
 import { Resend } from 'resend';
+import { supabase } from '../../lib/supabaseClient';
 
 export const prerender = false;
-
-// Write client — needs a token with Editor or above permissions
-const sanityWriteClient = createClient({
-  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-  dataset: import.meta.env.PUBLIC_SANITY_DATASET,
-  apiVersion: import.meta.env.PUBLIC_SANITY_API_VERSION,
-  useCdn: false, // Must be false for writes
-  token: import.meta.env.SANITY_WRITE_TOKEN,
-});
 
 export const POST: APIRoute = async ({ request }) => {
   // --- 1. Parse the JSON body sent from the form ---
@@ -43,56 +34,72 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // --- 3. Build the subscriber document ---
-  const subscriber: Record<string, any> = {
-    _type: 'subscriber',
-    firstName: firstName.trim(),
-    lastName: lastName.trim(),
-    email: email.trim().toLowerCase(),
-    active: true,
-    vermarktungsart,
-    // Clear optional fields first — they'll be re-set below if provided.
-    // This ensures old values don't linger when someone updates their prefs.
-    objektarten: [],
-    bezirke: [],
-    zimmerMin: null,
-    zimmerMax: null,
-    flaecheMin: null,
-    flaecheMax: null,
-    preisMin: null,
-    preisMax: null,
-  };
-
-  // Only include optional fields if they have actual values
-  if (body.objektarten?.length > 0) subscriber.objektarten = body.objektarten;
-  if (body.bezirke?.length > 0) subscriber.bezirke = body.bezirke;
-  if (body.zimmerMin != null && body.zimmerMin !== '') subscriber.zimmerMin = Number(body.zimmerMin);
-  if (body.zimmerMax != null && body.zimmerMax !== '') subscriber.zimmerMax = Number(body.zimmerMax);
-  if (body.flaecheMin != null && body.flaecheMin !== '') subscriber.flaecheMin = Number(body.flaecheMin);
-  if (body.flaecheMax != null && body.flaecheMax !== '') subscriber.flaecheMax = Number(body.flaecheMax);
-  if (body.preisMin != null && body.preisMin !== '') subscriber.preisMin = Number(body.preisMin);
-  if (body.preisMax != null && body.preisMax !== '') subscriber.preisMax = Number(body.preisMax);
-
-  // --- 5. Create or update ---
+  // --- 3. Create or update ---
   try {
-    const existingId = await sanityWriteClient.fetch(
-      `*[_type == "subscriber" && email == $email][0]._id`,
-      { email: email.trim().toLowerCase() }
-    );
-    const isUpdate = !!existingId;
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const row = {
+      first_name:      firstName.trim(),
+      last_name:       lastName.trim(),
+      email:           normalizedEmail,
+      active:          true,
+      vermarktungsart,
+      objektarten:     body.objektarten?.length > 0 ? body.objektarten : [],
+      bezirke:         body.bezirke?.length > 0 ? body.bezirke : [],
+      zimmer_min:      body.zimmerMin  != null && body.zimmerMin  !== '' ? Number(body.zimmerMin)  : null,
+      zimmer_max:      body.zimmerMax  != null && body.zimmerMax  !== '' ? Number(body.zimmerMax)  : null,
+      flaeche_min:     body.flaecheMin != null && body.flaecheMin !== '' ? Number(body.flaecheMin) : null,
+      flaeche_max:     body.flaecheMax != null && body.flaecheMax !== '' ? Number(body.flaecheMax) : null,
+      preis_min:       body.preisMin   != null && body.preisMin   !== '' ? Number(body.preisMin)   : null,
+      preis_max:       body.preisMax   != null && body.preisMax   !== '' ? Number(body.preisMax)   : null,
+    };
+
+    const { data: existing } = await supabase
+      .from('subscribers')
+      .select('id')
+      .eq('email', normalizedEmail)
+      .maybeSingle();
+
+    const isUpdate = !!existing;
     let savedId: string;
 
     if (isUpdate) {
-      await sanityWriteClient.patch(existingId).set(subscriber).commit();
-      savedId = existingId;
+      const { data, error } = await supabase
+        .from('subscribers')
+        .update(row)
+        .eq('email', normalizedEmail)
+        .select('id')
+        .single();
+      if (error) throw error;
+      savedId = data.id;
     } else {
-      subscriber.subscribedAt = new Date().toISOString();
-      const created = await sanityWriteClient.create(subscriber as { _type: string } & Record<string, any>);
-      savedId = created._id;
+      const { data, error } = await supabase
+        .from('subscribers')
+        .insert({ ...row, subscribed_at: new Date().toISOString() })
+        .select('id')
+        .single();
+      if (error) throw error;
+      savedId = data.id;
     }
 
+    // Map snake_case back to camelCase for the email builder
+    const subForEmail = {
+      firstName:       row.first_name,
+      lastName:        row.last_name,
+      email:           row.email,
+      vermarktungsart: row.vermarktungsart,
+      objektarten:     row.objektarten,
+      bezirke:         row.bezirke,
+      zimmerMin:       row.zimmer_min,
+      zimmerMax:       row.zimmer_max,
+      flaecheMin:      row.flaeche_min,
+      flaecheMax:      row.flaeche_max,
+      preisMin:        row.preis_min,
+      preisMax:        row.preis_max,
+    };
+
     try {
-      await sendConfirmationEmail(subscriber, savedId, isUpdate);
+      await sendConfirmationEmail(subForEmail, savedId, isUpdate);
     } catch (err) {
       console.error('Confirmation email error:', err);
     }
@@ -108,7 +115,7 @@ export const POST: APIRoute = async ({ request }) => {
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Sanity write error:', error);
+    console.error('Supabase write error:', error);
     return new Response(
       JSON.stringify({ error: 'Fehler beim Speichern. Bitte versuchen Sie es später erneut.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }

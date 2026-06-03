@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@sanity/client';
 import { Resend } from 'resend';
+import { supabase } from '../../lib/supabaseClient';
 
 export const prerender = false;
 
@@ -17,7 +18,7 @@ const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
 // --- Types ---
 interface Subscriber {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -109,7 +110,7 @@ function buildEmailHtml(subscriber: Subscriber, property: Property): string {
     : 'Preis auf Anfrage';
   const location = property.locationVienna || property.locationSurrounding || '';
   const propertyUrl = `https://vf-immobilien.at/properties/${property.slug}`;
-  const unsubUrl = `https://vf-immobilien.at/api/unsubscribe?id=${subscriber._id}`;
+  const unsubUrl = `https://vf-immobilien.at/api/unsubscribe?id=${subscriber.id}`;
   const updateUrl = `https://vf-immobilien.at/subscription`;
 
   const hasRooms = property.rooms != null;
@@ -265,23 +266,27 @@ export const POST: APIRoute = async ({ request }) => {
   // 4. Fetch all active subscribers
   let subscribers: Subscriber[] = [];
   try {
-    subscribers = await sanityClient.fetch(`
-      *[_type == "subscriber" && active == true] {
-        _id,
-        firstName,
-        lastName,
-        email,
-        vermarktungsart,
-        objektarten,
-        bezirke,
-        zimmerMin,
-        zimmerMax,
-        flaecheMin,
-        flaecheMax,
-        preisMin,
-        preisMax
-      }
-    `);
+    const { data, error } = await supabase
+      .from('subscribers')
+      .select('id, first_name, last_name, email, vermarktungsart, objektarten, bezirke, zimmer_min, zimmer_max, flaeche_min, flaeche_max, preis_min, preis_max')
+      .eq('active', true);
+    if (error) throw error;
+
+    subscribers = (data ?? []).map(row => ({
+      id:              row.id,
+      firstName:       row.first_name,
+      lastName:        row.last_name,
+      email:           row.email,
+      vermarktungsart: row.vermarktungsart,
+      objektarten:     row.objektarten ?? [],
+      bezirke:         row.bezirke ?? [],
+      zimmerMin:       row.zimmer_min   ?? undefined,
+      zimmerMax:       row.zimmer_max   ?? undefined,
+      flaecheMin:      row.flaeche_min  ?? undefined,
+      flaecheMax:      row.flaeche_max  ?? undefined,
+      preisMin:        row.preis_min    ?? undefined,
+      preisMax:        row.preis_max    ?? undefined,
+    }));
   } catch (err) {
     console.error('Failed to fetch subscribers:', err);
     return new Response(JSON.stringify({ error: 'Failed to fetch subscribers' }), { status: 500 });

@@ -1,15 +1,7 @@
 import type { APIRoute } from 'astro';
-import { createClient } from '@sanity/client';
+import { supabase } from '../../lib/supabaseClient';
 
 export const prerender = false;
-
-const sanityWriteClient = createClient({
-  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-  dataset: import.meta.env.PUBLIC_SANITY_DATASET,
-  apiVersion: import.meta.env.PUBLIC_SANITY_API_VERSION,
-  useCdn: false,
-  token: import.meta.env.SANITY_WRITE_TOKEN,
-});
 
 export const GET: APIRoute = async ({ url }) => {
   const id = url.searchParams.get('id');
@@ -18,12 +10,21 @@ export const GET: APIRoute = async ({ url }) => {
     return htmlResponse('Ungültiger Link', 'Dieser Abmeldelink ist ungültig.', 400);
   }
 
-  let subscriber: { _id: string; firstName?: string; active?: boolean } | null = null;
+  // Old unsubscribe links contain Sanity document IDs (not UUIDs) — show a graceful error
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(id)) {
+    return htmlResponse('Ungültiger Link', 'Dieser Abmeldelink ist ungültig.', 400);
+  }
+
+  let subscriber: { id: string; first_name?: string; active?: boolean } | null = null;
   try {
-    subscriber = await sanityWriteClient.fetch(
-      `*[_type == "subscriber" && _id == $id][0]{ _id, firstName, active }`,
-      { id }
-    );
+    const { data, error } = await supabase
+      .from('subscribers')
+      .select('id, first_name, active')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    subscriber = data;
   } catch (err) {
     console.error('Unsubscribe fetch error:', err);
     return htmlResponse('Fehler', 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 500);
@@ -33,7 +34,7 @@ export const GET: APIRoute = async ({ url }) => {
     return htmlResponse('Nicht gefunden', 'Kein Suchabo mit diesem Link gefunden.', 404);
   }
 
-  const name = subscriber.firstName ? `${subscriber.firstName}, Sie wurden` : 'Sie wurden';
+  const name = subscriber.first_name ? `${subscriber.first_name}, Sie wurden` : 'Sie wurden';
 
   if (!subscriber.active) {
     return htmlResponse(
@@ -43,9 +44,13 @@ export const GET: APIRoute = async ({ url }) => {
   }
 
   try {
-    await sanityWriteClient.patch(id).set({ active: false }).commit();
+    const { error } = await supabase
+      .from('subscribers')
+      .update({ active: false })
+      .eq('id', id);
+    if (error) throw error;
   } catch (err) {
-    console.error('Unsubscribe patch error:', err);
+    console.error('Unsubscribe update error:', err);
     return htmlResponse('Fehler', 'Die Abmeldung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.', 500);
   }
 

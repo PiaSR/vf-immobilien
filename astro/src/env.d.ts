@@ -4,7 +4,8 @@ interface ImportMetaEnv {
     readonly PUBLIC_SANITY_DATASET: string;
     readonly PUBLIC_SANITY_API_VERSION: string;
     readonly RESEND_API_KEY: string;
-    // Add any other PUBLIC_ variables you use
+    readonly SUPABASE_URL: string;
+    readonly SUPABASE_SERVICE_ROLE_KEY: string;
 }
   
   interface ImportMeta {
