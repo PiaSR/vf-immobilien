@@ -1,19 +1,21 @@
 ---
-import { sanityClient } from "../../../lib/sanityClient"; // Ensure this path is correct
-import SkeletonGrid from "./SkeletonGrid.astro";
+import { sanityClient } from "../../../lib/sanityClient";
 
 // Define the structure of a simplified property object returned by GROQ
 interface InitialProperty {
   slug: string;
   title: string;
-  location: string; // The combined location string for display
-  area: number; // Wohnflaeche (livingArea)
-  rooms: number; // Zimmer (rooms)
-  price: number; // mietpreis or kaufpreis, based on marketingType
+  location: string;
+  area: number;
+  livingArea: number;
+  rooms: number;
+  price: number;
   marketingType: "Miete" | "Kauf";
-  propertyType: string; // Objektart
-  ausstattung: string[]; // CORRECTED: Array of titles fetched from the referenced 'ausstattung' documents
-  imageUrl: string; // URL for the main image
+  propertyType: string;
+  ausstattung: string[];
+  imageUrl: string;
+  available: boolean;
+  _createdAt: string;
 }
 // ... rest of your GROQ query and data fetching logic ...
 const initialPropertiesQuery = `
@@ -36,7 +38,9 @@ const initialPropertiesQuery = `
         true => rentalPrice // Default
       ),
       "imageUrl": mainImage.asset->url,
-      "location": coalesce(locationVienna, locationSurrounding) 
+      "location": coalesce(locationVienna, locationSurrounding),
+      available,
+      _createdAt
     }
 `;
 
@@ -64,8 +68,10 @@ const formatDataForClient = (properties: InitialProperty[]) => {
     // Ensure marketing type is capitalized to match filter logic
     marketingType: p.marketingType || "Kauf",
     propertyType: p.propertyType || "Unbekannt", // Objektart
-    ausstattung: p.ausstattung || [], // Ausstattung (array of strings)
-    imageUrl: p.imageUrl || "/assets/placeholder-default.jpg",
+    ausstattung: p.ausstattung || [],
+    imageUrl: p.imageUrl || "/property-placeholder.svg",
+    available: p.available ?? true,
+    _createdAt: p._createdAt || null,
   }));
 };
 const propertiesJson = JSON.stringify(formatDataForClient(initialProperties));
@@ -90,7 +96,13 @@ console.log("JSON Data:", propertiesJson);
       class="no-results-message"
       style="display:none;"
     >
-      Es wurden keine Immobilien gefunden, die Ihren Kriterien entsprechen.
+      <p class="no-results-heading">Keine Ergebnisse gefunden</p>
+      <p class="no-results-sub">
+        Kein passendes Objekt dabei? Mit der
+        <a href="/subscription" class="no-results-link"
+          >Suchvorvormerkung</a
+        > benachrichtigen wir Sie kostenlos, sobald etwas Passendes verfügbar ist.
+      </p>
     </div>
     <div id="pagination-controls" class="pagination-controls"></div>
   </div>
@@ -147,11 +159,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		const priceSuffix = property.marketingType === "Miete" ? "/Monat" : "";
 		const formattedPrice = formatPrice(property.price);
 		const propertyPath = "/properties/" + property.slug;
+		const isUnavailable = property.available === false;
+		const isNew = property._createdAt &&
+			(Date.now() - new Date(property._createdAt).getTime()) < 14 * 24 * 60 * 60 * 1000;
+		const unavailableLabel = property.marketingType === "Kauf" ? "Verkauft" : "Vermietet";
+		const badgeStyle = `position:absolute;top:0.6rem;left:0.6rem;z-index:2;padding:0.2rem 0.65rem;border-radius:9999px;font-size:0.7rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;pointer-events:none;`;
+		const badgeHTML = isUnavailable
+			? `<div style="${badgeStyle}background-color:var(--color-neutral-dark-grey);color:#fff;">${unavailableLabel}</div>`
+			: isNew
+			? `<div style="${badgeStyle}background-color:var(--color-brand-medium-green);color:#fff;">NEU</div>`
+			: "";
+		const imageStyle = isUnavailable ? `style="filter:grayscale(50%);opacity:0.8;"` : "";
 		return `
-        <a  href=${propertyPath}  class="property-card">
+        <a href=${propertyPath} class="property-card">
                         <div class="property-card-wrapper">
-                            <div class="property-card-image-box">
-
+                            <div class="property-card-image-box" style="position:relative;">
+                                ${badgeHTML}
                                 <img
 
                                 src="${property.imageUrl}"
@@ -161,6 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 alt="${property.title}"
 
                                 class="property-card-image"
+
+                                ${imageStyle}
 
                                 />
 
@@ -539,6 +564,63 @@ document.addEventListener("DOMContentLoaded", () => {
   .loading-state-p {
     font-size: var(--font-size-h4);
   }
+
+  .no-results-message {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-4xl) 0;
+  }
+
+  .no-results-heading {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--color-neutral-dark);
+    margin: 0;
+  }
+
+  .no-results-sub {
+    font-size: var(--font-size-body);
+    color: var(--color-neutral-dark);
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  .no-results-link {
+    color: var(--color-brand-dark-green);
+    font-weight: var(--font-weight-semi-bold);
+    text-decoration: underline;
+  }
+  /* --- CARD STATUS BADGES --- */
+  .property-card-image-box {
+    position: relative;
+  }
+  .card-status-badge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 2;
+    padding: 0.2rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .badge-new {
+    background-color: var(--color-brand-medium-green);
+    color: var(--color-neutral-white);
+  }
+  .badge-unavailable {
+    background-color: rgba(0, 0, 0, 0.55);
+    color: var(--color-neutral-white);
+  }
+  .card-unavailable .property-card-image {
+    filter: grayscale(50%);
+    opacity: 0.8;
+  }
+
   /* --- PROPERTY GRID LAYOUT--- */
 
   .property-grid-section {
